@@ -21,6 +21,10 @@ export default function ProtectedRoute({ children, adminOnly = false }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  if (!user.emailVerified) {
+    return <Navigate to="/verify-email" replace />;
+  }
+
   if (adminOnly && user.role !== 'admin' && user.role !== 'superadmin') {
     return <Navigate to="/dashboard" replace />;
   }

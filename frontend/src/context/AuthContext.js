@@ -7,22 +7,16 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('neliaxaToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 api.interceptors.response.use(
@@ -44,9 +38,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('neliaxaToken');
-
     if (token) {
-      
       verifyToken();
     } else {
       setLoading(false);
@@ -72,18 +64,16 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       setLoading(true);
-
       const response = await api.post('/auth/register', userData);
-
       if (response.data.success) {
         const { token, user } = response.data.data;
         localStorage.setItem('neliaxaToken', token);
         localStorage.setItem('neliaxaUser', JSON.stringify(user));
         setUser(user);
-        return { success: true, data: response.data };
+        return { success: true, requiresEmailVerification: !user.emailVerified, data: response.data };
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors de l\'inscription';
+      const errorMessage = err.response?.data?.message || 'Erreur';
       setError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {
@@ -91,22 +81,48 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const verifyEmail = async (otp) => {
+    try {
+      setError(null);
+      const response = await api.post('/auth/verify-email', { otp });
+      if (response.data.success) {
+        const updatedUser = { ...user, emailVerified: true };
+        setUser(updatedUser);
+        localStorage.setItem('neliaxaUser', JSON.stringify(updatedUser));
+        return { success: true, data: response.data };
+      }
+      return { success: false, error: response.data?.message };
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Code invalide ou expiré';
+      return { success: false, error: msg };
+    }
+  };
+
+  const resendOTP = async () => {
+    try {
+      setError(null);
+      const response = await api.post('/auth/resend-otp');
+      return { success: true, data: response.data };
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Erreur';
+      return { success: false, error: msg };
+    }
+  };
+
   const login = async (credentials) => {
     try {
       setError(null);
       setLoading(true);
-
       const response = await api.post('/auth/login', credentials);
-
       if (response.data.success) {
-        const { token, user } = response.data.data;
+        const { token, user, emailVerificationRequired } = response.data.data;
         localStorage.setItem('neliaxaToken', token);
         localStorage.setItem('neliaxaUser', JSON.stringify(user));
         setUser(user);
-        return { success: true, data: response.data };
+        return { success: true, requiresEmailVerification: emailVerificationRequired, data: response.data };
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors de la connexion';
+      const errorMessage = err.response?.data?.message || 'Erreur de connexion';
       const requires2FA = err.response?.data?.requires2FA || false;
       setError(errorMessage);
       return { success: false, error: errorMessage, requires2FA };
@@ -131,7 +147,6 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.put('/user/profile', profileData);
-
       if (response.data.success) {
         const updatedUser = response.data.data.user;
         setUser(updatedUser);
@@ -139,7 +154,7 @@ export const AuthProvider = ({ children }) => {
         return { success: true, data: response.data };
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors de la mise à jour';
+      const errorMessage = err.response?.data?.message || 'Erreur de mise à jour';
       setError(errorMessage);
       return { success: false, error: errorMessage };
     }
@@ -151,7 +166,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.put('/user/change-password', passwords);
       return { success: true, data: response.data };
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors du changement de mot de passe';
+      const errorMessage = err.response?.data?.message || 'Erreur de mot de passe';
       setError(errorMessage);
       return { success: false, error: errorMessage };
     }
@@ -163,7 +178,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/auth/2fa/setup');
       return { success: true, data: response.data };
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors de la configuration 2FA';
+      const errorMessage = err.response?.data?.message || 'Erreur 2FA';
       setError(errorMessage);
       return { success: false, error: errorMessage };
     }
@@ -173,16 +188,14 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.post('/auth/2fa/verify', { token });
-
       if (response.data.success) {
         const updatedUser = { ...user, twoFactorEnabled: true };
         setUser(updatedUser);
         localStorage.setItem('neliaxaUser', JSON.stringify(updatedUser));
       }
-
       return { success: true, data: response.data };
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors de la vérification 2FA';
+      const errorMessage = err.response?.data?.message || 'Erreur 2FA';
       setError(errorMessage);
       return { success: false, error: errorMessage };
     }
@@ -192,16 +205,14 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await api.post('/auth/2fa/disable', { password });
-
       if (response.data.success) {
         const updatedUser = { ...user, twoFactorEnabled: false };
         setUser(updatedUser);
         localStorage.setItem('neliaxaUser', JSON.stringify(updatedUser));
       }
-
       return { success: true, data: response.data };
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors de la désactivation 2FA';
+      const errorMessage = err.response?.data?.message || 'Erreur 2FA';
       setError(errorMessage);
       return { success: false, error: errorMessage };
     }
@@ -213,8 +224,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/auth/forgot-password', { email });
       return { success: true, data: response.data };
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors de la demande';
-      setError(errorMessage);
+      const errorMessage = err.response?.data?.message || 'Erreur';
       return { success: false, error: errorMessage };
     }
   };
@@ -222,30 +232,22 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (token, newPassword) => {
     try {
       setError(null);
-      const response = await api.post('/auth/reset-password', { token, newPassword });
+      const response = await api.post('/auth/reset-password', { token, password: newPassword });
       return { success: true, data: response.data };
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur lors de la réinitialisation';
-      setError(errorMessage);
+      const errorMessage = err.response?.data?.message || 'Erreur';
       return { success: false, error: errorMessage };
     }
   };
 
   const value = {
-    user,
-    loading,
-    error,
-    register,
-    login,
-    logout,
-    updateProfile,
-    changePassword,
-    setup2FA,
-    verify2FA,
-    disable2FA,
-    forgotPassword,
-    resetPassword,
+    user, loading, error,
+    register, verifyEmail, resendOTP,
+    login, logout, updateProfile, changePassword,
+    setup2FA, verify2FA, disable2FA,
+    forgotPassword, resetPassword,
     isAuthenticated: !!user,
+    requiresEmailVerification: user ? !user.emailVerified : false,
     api,
   };
 
@@ -258,9 +260,7 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
 
