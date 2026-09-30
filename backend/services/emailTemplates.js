@@ -8,7 +8,7 @@ const baseHtml = (content) => `
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>NELIAXA</title>
+  <title>IMC</title>
   <style>
     @media only screen and (max-width: 600px) {
       .container { padding: 20px 10px !important; }
@@ -40,13 +40,13 @@ const baseHtml = (content) => `
   <div class="container">
     <div class="card">
       <div class="logo">
-        <h1>NELIAXA</h1>
-        <span>Investment Platform</span>
+        <h1>IMC</h1>
+        <span>Corporation</span>
       </div>
       ${content}
     </div>
     <div class="footer">
-      <p>&copy; ${CURRENT_YEAR} NELIAXA. Tous droits réservés.</p>
+      <p>&copy; ${CURRENT_YEAR} IMC Corporation. Tous droits réservés.</p>
       <p>Ceci est un email automatique, merci de ne pas y répondre.</p>
     </div>
   </div>
@@ -61,15 +61,15 @@ const welcome = (name) => {
     <p class="text-center subtitle">Votre compte investisseur a été créé avec succès.</p>
     <div class="divider"></div>
     <p>Bonjour ${name},</p>
-    <p>Nous sommes ravis de vous accueillir sur NELIAXA. Votre plateforme d'investissement intelligente est désormais active.</p>
+    <p>Nous sommes ravis de vous accueillir sur IMC. Votre plateforme d'investissement intelligente est désormais active.</p>
     <div style="display:flex;justify-content:center;gap:16px;margin:24px 0;flex-wrap:wrap;">
       <div style="text-align:center;padding:16px;background:rgba(212,175,55,0.05);border-radius:8px;flex:1;min-width:100px;">
         <div style="font-size:28px;margin-bottom:4px;">📊</div>
         <div style="color:#D4AF37;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Investissement</div>
       </div>
       <div style="text-align:center;padding:16px;background:rgba(212,175,55,0.05);border-radius:8px;flex:1;min-width:100px;">
-        <div style="font-size:28px;margin-bottom:4px;">⛏️</div>
-        <div style="color:#D4AF37;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Mining NLX</div>
+        <div style="font-size:28px;margin-bottom:4px;">🎓</div>
+        <div style="color:#D4AF37;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Académie</div>
       </div>
       <div style="text-align:center;padding:16px;background:rgba(212,175,55,0.05);border-radius:8px;flex:1;min-width:100px;">
         <div style="font-size:28px;margin-bottom:4px;">👥</div>
@@ -82,7 +82,7 @@ const welcome = (name) => {
     </div>`;
   return {
     html: baseHtml(htmlContent),
-    text: `Bienvenue ${name} sur NELIAXA !\n\nVotre compte investisseur a été créé avec succès.\n\nAccédez à votre espace : ${FRONTEND_URL}/login\n\nL'équipe NELIAXA`
+    text: `Bienvenue ${name} sur IMC !\n\nVotre compte investisseur a été créé avec succès.\n\nAccédez à votre espace : ${FRONTEND_URL}/login\n\nL'équipe IMC`
   };
 };
 
@@ -92,7 +92,7 @@ const verifyEmail = (name, verificationLink) => {
     <p class="text-center subtitle">Confirmez votre adresse email pour activer votre compte.</p>
     <div class="divider"></div>
     <p>Bonjour ${name},</p>
-    <p>Merci d'avoir créé un compte sur NELIAXA. Pour activer votre compte, veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous :</p>
+    <p>Merci d'avoir créé un compte sur IMC. Pour activer votre compte, veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous :</p>
     <div class="text-center" style="margin:24px 0;">
       <a href="${verificationLink}" class="btn">Vérifier mon email</a>
     </div>
@@ -100,7 +100,7 @@ const verifyEmail = (name, verificationLink) => {
     <p style="color:#6b7280;font-size:12px;">Si vous n'avez pas créé de compte, ignorez cet email.</p>`;
   return {
     html: baseHtml(htmlContent),
-    text: `Bonjour ${name},\n\nMerci d'avoir créé un compte sur NELIAXA. Confirmez votre email en cliquant sur ce lien :\n${verificationLink}\n\nCe lien expire dans 24 heures.\n\nSi vous n'avez pas créé de compte, ignorez cet email.`
+    text: `Bonjour ${name},\n\nMerci d'avoir créé un compte sur IMC. Confirmez votre email en cliquant sur ce lien :\n${verificationLink}\n\nCe lien expire dans 24 heures.\n\nSi vous n'avez pas créé de compte, ignorez cet email.`
   };
 };
 
@@ -127,7 +127,8 @@ const otp = (name, otpCode, purpose) => {
     email_verification: 'Code de vérification',
     login: 'Code de connexion',
     '2fa': 'Code d\'authentification',
-    email_change: 'Code de changement d\'email'
+    email_change: 'Code de changement d\'email',
+    password_reset: 'Code de réinitialisation'
   };
   const title = titles[purpose] || 'Code de vérification';
   const htmlContent = `
@@ -157,9 +158,9 @@ const investmentConfirmation = (name, amount, pack, roi, estimatedEarnings, refe
     <div style="background:rgba(212,175,55,0.05);border-radius:8px;padding:20px;margin:20px 0;">
       <table style="width:100%;border-collapse:collapse;">
         <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Pack</td><td style="color:#fff;padding:8px 0;font-size:13px;text-align:right;font-weight:600;">${pack}</td></tr>
-        <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Montant</td><td style="color:#D4AF37;padding:8px 0;font-size:13px;text-align:right;font-weight:700;">${Number(amount).toFixed(2)} EUR</td></tr>
+        <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Montant</td><td style="color:#D4AF37;padding:8px 0;font-size:13px;text-align:right;font-weight:700;">${Number(amount).toFixed(2)} USD</td></tr>
         <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">ROI</td><td style="color:#fff;padding:8px 0;font-size:13px;text-align:right;">${roi}%</td></tr>
-        <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Estimation gains</td><td style="color:#D4AF37;padding:8px 0;font-size:13px;text-align:right;font-weight:700;">${Number(estimatedEarnings).toFixed(2)} EUR</td></tr>
+        <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Estimation gains</td><td style="color:#D4AF37;padding:8px 0;font-size:13px;text-align:right;font-weight:700;">${Number(estimatedEarnings).toFixed(2)} USD</td></tr>
         <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;border-bottom:none;">Référence</td><td style="color:#6b7280;padding:8px 0;font-size:11px;text-align:right;border-bottom:none;">${reference}</td></tr>
       </table>
     </div>
@@ -168,7 +169,7 @@ const investmentConfirmation = (name, amount, pack, roi, estimatedEarnings, refe
     </div>`;
   return {
     html: baseHtml(htmlContent),
-    text: `Bonjour ${name},\n\nVotre investissement a été confirmé :\nPack: ${pack}\nMontant: ${Number(amount).toFixed(2)} EUR\nROI: ${roi}%\nEstimation gains: ${Number(estimatedEarnings).toFixed(2)} EUR\nRéférence: ${reference}\n\nSuivez votre investissement : ${FRONTEND_URL}/dashboard`
+    text: `Bonjour ${name},\n\nVotre investissement a été confirmé :\nPack: ${pack}\nMontant: ${Number(amount).toFixed(2)} USD\nROI: ${roi}%\nEstimation gains: ${Number(estimatedEarnings).toFixed(2)} USD\nRéférence: ${reference}\n\nSuivez votre investissement : ${FRONTEND_URL}/dashboard`
   };
 };
 
@@ -181,7 +182,7 @@ const withdrawalConfirmation = (name, amount, method, reference) => {
     <p>Votre demande de retrait a été soumise avec succès. Voici les détails :</p>
     <div style="background:rgba(212,175,55,0.05);border-radius:8px;padding:20px;margin:20px 0;">
       <table style="width:100%;border-collapse:collapse;">
-        <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Montant</td><td style="color:#D4AF37;padding:8px 0;font-size:13px;text-align:right;font-weight:700;">${Number(amount).toFixed(2)} EUR</td></tr>
+        <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Montant</td><td style="color:#D4AF37;padding:8px 0;font-size:13px;text-align:right;font-weight:700;">${Number(amount).toFixed(2)} USD</td></tr>
         <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Méthode</td><td style="color:#fff;padding:8px 0;font-size:13px;text-align:right;text-transform:capitalize;">${method}</td></tr>
         <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;">Statut</td><td style="color:#fbbf24;padding:8px 0;font-size:13px;text-align:right;">En attente</td></tr>
         <tr><td style="color:#9ca3af;padding:8px 0;font-size:13px;border-bottom:none;">Référence</td><td style="color:#6b7280;padding:8px 0;font-size:11px;text-align:right;border-bottom:none;">${reference}</td></tr>
@@ -190,7 +191,7 @@ const withdrawalConfirmation = (name, amount, method, reference) => {
     <p style="color:#6b7280;font-size:12px;">Le traitement peut prendre jusqu'à 48 heures ouvrées.</p>`;
   return {
     html: baseHtml(htmlContent),
-    text: `Bonjour ${name},\n\nVotre demande de retrait a été soumise :\nMontant: ${Number(amount).toFixed(2)} EUR\nMéthode: ${method}\nStatut: En attente\nRéférence: ${reference}\n\nLe traitement peut prendre jusqu'à 48 heures.`
+    text: `Bonjour ${name},\n\nVotre demande de retrait a été soumise :\nMontant: ${Number(amount).toFixed(2)} USD\nMéthode: ${method}\nStatut: En attente\nRéférence: ${reference}\n\nLe traitement peut prendre jusqu'à 48 heures.`
   };
 };
 
@@ -200,7 +201,7 @@ const newProject = (name, projectTitle, projectDescription) => {
     <p class="text-center subtitle">Un nouveau projet d'investissement vient d'être publié.</p>
     <div class="divider"></div>
     <p>Bonjour ${name},</p>
-    <p>Un nouveau projet est disponible sur NELIAXA :</p>
+    <p>Un nouveau projet est disponible sur IMC :</p>
     <div style="background:rgba(212,175,55,0.05);border-radius:8px;padding:20px;margin:20px 0;">
       <h3 style="color:#D4AF37;font-size:16px;margin:0 0 8px;">${projectTitle}</h3>
       <p style="color:#9ca3af;font-size:13px;margin:0;line-height:1.5;">${projectDescription}</p>
@@ -210,7 +211,7 @@ const newProject = (name, projectTitle, projectDescription) => {
     </div>`;
   return {
     html: baseHtml(htmlContent),
-    text: `Bonjour ${name},\n\nUn nouveau projet est disponible sur NELIAXA :\n\n${projectTitle}\n${projectDescription}\n\nInvestissez maintenant : ${FRONTEND_URL}/invest`
+    text: `Bonjour ${name},\n\nUn nouveau projet est disponible sur IMC :\n\n${projectTitle}\n${projectDescription}\n\nInvestissez maintenant : ${FRONTEND_URL}/invest`
   };
 };
 
@@ -220,7 +221,7 @@ const securityAlert = (name, device, ip, location, time) => {
     <p class="text-center subtitle">Une nouvelle connexion a été détectée sur votre compte.</p>
     <div class="divider"></div>
     <p>Bonjour ${name},</p>
-    <p>Une connexion a été effectuée sur votre compte NELIAXA :</p>
+    <p>Une connexion a été effectuée sur votre compte IMC :</p>
     <div style="background:rgba(212,175,55,0.05);border-radius:8px;padding:20px;margin:20px 0;">
       <table style="width:100%;border-collapse:collapse;">
         <tr><td style="color:#9ca3af;padding:6px 0;font-size:13px;">Appareil</td><td style="color:#fff;padding:6px 0;font-size:13px;text-align:right;">${device}</td></tr>
@@ -235,7 +236,7 @@ const securityAlert = (name, device, ip, location, time) => {
     </div>`;
   return {
     html: baseHtml(htmlContent),
-    text: `Alerte de sécurité - NELIAXA\n\nBonjour ${name},\n\nUne nouvelle connexion a été détectée sur votre compte :\nAppareil: ${device}\nIP: ${ip}\nLocalisation: ${location}\nDate: ${time}\n\nSi c'était bien vous, ignorez cet email.\nSinon, changez immédiatement votre mot de passe : ${FRONTEND_URL}/profile`
+    text: `Alerte de sécurité - IMC\n\nBonjour ${name},\n\nUne nouvelle connexion a été détectée sur votre compte :\nAppareil: ${device}\nIP: ${ip}\nLocalisation: ${location}\nDate: ${time}\n\nSi c'était bien vous, ignorez cet email.\nSinon, changez immédiatement votre mot de passe : ${FRONTEND_URL}/profile`
   };
 };
 
@@ -245,12 +246,12 @@ const passwordChanged = (name) => {
     <p class="text-center subtitle">Votre mot de passe a été mis à jour avec succès.</p>
     <div class="divider"></div>
     <p>Bonjour ${name},</p>
-    <p>Votre mot de passe NELIAXA a été modifié avec succès.</p>
+    <p>Votre mot de passe IMC a été modifié avec succès.</p>
     <p>Si vous êtes à l'origine de cette modification, aucune action supplémentaire n'est nécessaire.</p>
     <p style="color:#6b7280;font-size:12px;">Si vous n'avez pas effectué cette modification, contactez immédiatement le support.</p>`;
   return {
     html: baseHtml(htmlContent),
-    text: `Bonjour ${name},\n\nVotre mot de passe NELIAXA a été modifié avec succès.\n\nSi vous n'avez pas effectué cette modification, contactez immédiatement le support.`
+    text: `Bonjour ${name},\n\nVotre mot de passe IMC a été modifié avec succès.\n\nSi vous n'avez pas effectué cette modification, contactez immédiatement le support.`
   };
 };
 
@@ -260,13 +261,13 @@ const emailChanged = (name, newEmail) => {
     <p class="text-center subtitle">Votre adresse email a été mise à jour.</p>
     <div class="divider"></div>
     <p>Bonjour ${name},</p>
-    <p>L'adresse email associée à votre compte NELIAXA a été modifiée avec succès.</p>
+    <p>L'adresse email associée à votre compte IMC a été modifiée avec succès.</p>
     <p>Nouvelle adresse : <strong style="color:#D4AF37;">${newEmail}</strong></p>
     <p>Si vous êtes à l'origine de cette modification, aucune action supplémentaire n'est nécessaire.</p>
     <p style="color:#6b7280;font-size:12px;">Si vous n'avez pas effectué cette modification, contactez immédiatement le support.</p>`;
   return {
     html: baseHtml(htmlContent),
-    text: `Bonjour ${name},\n\nL'adresse email de votre compte NELIAXA a été modifiée.\nNouvelle adresse : ${newEmail}\n\nSi vous n'avez pas effectué cette modification, contactez immédiatement le support.`
+    text: `Bonjour ${name},\n\nL'adresse email de votre compte IMC a été modifiée.\nNouvelle adresse : ${newEmail}\n\nSi vous n'avez pas effectué cette modification, contactez immédiatement le support.`
   };
 };
 

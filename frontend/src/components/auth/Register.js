@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { getApiUrl } from '../../utils/apiUrl';
 
 export default function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
@@ -12,10 +14,13 @@ export default function Register() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
+  const referralCode = searchParams.get('ref') || '';
 
-  useEffect(() => { setMounted(true); }, []);
+  const handleSocialLogin = (provider) => {
+    setSocialLoading(provider);
+    window.location.href = `${getApiUrl()}/auth/${provider}`;
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,8 +44,8 @@ export default function Register() {
       setError('Tous les champs obligatoires doivent être remplis');
       return false;
     }
-    if (formData.password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères');
+    if (formData.password.length < 8 || !/[a-zA-Z]/.test(formData.password) || !/[0-9]/.test(formData.password)) {
+      setError('Le mot de passe doit contenir au moins 8 caractères, avec une lettre et un chiffre');
       return false;
     }
     if (formData.password !== formData.confirmPassword) {
@@ -66,7 +71,7 @@ export default function Register() {
     if (!validateForm()) return;
     setLoading(true);
     const { confirmPassword, ...userData } = formData;
-    const result = await register(userData);
+    const result = await register(referralCode ? { ...userData, referralCode } : userData);
     if (result.success) {
       if (result.requiresEmailVerification) navigate('/verify-email');
       else navigate('/dashboard');
@@ -74,12 +79,6 @@ export default function Register() {
       setError(result.error);
     }
     setLoading(false);
-  };
-
-  const handleSocialLogin = async (provider) => {
-    setSocialLoading(provider);
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-    window.location.href = `${apiUrl}/auth/${provider}`;
   };
 
   const getPasswordStrength = () => {
@@ -94,59 +93,28 @@ export default function Register() {
   const strength = getPasswordStrength();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505] px-4 py-12 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="absolute rounded-full animate-pulse" style={{
-            width: `${40 + Math.random() * 100}px`, height: `${40 + Math.random() * 100}px`,
-            top: `${5 + Math.random() * 90}%`, left: `${5 + Math.random() * 90}%`,
-            background: `radial-gradient(circle, rgba(212,175,55,${0.02 + Math.random() * 0.03}) 0%, transparent 70%)`,
-            animationDelay: `${Math.random() * 6}s`, animationDuration: `${4 + Math.random() * 5}s`,
-          }} />
-        ))}
-        <div className="absolute inset-0 opacity-[0.015]"
-          style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(212,175,55,0.6) 1px, transparent 0)', backgroundSize: '35px 35px' }} />
-      </div>
-
-      <div className={`w-full max-w-lg relative z-10 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <Link to="/" className="inline-flex items-center gap-2 mb-8 text-yellow-700 hover:text-yellow-400 font-semibold text-sm tracking-widest uppercase transition-all duration-300 group">
-          <span className="inline-block w-8 h-px bg-yellow-700 group-hover:w-12 group-hover:bg-yellow-400 transition-all duration-300" />
-          Accueil
+    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10">
+      <div className="w-full max-w-lg">
+        <Link to="/" className="inline-block mb-6 text-sm text-yellow-500 hover:text-yellow-400">
+          ← Accueil
         </Link>
 
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="relative">
-              <img src="/images/logo-neliaxa.png" alt="NELIAXA" className="w-14 h-14 object-contain drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]" />
-              <div className="absolute inset-0 animate-ping opacity-20 rounded-full" style={{ boxShadow: '0 0 30px 10px rgba(212,175,55,0.3)' }} />
-            </div>
-            <div>
-              <p className="text-xs tracking-[0.4em] text-yellow-600 font-bold uppercase">NELIAXA</p>
-              <p className="text-xs text-gray-600 tracking-widest uppercase">Investment Platform</p>
-            </div>
-          </div>
-          <h1 className="text-5xl font-black text-white leading-none mb-2 tracking-tight">Inscription</h1>
-          <p className="text-gray-500 text-sm mt-2">Commencez à investir intelligemment aujourd'hui</p>
+        <div className="mb-6">
+          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto mb-4" />
+          <h1 className="text-xl font-bold text-white mb-1">Inscription</h1>
+          <p className="text-gray-400 text-sm">Créez votre compte investisseur</p>
+          {referralCode && (
+            <p className="mt-2 text-xs text-yellow-400">Code parrain : {referralCode}</p>
+          )}
         </div>
 
-        <div className="flex items-center gap-2 mb-8">
-          <div className="flex items-center gap-2 flex-1">
-            <div className={`w-8 h-8 flex items-center justify-center text-xs font-black transition-all duration-500 rounded ${step >= 1 ? 'bg-gradient-to-br from-yellow-400 to-yellow-700 text-black' : 'bg-gray-800 text-gray-500'}`}>
-              {step > 1 ? '✓' : '1'}
-            </div>
-            <span className={`text-xs font-semibold uppercase tracking-wider transition-colors duration-300 ${step >= 1 ? 'text-yellow-500' : 'text-gray-600'}`}>Identité</span>
-          </div>
-          <div className="flex-1 h-px transition-all duration-500" style={{ background: step > 1 ? 'linear-gradient(90deg, rgba(212,175,55,0.6), rgba(212,175,55,0.2))' : 'rgba(255,255,255,0.05)' }} />
-          <div className="flex items-center gap-2 flex-1 justify-end">
-            <span className={`text-xs font-semibold uppercase tracking-wider transition-colors duration-300 ${step >= 2 ? 'text-yellow-500' : 'text-gray-600'}`}>Sécurité</span>
-            <div className={`w-8 h-8 flex items-center justify-center text-xs font-black transition-all duration-500 rounded ${step >= 2 ? 'bg-gradient-to-br from-yellow-400 to-yellow-700 text-black' : 'bg-gray-800 text-gray-500'}`}>2</div>
-          </div>
+        <div className="flex items-center gap-2 mb-6 text-sm">
+          <span className={step >= 1 ? 'text-yellow-400' : 'text-gray-500'}>1. Identité</span>
+          <span className="text-gray-600">→</span>
+          <span className={step >= 2 ? 'text-yellow-400' : 'text-gray-500'}>2. Sécurité</span>
         </div>
 
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-600/20 via-yellow-500/10 to-yellow-600/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative bg-[#0a0a0a] border border-yellow-900/20 group-hover:border-yellow-700/30 transition-colors duration-500 p-8 rounded-lg">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent" />
+        <div className="imc-auth-card p-5">
 
             {error && (
               <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/60 border border-red-800/40 rounded animate-fadeIn">
@@ -200,7 +168,7 @@ export default function Register() {
                   <div className="group/input">
                     <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase transition-colors duration-300">Téléphone <span className="text-gray-600 font-normal normal-case">(optionnel)</span></label>
                     <input name="phone" type="tel" value={formData.phone} onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded" placeholder="+229 XX XX XX XX" />
+                      className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded" placeholder="+31 6 XX XX XX XX" />
                   </div>
                   <button type="submit" className="relative w-full py-3.5 overflow-hidden font-black text-black text-sm tracking-widest uppercase transition-all duration-300 group/btn rounded">
                     <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 bg-[length:200%_100%] animate-gradient" />
@@ -292,26 +260,10 @@ export default function Register() {
               </form>
             )}
 
-            <p className="mt-6 text-center text-xs text-gray-600">
+            <p className="mt-5 text-center text-xs text-gray-500">
               Déjà un compte ?{' '}
-              <Link to="/login" className="text-yellow-500 hover:text-yellow-400 font-bold transition-colors duration-300">Se connecter</Link>
+              <Link to="/login" className="text-yellow-400 hover:text-yellow-300">Se connecter</Link>
             </p>
-
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent" />
-          </div>
-        </div>
-
-        <div className="mt-6 grid grid-cols-3 gap-3">
-          {[
-            { icon: '🔒', label: 'Données cryptées' },
-            { icon: '🛡️', label: 'Protection KYC' },
-            { icon: '✓', label: '2FA disponible' },
-          ].map(({ icon, label }) => (
-            <div key={label} className="flex flex-col items-center gap-1.5 p-3 border border-yellow-900/10 bg-yellow-900/[0.03] rounded hover:border-yellow-900/30 transition-all duration-300">
-              <span className="text-base">{icon}</span>
-              <span className="text-xs text-yellow-900/70 font-medium text-center leading-tight">{label}</span>
-            </div>
-          ))}
         </div>
       </div>
     </div>

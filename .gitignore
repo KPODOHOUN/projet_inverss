@@ -2,6 +2,7 @@ node_modules/
 .env
 backend/logs/
 backend/uploads/
+.mongo-data/
 frontend/build/
 frontend/node_modules/
 .DS_Store

@@ -12,6 +12,7 @@ export default function VerifyEmail() {
   const [success, setSuccess] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [devOtp, setDevOtp] = useState(() => localStorage.getItem('neliaxaDevOtp') || '');
   const inputRefs = useRef([]);
 
   useEffect(() => { setMounted(true); }, []);
@@ -65,6 +66,7 @@ export default function VerifyEmail() {
     try {
       const result = await verifyEmail(code);
       if (result.success) {
+        setDevOtp('');
         setSuccess(true);
         setTimeout(() => navigate('/dashboard'), 2000);
       } else {
@@ -83,6 +85,7 @@ export default function VerifyEmail() {
     setResending(true);
     try {
       await resendOTP();
+      setDevOtp(localStorage.getItem('neliaxaDevOtp') || '');
       setCountdown(60);
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
@@ -111,7 +114,7 @@ export default function VerifyEmail() {
         </Link>
 
         <div className="mb-8">
-          <h1 className="text-4xl font-black text-white leading-none mb-2">
+          <h1 className="text-2xl font-black text-white leading-none mb-2">
             {success ? 'Email vérifié !' : 'Vérifiez votre email'}
           </h1>
           <p className="text-gray-500 text-sm">
@@ -123,19 +126,28 @@ export default function VerifyEmail() {
         </div>
 
         <div className="relative">
-          <div className="relative bg-[#0d0d0d] border border-yellow-900/20 p-8">
+          <div className="relative bg-[#0d0d0d] border border-yellow-900/20 rounded-lg p-6">
             <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.6), transparent)' }} />
 
             {error && (
-              <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/50 border border-red-800/50">
+              <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/50 border border-red-800/50 rounded">
                 <span className="text-red-400 mt-0.5 text-sm">⚠</span>
                 <p className="text-red-300 text-sm">{error}</p>
               </div>
             )}
 
+            {!success && devOtp && (
+              <div className="mb-6 p-4 bg-blue-950/40 border border-blue-800/40 rounded">
+                <p className="text-xs text-blue-300 uppercase tracking-wider font-bold mb-1">Mode local — email non délivré</p>
+                <p className="text-sm text-blue-200">
+                  Votre code : <span className="font-mono text-lg tracking-[0.3em] text-white">{devOtp}</span>
+                </p>
+              </div>
+            )}
+
             {success ? (
               <div className="text-center py-8">
-                <div className="text-6xl mb-6 animate-bounce">✓</div>
+                <div className="text-4xl mb-6 animate-bounce">✓</div>
                 <p className="text-gray-400 text-sm">Votre email a été vérifié avec succès !</p>
               </div>
             ) : (
@@ -152,7 +164,7 @@ export default function VerifyEmail() {
                       onChange={e => handleChange(index, e.target.value)}
                       onKeyDown={e => handleKeyDown(index, e)}
                       onPaste={index === 0 ? handlePaste : undefined}
-                      className="w-12 h-14 text-center text-2xl font-black bg-black/50 border border-yellow-900/30 text-white focus:border-yellow-500/60 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                      className="w-12 h-14 text-center text-2xl font-black bg-black/50 border border-yellow-900/30 rounded text-white focus:border-yellow-500/60 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
                       autoFocus={index === 0}
                     />
                   ))}

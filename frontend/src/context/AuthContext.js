@@ -1,17 +1,16 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { getApiUrl } from '../utils/apiUrl';
 
 const AuthContext = createContext(null);
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
 const api = axios.create({
-  baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use(
   (config) => {
+    config.baseURL = getApiUrl();
     const token = localStorage.getItem('neliaxaToken');
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
@@ -19,17 +18,31 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+const AUTH_PUBLIC_ROUTES = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const url = error.config?.url || '';
+    const isPublicAuth = AUTH_PUBLIC_ROUTES.some((route) => url.includes(route));
+    if (error.response?.status === 401 && !isPublicAuth) {
       localStorage.removeItem('neliaxaToken');
       localStorage.removeItem('neliaxaUser');
-      window.location.href = '/login';
+      if (!window.location.pathname.startsWith('/login')) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
 );
+
+const networkErrorMessage = (err) => {
+  if (err.response?.data?.message) return err.response.data.message;
+  if (err.code === 'ERR_NETWORK' || !err.response) {
+    return 'Serveur inaccessible. À la racine du projet, lancez « npm run dev » (backend port 5000 + frontend).';
+  }
+  return 'Erreur de connexion';
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -60,20 +73,41 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Used by the OAuth callback page: the backend already authenticated the
+  // user with Google/Facebook and handed us a normal JWT via the redirect
+  // URL — store it and fetch the profile exactly like a regular login.
+  const loginWithToken = async (token) => {
+    try {
+      localStorage.setItem('neliaxaToken', token);
+      const response = await api.get('/auth/me');
+      if (response.data.success) {
+        const loggedInUser = response.data.data.user;
+        setUser(loggedInUser);
+        localStorage.setItem('neliaxaUser', JSON.stringify(loggedInUser));
+        return { success: true, user: loggedInUser };
+      }
+      return { success: false, error: 'Connexion impossible' };
+    } catch (err) {
+      localStorage.removeItem('neliaxaToken');
+      return { success: false, error: err.response?.data?.message || 'Connexion impossible' };
+    }
+  };
+
   const register = async (userData) => {
     try {
       setError(null);
       setLoading(true);
       const response = await api.post('/auth/register', userData);
       if (response.data.success) {
-        const { token, user } = response.data.data;
+        const { token, user, devOtp } = response.data.data;
         localStorage.setItem('neliaxaToken', token);
         localStorage.setItem('neliaxaUser', JSON.stringify(user));
+        if (devOtp) localStorage.setItem('neliaxaDevOtp', devOtp);
         setUser(user);
         return { success: true, requiresEmailVerification: !user.emailVerified, data: response.data };
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur';
+      const errorMessage = networkErrorMessage(err);
       setError(errorMessage);
       return { success: false, error: errorMessage };
     } finally {
@@ -84,11 +118,12 @@ export const AuthProvider = ({ children }) => {
   const verifyEmail = async (otp) => {
     try {
       setError(null);
-      const response = await api.post('/auth/verify-email', { otp });
+      const response = await api.post('/auth/verify-otp', { otp });
       if (response.data.success) {
-        const updatedUser = { ...user, emailVerified: true };
+        const updatedUser = response.data.data.user || { ...user, emailVerified: true };
         setUser(updatedUser);
         localStorage.setItem('neliaxaUser', JSON.stringify(updatedUser));
+        localStorage.removeItem('neliaxaDevOtp');
         return { success: true, data: response.data };
       }
       return { success: false, error: response.data?.message };
@@ -101,7 +136,8 @@ export const AuthProvider = ({ children }) => {
   const resendOTP = async () => {
     try {
       setError(null);
-      const response = await api.post('/auth/resend-otp');
+      const response = await api.post('/auth/send-otp');
+      if (response.data?.data?.devOtp) localStorage.setItem('neliaxaDevOtp', response.data.data.devOtp);
       return { success: true, data: response.data };
     } catch (err) {
       const msg = err.response?.data?.message || 'Erreur';
@@ -121,8 +157,11 @@ export const AuthProvider = ({ children }) => {
         setUser(user);
         return { success: true, requiresEmailVerification: emailVerificationRequired, data: response.data };
       }
+      const msg = response.data.message || 'Connexion impossible';
+      setError(msg);
+      return { success: false, error: msg };
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Erreur de connexion';
+      const errorMessage = networkErrorMessage(err);
       const requires2FA = err.response?.data?.requires2FA || false;
       setError(errorMessage);
       return { success: false, error: errorMessage, requires2FA };
@@ -243,7 +282,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user, loading, error,
     register, verifyEmail, resendOTP,
-    login, logout, updateProfile, changePassword,
+    login, loginWithToken, logout, updateProfile, changePassword,
     setup2FA, verify2FA, disable2FA,
     forgotPassword, resetPassword,
     isAuthenticated: !!user,

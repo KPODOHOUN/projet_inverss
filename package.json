@@ -1,0 +1,15 @@
+{
+  "name": "neliaxa",
+  "private": true,
+  "scripts": {
+    "mongo": "bash scripts/start-mongo.sh",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm start --prefix frontend",
+    "dev": "bash scripts/dev.sh",
+    "start:backend": "npm run mongo && npm start --prefix backend",
+    "seed": "npm run mongo && npm run seed --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

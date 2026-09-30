@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
 const authController = require('../controllers/authController');
+const { passport, googleEnabled, facebookEnabled } = require('../config/passport');
+const { frontendUrlFromRequest } = require('../utils/frontendUrl');
 
 router.post('/register', authController.register);
 router.post('/verify-email', authController.verifyEmail);
@@ -14,7 +16,38 @@ router.post('/2fa/verify', auth, authController.verify2FA);
 router.post('/2fa/disable', auth, authController.disable2FA);
 router.post('/forgot-password', authController.forgotPassword);
 router.post('/reset-password', authController.resetPassword);
-router.get('/google', authController.googleAuth);
-router.get('/facebook', authController.facebookAuth);
+
+// Only registered when the corresponding OAuth credentials are present in
+// .env — otherwise redirect to login with a clear "not configured" error
+// instead of a 500 from passport.authenticate() on a missing strategy.
+if (googleEnabled) {
+  router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
+  router.get('/google/callback', (req, res, next) => {
+    passport.authenticate('google', { session: false }, (err, user) => {
+      if (err || !user) return res.redirect(`${frontendUrlFromRequest(req)}/login?error=google_failed`);
+      req.user = user;
+      authController.socialCallback(req, res);
+    })(req, res, next);
+  });
+} else {
+  router.get(['/google', '/google/callback'], (req, res) => {
+    res.redirect(`${frontendUrlFromRequest(req)}/login?error=google_not_configured`);
+  });
+}
+
+if (facebookEnabled) {
+  router.get('/facebook', passport.authenticate('facebook', { scope: ['email'], session: false }));
+  router.get('/facebook/callback', (req, res, next) => {
+    passport.authenticate('facebook', { session: false }, (err, user) => {
+      if (err || !user) return res.redirect(`${frontendUrlFromRequest(req)}/login?error=facebook_failed`);
+      req.user = user;
+      authController.socialCallback(req, res);
+    })(req, res, next);
+  });
+} else {
+  router.get(['/facebook', '/facebook/callback'], (req, res) => {
+    res.redirect(`${frontendUrlFromRequest(req)}/login?error=facebook_not_configured`);
+  });
+}
 
 module.exports = router;

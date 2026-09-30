@@ -1,33 +1,43 @@
 const Investment = require('../models/Investment');
 const User = require('../models/User');
 const Transaction = require('../models/Transaction');
-const PlatformConfig = require('../models/PlatformConfig');
 const { success, error } = require('../utils/response');
 
+// Every figure here is computed from real platform data — no fabricated
+// certifications, wallet addresses, or audit claims. Only report what can
+// actually be backed by the database.
 exports.getAudit = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
     const totalInvestors = await Investment.distinct('userId').then(arr => arr.length);
-    const totalFunds = await Investment.aggregate([{ $group: { _id: null, total: { $sum: '$amount' } } }]).then(r => r[0]?.total || 0);
-    const totalPayouts = await Transaction.countDocuments({ type: 'withdrawal', status: 'completed' });
+    const totalFundsManaged = await Investment.aggregate([
+      { $match: { status: { $in: ['active', 'completed'] } } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]).then(r => r[0]?.total || 0);
+    const totalPayoutsCompleted = await Transaction.countDocuments({ type: { $in: ['withdrawal', 'earning'] }, status: 'completed' });
 
-    const recentTransactions = await Transaction.find().sort({ createdAt: -1 }).limit(10).populate('userId', 'firstName lastName');
+    const roiAgg = await Investment.aggregate([
+      { $match: { status: { $in: ['active', 'completed'] } } },
+      { $group: { _id: null, avg: { $avg: '$roi' } } }
+    ]);
+    const averageRoi = roiAgg[0]?.avg ? Number(roiAgg[0].avg.toFixed(2)) : 0;
+
+    const recentTransactions = await Transaction.find({ status: 'completed' })
+      .sort({ createdAt: -1 }).limit(10).populate('userId', 'firstName lastName');
 
     success(res, {
-      totalFundsManaged: totalFunds,
-      totalInvestors,
-      totalPayoutsCompleted: totalPayouts,
-      lastAuditDate: new Date(),
-      walletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18',
-      averageRoi: '8.5',
-      onTimePaymentRate: '99.2',
+      totalFundsManaged,
       totalUsers,
+      totalInvestors,
+      totalPayoutsCompleted,
+      averageRoi,
+      lastUpdated: new Date(),
       recentTransactions: recentTransactions.map(tx => ({
-        txHash: tx.reference,
-        type: tx.type === 'withdrawal' ? 'Payout' : tx.type,
-        amount: `${tx.amount} EUR`,
+        reference: tx.reference,
+        type: tx.type,
+        amount: `${Math.abs(tx.amount)} USD`,
         date: tx.createdAt,
-        status: tx.status === 'completed' ? 'confirmed' : 'pending'
+        status: tx.status
       }))
     });
   } catch (err) {

@@ -1,0 +1,341 @@
+<!doctype html>
+<title>Script de démo IMC</title>
+<meta charset="utf-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#faf7f0;
+  --surface:#ffffff;
+  --surface-2:#f2ede1;
+  --border:#e2d9c4;
+  --text:#22201a;
+  --text-dim:#6b6355;
+  --accent:#a9791a;
+  --accent-ink:#ffffff;
+  --onscreen:#3f6e68;
+  --onscreen-bg:#e9f1ef;
+  --narr-bg:#fbf3de;
+  --shadow: 0 1px 2px rgba(30,25,10,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a0908;
+    --surface:#15130f;
+    --surface-2:#1c1810;
+    --border:#332c1c;
+    --text:#f2ede1;
+    --text-dim:#a89d87;
+    --accent:#d4af37;
+    --accent-ink:#1a1508;
+    --onscreen:#7fb3ab;
+    --onscreen-bg:#132321;
+    --narr-bg:#241f11;
+    --shadow: 0 1px 3px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a0908;
+  --surface:#15130f;
+  --surface-2:#1c1810;
+  --border:#332c1c;
+  --text:#f2ede1;
+  --text-dim:#a89d87;
+  --accent:#d4af37;
+  --accent-ink:#1a1508;
+  --onscreen:#7fb3ab;
+  --onscreen-bg:#132321;
+  --narr-bg:#241f11;
+  --shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Work Sans',system-ui,sans-serif;
+  padding-inline:20px;
+  padding-block:32px 80px;
+  line-height:1.55;
+}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif; text-wrap:balance; margin:0;}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums;}
+
+.wrap{max-width:920px; margin:0 auto;}
+
+/* header */
+.masthead{
+  display:flex; flex-wrap:wrap; gap:20px 32px; align-items:flex-end; justify-content:space-between;
+  padding-bottom:22px; margin-bottom:28px; border-bottom:2px solid var(--accent);
+}
+.masthead .eyebrow{
+  font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:8px; display:block;
+}
+.masthead h1{font-size:clamp(1.6rem,4vw,2.3rem); font-weight:700; color:var(--text);}
+.masthead .sub{color:var(--text-dim); font-size:.95rem; margin-top:6px; max-width:52ch;}
+.runtime{
+  font-family:'IBM Plex Mono',monospace; text-align:right; flex-shrink:0;
+}
+.runtime .big{font-size:2rem; font-weight:600; color:var(--accent); line-height:1;}
+.runtime .lbl{font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim);}
+
+/* prep box */
+.prep{
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:20px 22px; margin-bottom:32px; box-shadow:var(--shadow);
+}
+.prep h2{font-size:1.05rem; margin-bottom:12px; color:var(--text);}
+.prep ul{margin:0; padding-left:0; list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px 20px;}
+.prep li{font-size:.9rem; color:var(--text-dim); display:flex; gap:8px; align-items:baseline;}
+.prep li::before{content:"–"; color:var(--accent); font-weight:600; flex-shrink:0;}
+
+/* nav chips */
+nav.toc{
+  display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; margin-bottom:36px;
+  scrollbar-width:thin;
+}
+nav.toc a{
+  font-family:'IBM Plex Mono',monospace; font-size:.75rem; white-space:nowrap;
+  color:var(--text-dim); background:var(--surface-2); border:1px solid var(--border);
+  border-radius:999px; padding:6px 12px; text-decoration:none; flex-shrink:0;
+}
+nav.toc a:hover{border-color:var(--accent); color:var(--accent);}
+
+/* scenes */
+.scene{
+  border:1px solid var(--border); border-radius:12px; background:var(--surface);
+  margin-bottom:22px; overflow:hidden; box-shadow:var(--shadow); scroll-margin-top:16px;
+}
+.scene-head{
+  display:flex; align-items:center; gap:16px; padding:16px 22px;
+  border-bottom:1px solid var(--border); background:var(--surface-2);
+}
+.scene-head .tc{
+  font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--accent); font-size:.95rem;
+  flex-shrink:0; min-width:98px;
+}
+.scene-head h2{font-size:1.15rem; flex:1; min-width:0;}
+.scene-head .num{
+  font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--text-dim);
+}
+.scene-head label{
+  display:flex; align-items:center; gap:6px; font-size:.72rem; color:var(--text-dim);
+  text-transform:uppercase; letter-spacing:.06em; flex-shrink:0; cursor:pointer;
+}
+.scene-head input[type=checkbox]{accent-color:var(--accent); width:15px; height:15px; cursor:pointer;}
+
+.scene-body{
+  display:grid; grid-template-columns:1fr 1.35fr;
+}
+@media (max-width:640px){ .scene-body{grid-template-columns:1fr;} }
+
+.col{padding:18px 22px;}
+.col + .col{border-left:1px solid var(--border);}
+@media (max-width:640px){ .col + .col{border-left:none; border-top:1px solid var(--border);} }
+
+.col .tag{
+  font-size:.68rem; text-transform:uppercase; letter-spacing:.12em; font-weight:600;
+  display:inline-block; padding:3px 9px; border-radius:5px; margin-bottom:10px;
+}
+.col.onscreen .tag{color:var(--onscreen); background:var(--onscreen-bg);}
+.col.narration{background:var(--narr-bg);}
+.col.narration .tag{color:var(--accent); background:transparent; border:1px solid var(--accent); padding:2px 8px;}
+
+.col.onscreen ul{margin:0; padding-left:18px; font-size:.9rem;}
+.col.onscreen li{margin-bottom:6px;}
+.col.onscreen li::marker{color:var(--onscreen);}
+
+.col.narration p{
+  font-size:1rem; margin:0; color:var(--text);
+}
+.col.narration .say{font-style:normal;}
+
+footer{
+  margin-top:40px; padding-top:20px; border-top:1px solid var(--border);
+  font-size:.82rem; color:var(--text-dim); text-align:center;
+}
+</style>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <span class="eyebrow">Script de tournage — voix off</span>
+      <h1>Démo IMC</h1>
+      <p class="sub">Parcours complet : inscription → vérification → KYC → investissement → fonctionnalités → sécurité → admin.</p>
+    </div>
+    <div class="runtime">
+      <div class="big mono" id="totalTime">9:50</div>
+      <div class="lbl">durée estimée</div>
+    </div>
+  </div>
+
+  <div class="prep">
+    <h2>Avant d'enregistrer</h2>
+    <ul>
+      <li>Lancez le projet (<span class="mono">npm run dev</span>) et vérifiez que le site répond sur localhost:3000</li>
+      <li>Utilisez un compte de test propre, pas votre compte admin réel, pour les scènes 1 à 7</li>
+      <li>Fermez les notifications système et les autres onglets</li>
+      <li>Zoom navigateur à 100%, fenêtre en plein écran</li>
+      <li>Testez votre micro avant de lancer — parlez à distance normale, débit posé</li>
+      <li>Enregistreur suggéré : OBS Studio (gratuit) ou Loom (rapide, en ligne)</li>
+      <li>Chaque case à cocher ci-dessous se souvient de ce que vous avez déjà tourné</li>
+    </ul>
+  </div>
+
+  <nav class="toc" id="toc"></nav>
+
+  <div id="scenes"></div>
+
+  <footer>Script généré pour IMC — à adapter librement selon le rythme de votre voix.</footer>
+</div>
+
+<script>
+const scenes = [
+  {
+    tc: "0:00", title: "Accueil",
+    onscreen: [
+      "Ouvrir localhost:3000",
+      "Faire défiler jusqu'aux « Plans d'investissement »",
+      "Cliquer le bouton soleil / lune en haut à droite"
+    ],
+    say: "Bienvenue sur IMC, une plateforme d'investissement et de gains en cryptomonnaies. Notre positionnement tient en quatre mots : investir, apprendre, gagner, voyager. Sur la page d'accueil, trois packs sont mis en avant — CAC 40, S&P 500 et US 10 Y — avec leurs vrais rendements, pas des promesses en l'air. Et à tout moment, ce bouton permet de basculer entre le mode sombre et le mode clair."
+  },
+  {
+    tc: "0:40", title: "Inscription",
+    onscreen: [
+      "Cliquer « S'inscrire »",
+      "Étape 1 : prénom, nom, email, téléphone (optionnel)",
+      "Cliquer « Étape suivante »",
+      "Étape 2 : mot de passe, confirmation, cocher les conditions",
+      "Cliquer « CRÉER MON COMPTE »"
+    ],
+    say: "L'inscription se fait en deux étapes. D'abord l'identité : prénom, nom, email, et un téléphone optionnel — avec la possibilité de s'inscrire directement via Google ou Facebook. Ensuite la sécurité : un mot de passe d'au moins huit caractères avec une lettre et un chiffre, sa confirmation, et l'acceptation des conditions d'utilisation. Une fois validé, un code à six chiffres part immédiatement par email."
+  },
+  {
+    tc: "2:00", title: "Vérification de l'email",
+    onscreen: [
+      "Entrer le code à 6 chiffres reçu par email",
+      "Cliquer « VÉRIFIER »",
+      "(si besoin) Cliquer « Renvoyer le code »"
+    ],
+    say: "On saisit ici le code reçu par email. S'il n'arrive pas tout de suite, un bouton permet d'en redemander un après une minute. Une fois le code validé, on est redirigé automatiquement vers le tableau de bord."
+  },
+  {
+    tc: "2:30", title: "Vérification d'identité — KYC",
+    onscreen: [
+      "Menu latéral → « KYC »",
+      "Déposer une pièce d'identité",
+      "Cliquer « Soumettre »"
+    ],
+    say: "Avant de pouvoir investir, chaque utilisateur doit passer par la vérification d'identité. On y accède depuis le menu. Il suffit de déposer une pièce d'identité valide. Le dossier passe alors en statut « en attente », jusqu'à ce qu'un administrateur le valide — on verra cette validation plus tard, côté admin."
+  },
+  {
+    tc: "3:15", title: "Investir",
+    onscreen: [
+      "Menu latéral → « Investir »",
+      "Montrer le tableau des 12 packs (Pack / Investissement / ROI / Durée / Gain estimé)",
+      "Cliquer « Investir » sur un pack, ex. S&P 500",
+      "Saisir un montant → le calcul du rendement se met à jour en direct",
+      "Choisir une méthode de paiement, confirmer"
+    ],
+    say: "Voici le cœur de la plateforme. Onze packs thématisés autour de grands indices — CAC 40, Euro Stoxx 50, jusqu'à US 10 Y — plus une option Turbo 48 heures pour les profils plus risqués. Chaque ligne indique le montant minimum, le rendement, la durée, et un gain estimé donné à titre indicatif, jamais garanti. En cliquant sur Investir, le montant se calcule en temps réel. On choisit ensuite la méthode de paiement — carte, Orange Money ou Moov Money — et on confirme. Financé depuis le solde du portefeuille, l'investissement s'active tout de suite ; sinon, il reste en attente le temps qu'un administrateur vérifie la réception du paiement."
+  },
+  {
+    tc: "5:30", title: "Tableau de bord",
+    onscreen: [
+      "Vue d'ensemble",
+      "Mes Investissements",
+      "Mes Gains",
+      "Transactions"
+    ],
+    say: "La Vue d'ensemble résume en un coup d'œil les investissements actifs, les gains cumulés et le solde. Mes Investissements détaille chaque pack en cours avec sa date d'échéance. Mes Gains retrace l'historique des rendements perçus, et Transactions liste tous les mouvements : dépôts, retraits, investissements."
+  },
+  {
+    tc: "6:30", title: "Fonctionnalités complémentaires",
+    onscreen: [
+      "Mining NLX",
+      "Watch-to-Earn",
+      "Académie",
+      "Parrainage",
+      "VIP Expeditions"
+    ],
+    say: "IMC propose plusieurs façons complémentaires de gagner. Le Mining NLX génère des jetons par des actions manuelles ou via un robot de minage. Watch-to-Earn récompense le visionnage de vidéos, avec une limite quotidienne qui dépend du palier d'investissement. L'Académie propose des cours sur la blockchain avec des quiz rémunérés. Le Parrainage verse des commissions sur trois niveaux. Et les profils les plus engagés débloquent les Expéditions VIP, un programme de fidélité avec des voyages internationaux."
+  },
+  {
+    tc: "7:45", title: "Sécurité du compte",
+    onscreen: [
+      "Menu latéral → « Sécurité »",
+      "Activer la double authentification",
+      "Scanner le QR code, entrer le code de vérification"
+    ],
+    say: "Chaque utilisateur peut activer la double authentification : un QR code à scanner dans une application comme Google Authenticator, puis un code à six chiffres exigé à chaque connexion."
+  },
+  {
+    tc: "8:15", title: "Espace administrateur",
+    onscreen: [
+      "Se déconnecter, se reconnecter avec le compte admin",
+      "Stats Overview",
+      "Utilisateurs",
+      "KYC → approuver le dossier déposé plus tôt",
+      "Investissements → Configuration des Packs"
+    ],
+    say: "Terminons par l'espace administrateur, réservé au rôle superadmin. Le tableau de bord global donne une vue d'ensemble : utilisateurs, volumes investis, activité récente. Dans Utilisateurs, on gère les comptes et les rôles. Dans KYC, chaque dossier soumis s'approuve ou se rejette en un clic — c'est ici qu'on valide le document déposé tout à l'heure. Et dans Gestion des Investissements, toute la configuration des douze packs est modifiable en direct : montants, rendements, durées."
+  },
+  {
+    tc: "9:30", title: "Conclusion",
+    onscreen: ["Retour à la page d'accueil"],
+    say: "Voilà pour ce tour d'horizon de IMC : inscription, vérification, investissement, fonctionnalités complémentaires, sécurité et administration. Merci de votre attention."
+  }
+];
+
+const tocEl = document.getElementById('toc');
+const scenesEl = document.getElementById('scenes');
+
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem('neliaxaDemoProgress') || '{}'); } catch(e) {}
+
+scenes.forEach((s, i) => {
+  const id = 'scene-' + i;
+
+  const chip = document.createElement('a');
+  chip.href = '#' + id;
+  chip.className = 'mono';
+  chip.textContent = s.tc + ' ' + s.title;
+  tocEl.appendChild(chip);
+
+  const el = document.createElement('div');
+  el.className = 'scene';
+  el.id = id;
+  el.innerHTML = `
+    <div class="scene-head">
+      <span class="tc">${s.tc}</span>
+      <h2>${s.title}</h2>
+      <span class="num">SCÈNE ${String(i+1).padStart(2,'0')} / ${scenes.length}</span>
+      <label><input type="checkbox" data-idx="${i}" ${saved[i] ? 'checked' : ''}> Tournée</label>
+    </div>
+    <div class="scene-body">
+      <div class="col onscreen">
+        <span class="tag">À l'écran</span>
+        <ul>${s.onscreen.map(a => `<li>${a}</li>`).join('')}</ul>
+      </div>
+      <div class="col narration">
+        <span class="tag">Voix off</span>
+        <p class="say">« ${s.say} »</p>
+      </div>
+    </div>
+  `;
+  scenesEl.appendChild(el);
+});
+
+scenesEl.addEventListener('change', (e) => {
+  if (e.target.matches('input[type=checkbox]')) {
+    const idx = e.target.dataset.idx;
+    try {
+      const cur = JSON.parse(localStorage.getItem('neliaxaDemoProgress') || '{}');
+      cur[idx] = e.target.checked;
+      localStorage.setItem('neliaxaDemoProgress', JSON.stringify(cur));
+    } catch(err) {}
+  }
+});
+</script>

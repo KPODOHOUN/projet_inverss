@@ -4,7 +4,7 @@ const emailOTPSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   email: { type: String, required: true, lowercase: true, trim: true },
   otp: { type: String, required: true },
-  purpose: { type: String, enum: ['email_verification', 'login', '2fa', 'email_change'], default: 'email_verification' },
+  purpose: { type: String, enum: ['email_verification', 'login', '2fa', 'email_change', 'password_reset'], default: 'email_verification' },
   attempts: { type: Number, default: 0 },
   maxAttempts: { type: Number, default: 5 },
   expiresAt: { type: Date, required: true },

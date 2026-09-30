@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-export default function ProtectedRoute({ children, adminOnly = false }) {
+export default function ProtectedRoute({ children, adminOnly = false, ambassadorOnly = false }) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -27,6 +27,16 @@ export default function ProtectedRoute({ children, adminOnly = false }) {
 
   if (adminOnly && user.role !== 'admin' && user.role !== 'superadmin') {
     return <Navigate to="/dashboard" replace />;
+  }
+
+  if (ambassadorOnly && user.role !== 'ambassador' && user.role !== 'superadmin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // An Ambassador has no business in the standard user dashboard or admin
+  // panel — bounce them back to their own space if they land anywhere else.
+  if (!adminOnly && !ambassadorOnly && user.role === 'ambassador') {
+    return <Navigate to="/ambassador" replace />;
   }
 
   return children;

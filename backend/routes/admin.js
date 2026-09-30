@@ -3,69 +3,77 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const ctrl = require('../controllers/adminController');
 
+// Any staff role (moderator, admin, superadmin) can authenticate into the admin area.
 router.use(auth, admin('admin', 'superadmin', 'moderator'));
 
+// Staff-wide (read-only / review) — moderators included.
 router.get('/stats/overview', ctrl.statsOverview);
 router.get('/alerts', ctrl.alerts);
 router.get('/activity/recent', ctrl.recentActivity);
+router.get('/logs/activity', ctrl.listActivityLogs);
 
 router.get('/users', ctrl.listUsers);
-router.post('/users/create', ctrl.createUser);
 router.post('/users/:userId/suspend', ctrl.suspendUser);
 router.post('/users/:userId/activate', ctrl.activateUser);
-router.post('/users/:userId/adjust-balance', ctrl.adjustBalance);
-router.put('/users/:userId/role', ctrl.changeUserRole);
 
 router.get('/kyc', ctrl.listKyc);
 router.post('/kyc/:kycId/approve', ctrl.approveKyc);
 router.post('/kyc/:kycId/reject', ctrl.rejectKyc);
 
 router.get('/referrals/stats', ctrl.referralStats);
-router.put('/referrals/commissions', ctrl.updateCommissionRates);
 
 router.get('/investments', ctrl.listInvestments);
-router.put('/investments/packs-config', ctrl.updatePacksConfig);
-router.post('/investments/:id/close', ctrl.closeInvestment);
-
 router.get('/transactions', ctrl.listTransactions);
-router.post('/transactions/:txId/approve', ctrl.approveTransaction);
-router.post('/transactions/:txId/reject', ctrl.rejectTransaction);
-
-router.get('/nlx/stats', ctrl.nlxStats);
-router.put('/nlx/rate', ctrl.updateNlxRate);
-router.post('/nlx/adjust', ctrl.adjustNlx);
-
-router.get('/mining/stats', ctrl.miningStats);
-router.get('/mining/config', ctrl.getMiningConfig);
-router.get('/mining/active', ctrl.activeMiners);
-router.put('/mining/config', ctrl.saveMiningConfig);
-
-router.get('/ads', ctrl.listAds);
-router.get('/ads/stats', ctrl.adsStats);
-router.post('/ads', ctrl.createAd);
-router.put('/ads/:adId', ctrl.updateAd);
-router.delete('/ads/:adId', ctrl.deleteAd);
 
 router.get('/academy/courses', ctrl.listCourses);
-router.post('/academy/courses', ctrl.createCourse);
-router.put('/academy/courses/:id', ctrl.updateCourse);
 
-router.get('/vip-expeditions', ctrl.listExpeditions);
-router.post('/vip-expeditions', ctrl.createExpedition);
-router.get('/vip-expeditions/:id/participants', ctrl.getExpeditionParticipants);
+router.get('/trading/assets', ctrl.listTradingAssets);
+router.get('/trading/codes', ctrl.listTradingCodes);
+router.get('/trading/positions', ctrl.listTradingPositions);
+router.get('/trading/settings', ctrl.getTradingSettings);
 
-router.post('/communications/notification', ctrl.sendNotification);
-router.post('/communications/email', ctrl.sendEmail);
-router.post('/communications/new-project', ctrl.sendNewProjectNotification);
-
-router.get('/config', ctrl.getConfig);
-router.put('/config', ctrl.saveConfig);
-
-router.get('/logs/activity', ctrl.recentActivity);
 router.get('/security/blocked-ips', ctrl.blockedIps);
-router.post('/security/block-ip', ctrl.blockIp);
-router.delete('/security/blocked-ips/:ip', ctrl.unblockIp);
-
 router.get('/reports/:type', ctrl.generateReport);
+
+// Money-moving / privilege-granting actions — admin & superadmin only.
+const financial = admin('admin', 'superadmin');
+
+router.post('/users/create', financial, ctrl.createUser);
+router.post('/users/:userId/adjust-balance', financial, ctrl.adjustBalance);
+router.put('/users/:userId/role', financial, ctrl.changeUserRole);
+
+router.put('/referrals/commissions', financial, ctrl.updateCommissionRates);
+
+// Ambassador program — creation/edit/password-reset restricted to
+// superadmin per the program's rules; listing/viewing open to any admin.
+router.get('/ambassadors', financial, ctrl.listAmbassadors);
+router.get('/ambassadors/:id', financial, ctrl.getAmbassadorDetail);
+router.post('/ambassadors', admin('superadmin'), ctrl.createAmbassador);
+router.put('/ambassadors/:id', admin('superadmin'), ctrl.updateAmbassador);
+router.post('/ambassadors/:id/reset-password', admin('superadmin'), ctrl.resetAmbassadorPassword);
+
+router.put('/investments/packs-config', financial, ctrl.updatePacksConfig);
+router.post('/investments/:id/close', financial, ctrl.closeInvestment);
+
+router.post('/transactions/:txId/approve', financial, ctrl.approveTransaction);
+router.post('/transactions/:txId/process', financial, ctrl.processTransaction);
+router.post('/transactions/:txId/complete', financial, ctrl.completeTransaction);
+router.post('/transactions/:txId/reject', financial, ctrl.rejectTransaction);
+router.post('/transactions/:txId/cancel', financial, ctrl.cancelTransaction);
+
+router.post('/academy/courses', financial, ctrl.createCourse);
+router.put('/academy/courses/:id', financial, ctrl.updateCourse);
+
+router.post('/trading/assets', financial, ctrl.createTradingAsset);
+router.put('/trading/assets/:key', financial, ctrl.updateTradingAsset);
+router.post('/trading/codes', financial, ctrl.createTradingCode);
+router.put('/trading/codes/:id/status', financial, ctrl.updateTradingCodeStatus);
+router.put('/trading/settings', financial, ctrl.saveTradingSettings);
+
+router.get('/config', financial, ctrl.getConfig);
+router.put('/config', financial, ctrl.saveConfig);
+
+router.post('/security/block-ip', financial, ctrl.blockIp);
+router.delete('/security/blocked-ips/:ip', financial, ctrl.unblockIp);
 
 module.exports = router;

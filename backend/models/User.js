@@ -6,16 +6,27 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   phone: { type: String, default: '' },
-  password: { type: String, required: true },
-  role: { type: String, enum: ['standard', 'vip', 'moderator', 'admin', 'superadmin'], default: 'standard' },
+  password: { type: String, required: true, select: false },
+  role: { type: String, enum: ['standard', 'vip', 'moderator', 'admin', 'superadmin', 'ambassador'], default: 'standard' },
   status: { type: String, enum: ['active', 'suspended'], default: 'active' },
   kycStatus: { type: String, enum: ['none', 'pending', 'verified', 'rejected'], default: 'none' },
   twoFactorEnabled: { type: Boolean, default: false },
-  twoFactorSecret: { type: String, default: '' },
+  twoFactorSecret: { type: String, default: '', select: false },
+  failedLoginAttempts: { type: Number, default: 0 },
+  lockUntil: { type: Date, default: null },
   balance: { type: Number, default: 0 },
-  nlxBalance: { type: Number, default: 0 },
   referralCode: { type: String, unique: true },
   referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  // Set only when the referral code used at signup belonged to an
+  // Ambassador account — kept entirely separate from `referredBy` so the
+  // two commission systems (standard referral vs. Ambassador) never mix.
+  referredByAmbassador: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  // No `default` here on purpose: a sparse unique index only skips documents
+  // where the field is entirely absent — a default of `null` would write an
+  // explicit null into every document and break uniqueness for everyone
+  // after the first user (exactly the bug this comment is here to prevent).
+  googleId: { type: String, unique: true, sparse: true },
+  facebookId: { type: String, unique: true, sparse: true },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
   emailVerified: { type: Boolean, default: false },
@@ -33,7 +44,7 @@ userSchema.pre('save', async function (next) {
 
 userSchema.pre('save', function (next) {
   if (!this.referralCode) {
-    this.referralCode = 'NLX' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    this.referralCode = 'IMC' + Math.random().toString(36).substring(2, 8).toUpperCase();
   }
   next();
 });
@@ -50,5 +61,9 @@ userSchema.methods.toJSON = function () {
   delete obj.resetPasswordExpires;
   return obj;
 };
+
+// Default sort for the admin user list — without it, paginating a
+// million-row collection still means scanning the whole thing to sort it.
+userSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('User', userSchema);

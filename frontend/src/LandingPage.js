@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
+import ThemeToggle from './components/ThemeToggle';
+import ScrollReveal from './components/effects/ScrollReveal';
 
 export default function LandingPage() {
+  const { isLight } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -10,8 +15,8 @@ export default function LandingPage() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
-      const sections = ['home', 'plans', 'how-it-works', 'security', 'cta'];
-      const current = sections.find(section => {
+      const sections = ['home', 'how-it-works', 'security', 'cta'];
+      const current = sections.find((section) => {
         const element = document.getElementById(section);
         if (element) {
           const rect = element.getBoundingClientRect();
@@ -34,15 +39,10 @@ export default function LandingPage() {
     }
   };
 
-  return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
-      <div className="fixed inset-0 opacity-20 pointer-events-none">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(218, 165, 32, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(184, 134, 11, 0.15) 0%, transparent 50%)',
-          animation: 'pulse 8s ease-in-out infinite'
-        }}></div>
-      </div>
+  const pageBg = isLight ? 'bg-gray-50 text-gray-900' : 'bg-black text-gray-100';
 
+  return (
+    <div className={`relative min-h-screen overflow-x-hidden ${pageBg}`}>
       <Navigation
         scrolled={scrolled}
         activeSection={activeSection}
@@ -53,7 +53,6 @@ export default function LandingPage() {
 
       <HeroSection scrollToSection={scrollToSection} />
       <StatsBar />
-      <InvestmentPlans />
       <HowItWorks />
       <SecuritySection />
       <FinalCTA />
@@ -172,113 +171,89 @@ const IconClock = ({ size = 16 }) => (
   </svg>
 );
 
-const IconTelegram = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const IconWhatsApp = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
 function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, setMobileMenuOpen }) {
+  const { isLight } = useTheme();
   const navItems = [
-    { id: 'home',         label: 'Accueil' },
-    { id: 'plans',        label: 'Plans' },
+    { id: 'home', label: 'Accueil' },
     { id: 'how-it-works', label: 'Comment ça marche' },
-    { id: 'security',     label: 'Sécurité' },
+    { id: 'security', label: 'Sécurité' },
   ];
 
+  const navBg = scrolled
+    ? (isLight ? 'imc-glass-nav' : 'imc-glass-nav')
+    : 'bg-transparent';
+
+  const linkClass = (id) => {
+    const active = activeSection === id;
+    if (isLight) return active ? 'text-yellow-600 border-b-2 border-yellow-500' : 'text-gray-600 hover:text-gray-900';
+    return active ? 'text-yellow-400 border-b-2 border-yellow-500' : 'text-gray-400 hover:text-yellow-400';
+  };
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? 'bg-black/95 backdrop-blur-sm shadow-lg shadow-yellow-900/20' : 'bg-transparent'
-    }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}>
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-
-          {}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => scrollToSection('home')}>
+          <button type="button" className="flex items-center gap-2 cursor-pointer bg-transparent border-none p-0" onClick={() => scrollToSection('home')}>
             <img
-              src="/images/logo-neliaxa.png"
-              alt="NELIAXA Logo"
-              className="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]"
+              src={isLight ? '/logo-on-light.png' : '/logo-on-dark.png'}
+              alt="IMC Corporation"
+              className="h-10 w-auto object-contain drop-shadow-[0_0_8px_rgba(234,179,8,0.4)]"
             />
-            <span className="font-black text-2xl hidden sm:block text-yellow-500 tracking-wide">
-              NELIAXA
-            </span>
-          </div>
+          </button>
 
-          {}
           <div className="hidden md:flex items-center gap-8">
-            {navItems.map(item => (
+            {navItems.map((item) => (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => scrollToSection(item.id)}
-                className={`font-semibold text-sm tracking-wide hover:text-yellow-500 transition-colors bg-transparent border-none cursor-pointer ${
-                  activeSection === item.id
-                    ? 'text-yellow-500 border-b-2 border-yellow-500'
-                    : 'text-gray-300'
-                }`}
+                className={`font-semibold text-sm tracking-wide transition-colors bg-transparent border-none cursor-pointer pb-1 ${linkClass(item.id)}`}
               >
                 {item.label}
               </button>
             ))}
           </div>
 
-          {}
           <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/login"
-              className="px-6 py-2 border-2 border-yellow-500 font-bold text-yellow-500 hover:bg-yellow-500 hover:text-black transition-all text-sm tracking-wide"
-            >
-              CONNEXION
+            <ThemeToggle />
+            <Link to="/login" className="imc-btn-outline !py-2 !px-4 !text-xs">
+              Connexion
             </Link>
-            <Link
-              to="/register"
-              className="px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg shadow-yellow-500/50 text-sm tracking-wide"
-            >
-              COMMENCER
+            <Link to="/register" className="imc-btn-primary !py-2 !px-4 !text-xs">
+              Commencer
             </Link>
           </div>
 
-          {}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-yellow-500 bg-transparent border-none cursor-pointer p-1"
-            aria-label="Menu"
-          >
-            {mobileMenuOpen ? <IconClose /> : <IconMenu />}
-          </button>
+          <div className="flex md:hidden items-center gap-2">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className={`bg-transparent border-none cursor-pointer p-1 ${isLight ? 'text-yellow-700' : 'text-yellow-400'}`}
+              aria-label="Menu"
+            >
+              {mobileMenuOpen ? <IconClose /> : <IconMenu />}
+            </button>
+          </div>
         </div>
 
-        {}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-yellow-900/30 pt-4 space-y-3">
-            {navItems.map(item => (
+          <div className={`md:hidden mt-4 pb-4 border-t pt-4 space-y-3 ${isLight ? 'border-gray-200' : 'border-white/10'}`}>
+            {navItems.map((item) => (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => scrollToSection(item.id)}
-                className={`block w-full text-left font-semibold py-2 text-sm tracking-wide bg-transparent border-none cursor-pointer ${
-                  activeSection === item.id ? 'text-yellow-500' : 'text-gray-300'
-                }`}
+                className={`block w-full text-left font-semibold py-2 text-sm tracking-wide bg-transparent border-none cursor-pointer ${linkClass(item.id)}`}
               >
                 {item.label}
               </button>
             ))}
             <div className="pt-2 flex flex-col gap-3">
-              <Link
-                to="/login"
-                className="block w-full text-center px-6 py-2.5 border-2 border-yellow-500 font-bold text-yellow-500 text-sm tracking-wide"
-              >
+              <Link to="/login" className="imc-btn-outline block w-full text-center !text-xs">
                 CONNEXION
               </Link>
-              <Link
-                to="/register"
-                className="block w-full text-center px-6 py-2.5 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold text-sm tracking-wide"
-              >
+              <Link to="/register" className="imc-btn-primary block w-full text-center !text-xs">
                 COMMENCER
               </Link>
             </div>
@@ -290,223 +265,107 @@ function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, 
 }
 
 function HeroSection({ scrollToSection }) {
+  const { isLight } = useTheme();
+  const { user } = useAuth();
+
   return (
-    <section id="home" className="relative min-h-screen flex items-center pt-20 px-6">
+    <section id="home" className="relative min-h-[85vh] flex items-center pt-20 px-6 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <img
+          src="/images/Gemini_Generated_Image_dm8veudm8veudm8v.png"
+          alt=""
+          className={`absolute inset-0 w-full h-full object-cover ${isLight ? 'opacity-30' : 'opacity-[0.15]'}`}
+        />
+        <div className={`absolute inset-0 bg-gradient-to-b ${isLight ? 'from-transparent via-white/40 to-white' : 'from-transparent via-black/50 to-black'}`} />
+      </div>
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div className="text-left animate-hero-in">
+            <p className="imc-badge mb-4">Plateforme d&apos;investissement</p>
 
-          {}
-          <div className="text-left">
-            <div className="inline-flex items-center gap-2 px-6 py-2 border-2 border-yellow-500 mb-8 bg-yellow-500/10 backdrop-blur-sm">
-              <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
-              <span className="font-bold text-yellow-500 text-xs tracking-widest uppercase">
-                Plateforme d'investissement · Nouvelle génération
-              </span>
-            </div>
-
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight tracking-tight">
-              INVESTISSEZ<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
-                INTELLIGEMMENT
-              </span><br />
-              EN AFRIQUE
+            <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight max-w-xl ${isLight ? 'text-gray-900' : 'text-white'}`}>
+              Investissez intelligemment avec IMC
             </h1>
 
-            <p className="text-xl text-gray-300 mb-10 max-w-xl leading-relaxed">
-              Rendements de{' '}
-              <strong className="text-yellow-500">4–10 % ROI</strong>{' '}
-              avec transparence blockchain, éducation financière et gamification sociale.
+            <p className={`text-base mb-6 max-w-xl leading-relaxed ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
+              Trading, packs d&apos;investissement et formation dans un espace sécurisé.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-start gap-4 mb-12">
-              <Link
-                to="/register"
-                className="inline-flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold text-base hover:from-yellow-600 hover:to-yellow-700 transition-all transform hover:scale-105 shadow-2xl shadow-yellow-500/50 tracking-wide"
-              >
-                COMMENCER MAINTENANT
-                <IconArrowRight size={18} />
+            <div className="flex flex-col sm:flex-row items-start gap-3 mb-8">
+              <Link to={user ? '/dashboard' : '/register'} className="imc-btn-primary">
+                {user ? 'Tableau de bord' : 'Commencer'}
+                <IconArrowRight size={16} />
               </Link>
-              <button
-                onClick={() => scrollToSection('plans')}
-                className="inline-flex items-center justify-center px-10 py-4 border-2 border-yellow-500 font-bold text-base text-yellow-500 hover:bg-yellow-500 hover:text-black transition-all bg-transparent cursor-pointer tracking-wide"
-              >
-                VOIR LES PLANS
+              <button type="button" onClick={() => scrollToSection('how-it-works')} className="imc-btn-outline">
+                En savoir plus
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
-              {['KYC Vérifié', 'Sécurité Blockchain', 'Support 24/7'].map(item => (
-                <div key={item} className="flex items-center gap-2">
-                  <IconCheck color="#22c55e" size={15} />
+            <div className={`flex flex-wrap gap-4 text-sm ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>
+              {['KYC vérifié', 'Sécurisé', 'Support 24/7'].map((item) => (
+                <div key={item} className="flex items-center gap-1.5">
+                  <IconCheck color="#22c55e" size={14} />
                   <span>{item}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right */}
-          <div className="hidden md:flex items-center justify-center">
-            <div className="relative">
-              <div className="absolute inset-0 bg-yellow-500/20 blur-3xl rounded-full scale-75 pointer-events-none" />
-              <img
-                src="/images/hero-phone.png"
-                alt="Application NELIAXA"
-                className="relative z-10 w-full max-w-lg object-contain drop-shadow-[0_0_40px_rgba(234,179,8,0.3)]"
-                style={{ animation: 'float 6s ease-in-out infinite' }}
-              />
-            </div>
+          <div className="hidden md:flex justify-center animate-hero-in" style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}>
+            <img
+              src="/images/hero-phone.png"
+              alt="Application IMC Corporation"
+              className="w-full max-w-sm object-contain animate-float-phone"
+            />
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-      `}</style>
-
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent pointer-events-none" />
     </section>
   );
 }
-
-/* ─── STATS BAR ──────────────────────────────────────────────────────────── */
 
 function StatsBar() {
+  const { isLight } = useTheme();
+  const { api } = useAuth();
+  const [audit, setAudit] = useState(null);
+
+  useEffect(() => {
+    api.get('/transparency/audit').then((res) => {
+      if (res.data.success) setAudit(res.data.data);
+    }).catch(() => {});
+  }, [api]);
+
   const stats = [
-    { value: '10K+',  label: 'Investisseurs actifs', Icon: IconUsers },
-    { value: '5 M€+', label: 'Volume investi',        Icon: IconCoins },
-    { value: '8,5 %', label: 'ROI moyen',             Icon: IconTrendUp },
-    { value: '24/7',  label: 'Support client',        Icon: IconShield },
+    { value: audit ? audit.totalUsers.toLocaleString('fr-FR') : '—', label: 'Investisseurs actifs', Icon: IconUsers },
+    { value: audit ? `$${(audit.totalFundsManaged / 1000).toFixed(0)}k+` : '—', label: 'Volume investi', Icon: IconCoins },
+    { value: audit ? `${audit.averageRoi} %` : '—', label: 'ROI moyen', Icon: IconTrendUp },
+    { value: '24/7', label: 'Support client', Icon: IconShield },
   ];
 
   return (
-    <section className="relative z-10 py-14 px-6 border-y border-yellow-900/30 bg-gradient-to-r from-yellow-900/20 to-transparent">
+    <section className={`relative z-10 py-12 px-6 border-y ${isLight ? 'border-gray-200 bg-white' : 'border-white/10 bg-gray-900/50'}`}>
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map(({ value, label, Icon }, i) => (
-            <div key={i} className="text-center flex flex-col items-center gap-2">
-              <div className="text-yellow-500/60">
-                <Icon size={26} />
-              </div>
-              <div className="text-3xl md:text-4xl font-black text-yellow-500 tracking-tight">{value}</div>
-              <div className="text-sm text-gray-400 font-medium">{label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── INVESTMENT PLANS ───────────────────────────────────────────────────── */
-
-function InvestmentPlans() {
-  const plans = [
-    {
-      name: 'STARTER',
-      roi: '4–6 %',
-      minInvest: '100 €',
-      duration: '30 jours',
-      features: ['Rendement garanti', 'Retrait à maturité', 'Support par email', 'Tableau de bord'],
-      popular: false,
-      gradient: 'from-gray-800 to-gray-900',
-      borderColor: 'border-gray-700',
-    },
-    {
-      name: 'PRO',
-      roi: '7–9 %',
-      minInvest: '500 €',
-      duration: '60 jours',
-      features: ['Rendement optimisé', 'Retraits prioritaires', 'Support prioritaire 24/7', 'Analyses de marché', 'Formations gratuites', 'Cashback 1 %'],
-      popular: true,
-      gradient: 'from-yellow-600 to-yellow-700',
-      borderColor: 'border-yellow-500',
-    },
-    {
-      name: 'ELITE',
-      roi: '9–10 %',
-      minInvest: '2 000 €',
-      duration: '90 jours',
-      features: ['ROI maximum', 'Gestionnaire dédié', 'Support VIP', 'Accès anticipé', 'Formations premium', 'Cashback 2 %', 'Événements exclusifs'],
-      popular: false,
-      gradient: 'from-yellow-500 to-yellow-600',
-      borderColor: 'border-yellow-400',
-    },
-  ];
-
-  return (
-    <section id="plans" className="relative z-10 py-32 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-tight">
-            PLANS D'INVESTISSEMENT
-          </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Trois niveaux conçus pour s'adapter à votre profil et à vos objectifs financiers.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {plans.map((plan, i) => (
-            <div
-              key={i}
-              className={`relative flex flex-col bg-gradient-to-br ${plan.gradient} border-2 ${plan.borderColor} p-8 transition-all duration-300 hover:-translate-y-1 ${
-                plan.popular ? 'shadow-2xl shadow-yellow-500/40' : ''
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-1 bg-black text-yellow-500 font-black text-xs tracking-widest uppercase">
-                  PLUS POPULAIRE
+            <ScrollReveal key={i} delay={i * 80}>
+              <div className="imc-stat-card text-center flex flex-col items-center gap-2">
+                <div className="text-yellow-500">
+                  <Icon size={22} />
                 </div>
-              )}
-
-              <div className="mb-6">
-                <h3 className="text-2xl font-black mb-1 text-white tracking-wide">{plan.name}</h3>
-                <p className="text-white/50 text-sm">Min. {plan.minInvest} · {plan.duration}</p>
+                <div className="text-xl font-bold text-yellow-500">{value}</div>
+                <div className={`text-xs ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>{label}</div>
               </div>
-
-              <div className="mb-6">
-                <span className="text-5xl font-black text-white tracking-tight">{plan.roi}</span>
-                <span className="text-white/60 text-sm ml-2">ROI</span>
-              </div>
-
-              <div className={`w-full h-px mb-6 ${plan.popular ? 'bg-black/20' : 'bg-yellow-900/30'}`} />
-
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f, j) => (
-                  <li key={j} className="flex items-center gap-3 text-white/90 text-sm">
-                    <IconCheck
-                      color={plan.popular ? 'rgba(0,0,0,0.55)' : '#eab308'}
-                      size={14}
-                    />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                to="/register"
-                className={`block w-full py-3.5 text-center font-bold text-sm tracking-wide transition-all ${
-                  plan.popular
-                    ? 'bg-black text-yellow-500 hover:bg-gray-900'
-                    : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
-                }`}
-              >
-                COMMENCER
-              </Link>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
     </section>
   );
 }
-
-/* ─── HOW IT WORKS ───────────────────────────────────────────────────────── */
 
 function HowItWorks() {
+  const { isLight } = useTheme();
+
   const steps = [
     {
       number: '01',
@@ -523,7 +382,7 @@ function HowItWorks() {
     {
       number: '02',
       title: 'CHOISIR UN PLAN',
-      description: 'Sélectionnez le plan d\'investissement adapté à votre profil et vos objectifs.',
+      description: 'Sélectionnez le pack d\'investissement adapté à votre profil et vos objectifs.',
       icon: (
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -555,42 +414,26 @@ function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="relative z-10 py-32 px-6 bg-gradient-to-br from-yellow-900/10 to-transparent">
+    <section id="how-it-works" className={`relative z-10 py-16 px-6 ${isLight ? 'bg-white' : ''}`}>
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-          <div>
-            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-tight leading-tight">
-              COMMENT<br />ÇA MARCHE ?
-            </h2>
-            <p className="text-xl text-gray-400 max-w-md leading-relaxed">
-              Commencez à investir en 4 étapes simples et regardez vos tokens NLX se multiplier.
-            </p>
-          </div>
-          <div className="hidden md:flex justify-center items-center">
-            <div className="relative">
-              <div className="absolute inset-0 bg-yellow-500/10 blur-3xl rounded-full pointer-events-none" />
-              <img
-                src="/images/nlx-coins.png"
-                alt="Token NLX"
-                className="relative z-10 w-full max-w-sm object-contain drop-shadow-[0_0_30px_rgba(234,179,8,0.4)]"
-              />
-            </div>
-          </div>
-        </div>
+        <ScrollReveal>
+          <h2 className={`text-2xl font-bold mb-2 ${isLight ? 'text-gray-900' : 'text-white'}`}>
+            Comment ça marche
+          </h2>
+          <p className={`text-sm mb-10 max-w-md ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>
+            Quatre étapes pour commencer.
+          </p>
+        </ScrollReveal>
 
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
           {steps.map((step, i) => (
-            <div key={i} className="relative">
-              {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 left-1/2 w-full h-px bg-gradient-to-r from-yellow-500/50 to-transparent z-0" />
-              )}
-              <div className="relative z-10 bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 p-7 hover:border-yellow-500/60 transition-all duration-300">
-                <div className="text-yellow-500 mb-4 opacity-80">{step.icon}</div>
-                <div className="text-yellow-500 font-black text-3xl mb-3 font-mono">{step.number}</div>
-                <h3 className="text-lg font-black mb-3 text-white tracking-wide">{step.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
+            <ScrollReveal key={i} delay={i * 100}>
+              <div className="imc-glass-card">
+                <p className="text-yellow-500 font-semibold text-sm mb-2">{step.number}</p>
+                <h3 className={`font-semibold mb-2 ${isLight ? 'text-gray-900' : 'text-white'}`}>{step.title}</h3>
+                <p className={`text-sm ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>{step.description}</p>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -599,6 +442,8 @@ function HowItWorks() {
 }
 
 function SecuritySection() {
+  const { isLight } = useTheme();
+
   const features = [
     {
       Icon: IconLock,
@@ -617,66 +462,33 @@ function SecuritySection() {
     },
     {
       Icon: IconGuarantee,
-      title: 'Garantie Partielle',
-      description: 'Fonds de sécurité pour protéger jusqu\'à 20 % de votre investissement initial.',
+      title: 'Retraits Sécurisés',
+      description: 'Identité vérifiée obligatoire avant tout retrait de fonds depuis votre espace.',
     },
   ];
 
   return (
-    <section id="security" className="relative z-10 py-32 px-6 bg-gradient-to-r from-black via-gray-900 to-black">
+    <section id="security" className={`relative z-10 py-16 px-6 border-t ${isLight ? 'border-gray-200 bg-gray-50' : 'border-white/10'}`}>
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
-          <div className="hidden md:flex justify-center">
-            <div className="relative">
-              <div className="absolute inset-0 bg-yellow-500/10 blur-2xl rounded-full scale-75 pointer-events-none" />
-              <img
-                src="/images/security.png"
-                alt="Sécurité NELIAXA"
-                className="relative z-10 w-full max-w-sm object-contain"
-              />
-            </div>
-          </div>
-          <div>
-            <h2 className="text-5xl md:text-6xl font-black mb-6 tracking-tight leading-tight">
-              SÉCURITÉ<br />MAXIMALE
-            </h2>
-            <p className="text-xl text-gray-400 leading-relaxed max-w-md">
-              Votre sécurité est notre priorité absolue. Nous utilisons les technologies
-              les plus avancées pour protéger vos investissements.
-            </p>
-          </div>
-        </div>
+        <ScrollReveal>
+          <h2 className={`text-2xl font-bold mb-2 ${isLight ? 'text-gray-900' : 'text-white'}`}>Sécurité</h2>
+          <p className={`text-sm mb-10 max-w-lg ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>
+            Vos investissements protégés par KYC, chiffrement et audits.
+          </p>
+        </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map(({ Icon, title, description }, i) => (
-            <div
-              key={i}
-              className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 p-7 hover:border-yellow-500/60 transition-all duration-300 group"
-            >
-              <div className="text-yellow-500 mb-5 group-hover:scale-110 transition-transform duration-300 w-fit">
-                <Icon size={38} />
+            <ScrollReveal key={i} delay={i * 100}>
+              <div className="imc-glass-card">
+                <div className="mb-3 text-yellow-500">
+                  <Icon size={28} />
+                </div>
+                <h3 className={`font-semibold mb-2 ${isLight ? 'text-gray-900' : 'text-white'}`}>{title}</h3>
+                <p className={`text-sm ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>{description}</p>
               </div>
-              <h3 className="text-lg font-black mb-3 text-white tracking-wide">{title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
-            </div>
+            </ScrollReveal>
           ))}
-        </div>
-
-        <div className="mt-12 bg-gradient-to-r from-yellow-600 to-yellow-700 p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h3 className="text-2xl font-black mb-2 text-black tracking-tight">CERTIFIÉ ET RÉGULÉ</h3>
-            <p className="text-black/70 max-w-lg leading-relaxed text-sm">
-              NELIAXA respecte toutes les réglementations financières en vigueur et travaille
-              avec des partenaires certifiés pour garantir la sécurité de vos fonds.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3 flex-shrink-0">
-            {['ISO 27001', 'PCI DSS', 'SOC 2'].map(c => (
-              <div key={c} className="px-6 py-2.5 bg-black text-yellow-500 font-bold text-sm tracking-wide">
-                {c}
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
@@ -685,105 +497,70 @@ function SecuritySection() {
 
 function FinalCTA() {
   return (
-    <section id="cta" className="relative z-10 py-32 px-6 bg-gradient-to-br from-yellow-600 via-yellow-700 to-yellow-800 text-black">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-5xl md:text-7xl font-black mb-8 leading-tight tracking-tight">
-          PRÊT À INVESTIR<br />INTELLIGEMMENT ?
-        </h2>
-        <p className="text-xl mb-12 opacity-80 max-w-2xl mx-auto leading-relaxed">
-          Rejoignez des milliers d'investisseurs qui font confiance à NELIAXA
-          pour faire croître leur patrimoine.
+    <section id="cta" className="relative z-10 py-16 px-6 bg-yellow-600">
+      <ScrollReveal direction="scale" className="max-w-3xl mx-auto text-center text-white">
+        <h2 className="text-2xl font-bold mb-3">Prêt à commencer ?</h2>
+        <p className="text-sm mb-6 opacity-90">
+          Créez votre compte en quelques minutes.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            to="/register"
-            className="inline-flex items-center gap-2 px-12 py-4 bg-black text-yellow-500 font-bold text-base hover:bg-gray-900 transition-all transform hover:scale-105 shadow-2xl tracking-wide"
-          >
-            CRÉER MON COMPTE
-            <IconArrowRight size={18} />
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link to="/register" className="imc-btn-primary bg-white text-yellow-700 hover:bg-gray-100">
+            Créer un compte
           </Link>
-          <Link
-            to="/login"
-            className="inline-flex items-center justify-center px-12 py-4 border-2 border-black font-bold text-base hover:bg-black hover:text-yellow-500 transition-all tracking-wide"
-          >
-            SE CONNECTER
+          <Link to="/login" className="imc-btn-outline border-white/40 text-white hover:text-white hover:border-white">
+            Se connecter
           </Link>
         </div>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm opacity-70 font-medium">
-          {['Aucun frais d\'inscription', 'Support 24/7', 'Retraits rapides'].map(item => (
-            <div key={item} className="flex items-center gap-2">
-              <IconCheck size={14} color="rgba(0,0,0,0.6)" />
-              {item}
-            </div>
-          ))}
-        </div>
-      </div>
+      </ScrollReveal>
     </section>
   );
 }
 
 function Footer({ scrollToSection }) {
+  const { isLight } = useTheme();
   const currentYear = new Date().getFullYear();
 
   const contactItems = [
-    { Icon: IconMail,  text: 'support@neliaxa.com' },
-    { Icon: IconPhone, text: '+229 XX XX XX XX' },
-    { Icon: IconPin,   text: 'Cotonou, Bénin' },
+    { Icon: IconMail, text: 'support@imc.com' },
+    { Icon: IconPhone, text: 'Support 24/7' },
+    { Icon: IconPin, text: 'Afrique de l\'Ouest' },
     { Icon: IconClock, text: 'Lun–Dim : 24/7' },
   ];
 
-  const socialLinks = [
-    { Icon: IconTelegram,  label: 'Telegram' },
-    { Icon: IconWhatsApp,  label: 'WhatsApp' },
-    { Icon: IconMail,      label: 'Email' },
-  ];
+  const footerBg = isLight ? 'bg-white border-gray-200 text-gray-900' : 'bg-black border-white/10 text-white';
+  const mutedText = isLight ? 'text-gray-500 hover:text-gray-900' : 'text-gray-400 hover:text-gray-200';
+  const sectionTitle = 'text-yellow-500';
 
   return (
-    <footer className="relative z-10 bg-black text-white pt-16 pb-8 px-6 border-t border-yellow-900/20">
+    <footer className={`relative z-10 pt-16 pb-8 px-6 border-t ${footerBg}`}>
       <div className="max-w-7xl mx-auto">
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
-
-          {}
           <div>
             <div className="flex items-center gap-3 mb-5">
               <img
-                src="/images/logo-neliaxa.png"
-                alt="NELIAXA Logo"
-                className="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]"
+                src={isLight ? '/logo-on-light.png' : '/logo-on-dark.png'}
+                alt="IMC Corporation"
+                className="h-10 w-auto object-contain drop-shadow-[0_0_8px_rgba(234,179,8,0.4)]"
               />
-              <span className="font-black text-xl text-yellow-500 tracking-wide">NELIAXA</span>
             </div>
-            <p className="text-gray-500 text-sm leading-relaxed mb-5">
-              La première plateforme d'investissement intelligente et sociale en Afrique.
+            <p className={`text-sm leading-relaxed mb-5 ${isLight ? 'text-gray-500' : 'text-gray-500'}`}>
+              La première plateforme d&apos;investissement intelligente et sociale en Afrique.
             </p>
-            <div className="flex gap-2">
-              {socialLinks.map(({ Icon, label }) => (
-                <a
-                  key={label}
-                  href="#"
-                  aria-label={label}
-                  className="w-9 h-9 border border-yellow-900/30 flex items-center justify-center text-gray-500 hover:border-yellow-500/60 hover:text-yellow-500 transition-all"
-                >
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div>
           </div>
 
-          {/* Navigation */}
           <div>
-            <h3 className="font-black text-xs tracking-widest uppercase text-yellow-500 mb-5">Liens rapides</h3>
+            <h3 className={`font-bold text-xs tracking-widest uppercase mb-5 ${sectionTitle}`}>Liens rapides</h3>
             <ul className="space-y-3">
               {[
-                { label: 'Accueil',             id: 'home' },
-                { label: "Plans d'investissement", id: 'plans' },
-                { label: 'Comment ça marche',   id: 'how-it-works' },
-                { label: 'Sécurité',            id: 'security' },
-              ].map(l => (
+                { label: 'Accueil', id: 'home' },
+                { label: 'Comment ça marche', id: 'how-it-works' },
+                { label: 'Sécurité', id: 'security' },
+              ].map((l) => (
                 <li key={l.id}>
                   <button
+                    type="button"
                     onClick={() => scrollToSection(l.id)}
-                    className="text-sm text-gray-500 hover:text-gray-200 transition-colors bg-transparent border-none cursor-pointer p-0 font-normal"
+                    className={`text-sm transition-colors bg-transparent border-none cursor-pointer p-0 font-normal ${mutedText}`}
                   >
                     {l.label}
                   </button>
@@ -792,18 +569,17 @@ function Footer({ scrollToSection }) {
             </ul>
           </div>
 
-          {/* Legal */}
           <div>
-            <h3 className="font-black text-xs tracking-widest uppercase text-yellow-500 mb-5">Légal</h3>
+            <h3 className={`font-bold text-xs tracking-widest uppercase mb-5 ${sectionTitle}`}>Légal</h3>
             <ul className="space-y-3">
               {[
                 { label: "Conditions d'utilisation", to: '/terms' },
                 { label: 'Politique de confidentialité', to: '/privacy' },
-                { label: 'Politique KYC',          to: '/kyc-policy' },
-                { label: 'Avertissement risques',  to: '/risk-disclosure' },
-              ].map(l => (
+                { label: 'Politique KYC', to: '/kyc-policy' },
+                { label: 'Avertissement risques', to: '/risk-disclosure' },
+              ].map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-sm text-gray-500 hover:text-gray-200 transition-colors">
+                  <Link to={l.to} className={`text-sm transition-colors ${mutedText}`}>
                     {l.label}
                   </Link>
                 </li>
@@ -811,12 +587,11 @@ function Footer({ scrollToSection }) {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <h3 className="font-black text-xs tracking-widest uppercase text-yellow-500 mb-5">Contact</h3>
+            <h3 className={`font-bold text-xs tracking-widest uppercase mb-5 ${sectionTitle}`}>Contact</h3>
             <ul className="space-y-3">
               {contactItems.map(({ Icon, text }) => (
-                <li key={text} className="flex items-center gap-2.5 text-sm text-gray-500">
+                <li key={text} className={`flex items-center gap-2.5 text-sm ${isLight ? 'text-gray-500' : 'text-gray-500'}`}>
                   <Icon size={14} />
                   {text}
                 </li>
@@ -825,10 +600,10 @@ function Footer({ scrollToSection }) {
           </div>
         </div>
 
-        <div className="border-t border-yellow-900/15 pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-gray-600">
-          <p>© {currentYear} NELIAXA. Tous droits réservés.</p>
+        <div className={`border-t pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs ${isLight ? 'border-gray-100 text-gray-400' : 'border-white/5 text-gray-500'}`}>
+          <p>© {currentYear} IMC Corporation. Tous droits réservés.</p>
           <p className="max-w-md leading-relaxed">
-            <strong className="text-yellow-600">Avertissement :</strong>{' '}
+            <strong className={isLight ? 'text-yellow-700' : 'text-yellow-400'}>Avertissement :</strong>{' '}
             Les investissements comportent des risques. Les performances passées ne garantissent pas les résultats futurs.
           </p>
         </div>

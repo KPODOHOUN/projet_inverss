@@ -2,9 +2,14 @@ const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  type: { type: String, enum: ['deposit', 'withdrawal', 'investment', 'refund', 'earning', 'commission', 'reinvestment'], required: true },
+  type: { type: String, enum: ['deposit', 'withdrawal', 'investment', 'refund', 'earning', 'commission', 'reinvestment', 'trading'], required: true },
   amount: { type: Number, required: true },
-  status: { type: String, enum: ['pending', 'completed', 'rejected', 'failed'], default: 'pending' },
+  fee: { type: Number, default: 0 },
+  // 'approved'/'processing' give withdrawals a real audit trail between "an
+  // admin signed off on this" and "the USDT actually left the platform" —
+  // deposits skip straight from pending to completed since verifying the
+  // on-chain tx hash is the whole job, nothing left to process afterward.
+  status: { type: String, enum: ['pending', 'approved', 'processing', 'completed', 'rejected', 'cancelled', 'failed'], default: 'pending' },
   method: { type: String, default: '' },
   reference: { type: String, unique: true },
   proof: { type: String, default: '' },
@@ -12,6 +17,10 @@ const transactionSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
+
+// Every wallet/transaction-history read filters by userId and sorts by date.
+transactionSchema.index({ userId: 1, createdAt: -1 });
+transactionSchema.index({ status: 1, type: 1 });
 
 transactionSchema.pre('save', function (next) {
   if (!this.reference) {

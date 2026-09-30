@@ -1,20 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { getApiUrl } from '../../utils/apiUrl';
+
+const OAUTH_ERROR_MESSAGES = {
+  google_not_configured: "La connexion Google n'est pas encore configurée sur ce site.",
+  facebook_not_configured: "La connexion Facebook n'est pas encore configurée sur ce site.",
+  google_failed: 'La connexion avec Google a échoué. Réessayez.',
+  facebook_failed: 'La connexion avec Facebook a échoué. Réessayez.',
+  oauth_missing_token: 'Connexion interrompue. Réessayez.',
+};
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const [formData, setFormData] = useState({ email: '', password: '', twoFactorCode: '' });
   const [requires2FA, setRequires2FA] = useState(false);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState('');
   const [error, setError] = useState('');
+  const [serverStatus, setServerStatus] = useState('checking');
   const [showPassword, setShowPassword] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    const check = async () => {
+      try {
+        const res = await fetch(`${getApiUrl()}/health`, { cache: 'no-store' });
+        if (!cancelled) setServerStatus(res.ok ? 'online' : 'offline');
+      } catch {
+        if (!cancelled) setServerStatus('offline');
+      }
+    };
+    check();
+    const timer = setInterval(check, 15000);
+    return () => { cancelled = true; clearInterval(timer); };
+  }, []);
+
+  useEffect(() => {
+    const oauthError = searchParams.get('error');
+    if (oauthError) setError(OAUTH_ERROR_MESSAGES[oauthError] || 'Connexion impossible.');
+  }, [searchParams]);
+
+  const handleSocialLogin = (provider) => {
+    setSocialLoading(provider);
+    window.location.href = `${getApiUrl()}/auth/${provider}`;
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +65,7 @@ export default function Login() {
       } else {
         const role = result.data?.data?.user?.role;
         if (role === 'admin' || role === 'superadmin') navigate('/admin');
+        else if (role === 'ambassador') navigate('/ambassador');
         else navigate('/dashboard');
       }
     } else if (result.requires2FA) {
@@ -42,76 +76,38 @@ export default function Login() {
     setLoading(false);
   };
 
-  const handleSocialLogin = async (provider) => {
-    setSocialLoading(provider);
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-    window.location.href = `${apiUrl}/auth/${provider}`;
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505] px-4 relative overflow-hidden">
-      {/* Animated background particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-pulse"
-            style={{
-              width: `${60 + Math.random() * 120}px`,
-              height: `${60 + Math.random() * 120}px`,
-              top: `${10 + Math.random() * 80}%`,
-              left: `${5 + Math.random() * 90}%`,
-              background: `radial-gradient(circle, rgba(212,175,55,${0.03 + Math.random() * 0.04}) 0%, transparent 70%)`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${4 + Math.random() * 4}s`,
-            }}
-          />
-        ))}
-        <div className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(212,175,55,0.8) 1px, transparent 0)',
-            backgroundSize: '40px 40px'
-          }}
-        />
-        <div className="absolute top-0 left-[20%] w-px h-full" style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,175,55,0.15), transparent)' }} />
-        <div className="absolute top-0 right-[30%] w-px h-full" style={{ background: 'linear-gradient(to bottom, transparent, rgba(212,175,55,0.1), transparent)' }} />
-        <div className="absolute bottom-0 left-[40%] w-px h-[40%]" style={{ background: 'linear-gradient(to top, transparent, rgba(212,175,55,0.08), transparent)' }} />
-      </div>
-
-      <div className={`w-full max-w-md relative z-10 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 mb-8 text-yellow-700 hover:text-yellow-400 font-semibold text-sm tracking-widest uppercase transition-all duration-300 group"
-        >
-          <span className="inline-block w-8 h-px bg-yellow-700 group-hover:w-12 group-hover:bg-yellow-400 transition-all duration-300" />
-          Accueil
+    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10">
+      <div className="w-full max-w-md">
+        <Link to="/" className="inline-block mb-6 text-sm text-yellow-500 hover:text-yellow-400">
+          ← Accueil
         </Link>
 
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="relative">
-              <img src="/images/logo-neliaxa.png" alt="NELIAXA" className="w-14 h-14 object-contain drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]" />
-              <div className="absolute inset-0 animate-ping opacity-20 rounded-full" style={{ boxShadow: '0 0 30px 10px rgba(212,175,55,0.3)' }} />
-            </div>
-            <div>
-              <p className="text-xs tracking-[0.4em] text-yellow-600 font-bold uppercase">NELIAXA</p>
-              <p className="text-xs text-gray-600 tracking-widest uppercase">Investment Platform</p>
-            </div>
-          </div>
-          <h1 className="text-5xl font-black text-white leading-none mb-2 tracking-tight">
-            {requires2FA ? 'Vérification' : 'Connexion'}
+        <div className="mb-6">
+          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto mb-4" />
+          <h1 className="text-xl font-bold text-white mb-1">
+            {requires2FA ? 'Vérification 2FA' : 'Connexion'}
           </h1>
-          <p className="text-gray-500 text-sm mt-2">
+          <p className="text-gray-400 text-sm">
             {requires2FA
-              ? 'Entrez le code de votre application 2FA'
+              ? 'Code de votre application d\'authentification'
               : 'Accédez à votre espace investisseur'}
           </p>
         </div>
 
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-600/20 via-yellow-500/10 to-yellow-600/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative bg-[#0a0a0a] border border-yellow-900/20 group-hover:border-yellow-700/30 transition-colors duration-500 p-8 rounded-lg">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent" />
+        <div className="imc-auth-card p-5">
+
+            {serverStatus === 'offline' && (
+              <div className="mb-6 flex items-start gap-3 p-4 bg-orange-950/50 border border-orange-800/40 rounded">
+                <span className="text-orange-400 mt-0.5 text-sm flex-shrink-0">⚠</span>
+                <div className="text-orange-200 text-sm">
+                  <p className="font-semibold">Serveur backend hors ligne</p>
+                  <p className="mt-1 text-orange-300/80">
+                    Lancez <code className="text-orange-100 bg-black/30 px-1 rounded">npm run dev</code> à la racine du projet.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {error && (
               <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/60 border border-red-800/40 rounded animate-fadeIn">
@@ -123,6 +119,7 @@ export default function Login() {
             {!requires2FA ? (
               <>
                 <div className="space-y-3 mb-6">
+                  <p className="text-xs text-gray-600 text-center tracking-widest uppercase mb-4">Connexion rapide</p>
                   <button
                     type="button"
                     onClick={() => handleSocialLogin('google')}
@@ -132,7 +129,7 @@ export default function Login() {
                     {socialLoading === 'google' ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
-                      <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -151,7 +148,7 @@ export default function Login() {
                     {socialLoading === 'facebook' ? (
                       <div className="w-5 h-5 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
                     ) : (
-                      <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="#1877F2">
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#1877F2">
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                       </svg>
                     )}
@@ -167,9 +164,7 @@ export default function Login() {
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="group/input">
-                    <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase transition-colors duration-300 group-focus-within/input:text-yellow-400">
-                      Email
-                    </label>
+                    <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase transition-colors duration-300 group-focus-within/input:text-yellow-400">Email</label>
                     <input
                       name="email"
                       type="email"
@@ -181,16 +176,12 @@ export default function Login() {
                     />
                   </div>
 
-                  <div>
+                  <div className="group/input">
                     <div className="flex justify-between items-center mb-2">
-                      <label className="block text-xs font-bold text-yellow-600 tracking-widest uppercase group-focus-within:text-yellow-400 transition-colors duration-300">
-                        Mot de passe
-                      </label>
-                      <Link to="/forgot-password" className="text-xs text-gray-600 hover:text-yellow-400 transition-all duration-300 font-medium">
-                        Oublié ?
-                      </Link>
+                      <label className="text-xs font-bold text-yellow-600 tracking-widest uppercase transition-colors duration-300 group-focus-within/input:text-yellow-400">Mot de passe</label>
+                      <Link to="/forgot-password" className="text-xs text-gray-600 hover:text-yellow-500 transition-colors duration-300">Oublié ?</Link>
                     </div>
-                    <div className="relative group/input">
+                    <div className="relative">
                       <input
                         name="password"
                         type={showPassword ? 'text' : 'password'}
@@ -214,87 +205,58 @@ export default function Login() {
                     </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="relative w-full py-3.5 overflow-hidden font-black text-black text-sm tracking-widest uppercase transition-all duration-300 disabled:opacity-50 group/btn rounded"
-                  >
-                    <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 bg-[length:200%_100%] animate-gradient" />
-                    <span className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-300 bg-[length:200%_100%] animate-gradient" />
-                    <span className="relative z-10">
-                      {loading ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                          Connexion...
-                        </span>
-                      ) : 'SE CONNECTER'}
-                    </span>
+                  <button type="submit" disabled={loading} className="imc-btn-primary w-full !py-3.5 disabled:opacity-50">
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                        Connexion...
+                      </span>
+                    ) : 'Se connecter'}
                   </button>
                 </form>
               </>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="p-4 bg-yellow-900/10 border border-yellow-900/30 text-center rounded">
-                  <div className="text-4xl mb-2 animate-bounce">🔐</div>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="p-4 bg-yellow-900/[0.08] border border-yellow-900/25 rounded text-center">
                   <p className="text-sm text-gray-400">
-                    Entrez le code à 6 chiffres de votre application d'authentification
+                    Code à 6 chiffres de votre application d&apos;authentification
                   </p>
                 </div>
-                <div>
-                  <input
-                    name="twoFactorCode"
-                    type="text"
-                    required
-                    value={formData.twoFactorCode}
-                    onChange={handleChange}
-                    className="w-full px-4 py-4 bg-black/50 border border-yellow-900/30 text-white focus:border-yellow-500/60 focus:outline-none text-center text-3xl font-mono tracking-[0.5em] rounded"
-                    placeholder="000000"
-                    maxLength={6}
-                    autoComplete="off"
-                    inputMode="numeric"
-                  />
-                </div>
+                <input
+                  name="twoFactorCode"
+                  type="text"
+                  required
+                  value={formData.twoFactorCode}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white text-center text-xl font-mono tracking-[0.4em] focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 rounded"
+                  placeholder="000000"
+                  maxLength={6}
+                  autoComplete="off"
+                  inputMode="numeric"
+                />
                 <div className="flex gap-3">
                   <button
                     type="button"
                     onClick={() => setRequires2FA(false)}
-                    className="flex-1 py-3 border border-yellow-900/30 text-gray-400 font-semibold hover:border-yellow-600 hover:text-yellow-500 transition-all duration-300 text-sm rounded"
+                    className="px-5 py-3.5 border border-yellow-900/30 text-gray-400 font-semibold hover:border-yellow-700 hover:text-yellow-500 transition-all duration-300 text-sm rounded"
                   >
                     ← Retour
                   </button>
                   <button
                     type="submit"
                     disabled={loading || formData.twoFactorCode.length !== 6}
-                    className="flex-[2] py-3 font-black text-black text-sm tracking-widest uppercase disabled:opacity-50 transition-all duration-300 rounded bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 bg-[length:200%_100%] animate-gradient"
+                    className="imc-btn-primary flex-1 disabled:opacity-50"
                   >
-                    {loading ? 'VÉRIFICATION...' : 'VÉRIFIER'}
+                    {loading ? 'Vérification...' : 'Vérifier'}
                   </button>
                 </div>
               </form>
             )}
 
-            <p className="mt-6 text-center text-xs text-gray-600">
+            <p className="mt-5 text-center text-xs text-gray-500">
               Pas encore de compte ?{' '}
-              <Link to="/register" className="text-yellow-500 hover:text-yellow-400 font-bold transition-colors duration-300">
-                Créer un compte
-              </Link>
+              <Link to="/register" className="text-yellow-400 hover:text-yellow-300">Créer un compte</Link>
             </p>
-
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent" />
-          </div>
-        </div>
-
-        <div className="mt-6 flex items-center justify-center gap-6">
-          {[
-            { icon: <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>, label: 'SSL Sécurisé' },
-            { icon: <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>, label: 'Données cryptées' },
-            { icon: <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>, label: '2FA disponible' },
-          ].map(({ icon, label }) => (
-            <div key={label} className="flex items-center gap-1.5 text-xs text-yellow-900/60 hover:text-yellow-700 transition-colors duration-300">
-              {icon}
-              {label}
-            </div>
-          ))}
         </div>
       </div>
     </div>

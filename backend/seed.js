@@ -3,80 +3,98 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const User = require('./models/User');
 const InvestmentPack = require('./models/InvestmentPack');
-const MiningConfig = require('./models/MiningConfig');
 const PlatformConfig = require('./models/PlatformConfig');
-const VIPExpeditionLevel = require('./models/VIPExpeditionLevel');
-const Ad = require('./models/Ad');
 const AcademyVideo = require('./models/AcademyVideo');
+const TradingAsset = require('./models/TradingAsset');
 
 const seed = async () => {
   await connectDB();
 
-  const admin = await User.findOne({ email: 'admin@neliaxa.com' });
+  const admin = await User.findOne({ email: 'admin@imc.com' });
   if (!admin) {
-    await User.create({ firstName: 'Admin', lastName: 'NELIAXA', email: 'admin@neliaxa.com', password: 'Admin123!', role: 'superadmin', kycStatus: 'verified' });
-    console.log('Admin created: admin@neliaxa.com / Admin123!');
+    // Seeded by the operator, not self-registered — skip the OTP step real
+    // sign-ups go through.
+    await User.create({ firstName: 'Admin', lastName: 'IMC', email: 'admin@imc.com', password: 'Admin123!', role: 'superadmin', kycStatus: 'verified', emailVerified: true });
+    console.log('Admin created: admin@imc.com / Admin123!');
+  } else if (!admin.emailVerified) {
+    admin.emailVerified = true;
+    await admin.save();
+    console.log('Admin account marked as email-verified');
   }
 
+  // 11 packs themed after real market indices (ETF-diversification concept),
+  // each with its own minimum, ROI range and duration — realistic, capped
+  // returns, never the "double your money" figures from the rejected
+  // ETF-doubling draft. Turbo 48H stays a separate, distinct high-risk
+  // product exactly as in the official IMC presentation.
   const packs = [
-    { key: 'starter', name: 'Starter', minAmount: 50, maxAmount: 499, roi: '4-6', duration: 7, durationUnit: 'days', description: 'Commencez votre voyage d\'investissement' },
-    { key: 'booster', name: 'Booster', minAmount: 500, maxAmount: 1999, roi: '6-8', duration: 14, durationUnit: 'days', description: 'Boostez vos rendements' },
-    { key: 'pro', name: 'Pro', minAmount: 2000, maxAmount: 9999, roi: '8-10', duration: 21, durationUnit: 'days', description: 'Investissement professionnel' },
-    { key: 'elite', name: 'Elite', minAmount: 10000, maxAmount: 49999, roi: '10-12', duration: 30, durationUnit: 'days', description: 'Pack élite pour grands investisseurs' },
-    { key: 'diamond', name: 'Diamond', minAmount: 50000, maxAmount: null, roi: '12-15', duration: 45, durationUnit: 'days', description: 'Investissement diamant premium' },
-    { key: 'turbo48h', name: 'Turbo 48H', minAmount: 100, maxAmount: 5000, roi: '2-4', duration: 48, durationUnit: 'hours', description: 'Rendement rapide en 48 heures' }
+    { key: 'cac40', name: 'CAC 40', minAmount: 25, maxAmount: 49, roi: '3-3.5', duration: 5, durationUnit: 'days', description: 'Pack thématique CAC 40 — l\'entrée la plus accessible' },
+    { key: 'eurostoxx50', name: 'Euro Stoxx 50', minAmount: 50, maxAmount: 99, roi: '3.5-4', duration: 7, durationUnit: 'days', description: 'Pack thématique Euro Stoxx 50 — commencez votre voyage d\'investissement' },
+    { key: 'ftse100', name: 'FTSE 100', minAmount: 100, maxAmount: 199, roi: '4-4.5', duration: 10, durationUnit: 'days', description: 'Pack thématique FTSE 100' },
+    { key: 'nikkei225', name: 'Nikkei 225', minAmount: 200, maxAmount: 299, roi: '4.5-5', duration: 14, durationUnit: 'days', description: 'Pack thématique Nikkei 225' },
+    { key: 'dowjones30', name: 'Dow Jones 30', minAmount: 300, maxAmount: 499, roi: '5-5.5', duration: 18, durationUnit: 'days', description: 'Pack thématique Dow Jones 30' },
+    { key: 'nasdaq100', name: 'Nasdaq 100', minAmount: 500, maxAmount: 999, roi: '5.5-6', duration: 21, durationUnit: 'days', description: 'Pack thématique Nasdaq 100 — amplifiez vos rendements' },
+    { key: 'sp500', name: 'S&P 500', minAmount: 1000, maxAmount: 1999, roi: '6-6.5', duration: 25, durationUnit: 'days', description: 'Pack thématique S&P 500 — le benchmark le plus suivi' },
+    { key: 'russell2000', name: 'Raffinerie Dangote', minAmount: 2000, maxAmount: 2999, roi: '6.5-7', duration: 30, durationUnit: 'days', description: 'Pack thématique inspiré de la raffinerie Dangote — investissement professionnel' },
+    { key: 'bund', name: 'Bund', minAmount: 3000, maxAmount: 4999, roi: '7-7.5', duration: 35, durationUnit: 'days', description: 'Pack thématique Bund — pour grands investisseurs' },
+    { key: 'tbonds', name: 'T-Bonds', minAmount: 5000, maxAmount: 9999, roi: '7.5-8.5', duration: 45, durationUnit: 'days', description: 'Pack thématique T-Bonds — pack élite' },
+    { key: 'us10y', name: 'US 10Y', minAmount: 10000, maxAmount: null, roi: '8.5-10', duration: 60, durationUnit: 'days', description: 'Pack thématique US 10Y — investissement institutionnel' },
+    { key: 'turbo48h', name: 'Turbo 48H', minAmount: 200, maxAmount: 20000, roi: '6', duration: 48, durationUnit: 'hours', description: 'Opportunité de trading à haute fréquence' }
   ];
 
   for (const pack of packs) {
     await InvestmentPack.findOneAndUpdate({ key: pack.key }, pack, { upsert: true });
   }
+  // Drop packs from the old 6-tier lineup (starter/booster/pro/elite/diamond)
+  // now that the schema enum only allows the 11 index keys + turbo48h.
+  await InvestmentPack.deleteMany({ key: { $nin: packs.map(p => p.key) } });
   console.log('Investment packs seeded');
 
-  const robotConfigs = [
-    { id: 'neo', name: 'Neo Miner', level: 1, price: 5000, nlxPerHour: 0.5, dailyCap: 12, manualTaps: 50, lifetimeDays: 30, referral: { 'Niv.1': 10, 'Niv.2': 5 } },
-    { id: 'crypto', name: 'Crypto-Digger', level: 2, price: 15000, nlxPerHour: 1.5, dailyCap: 36, manualTaps: 150, lifetimeDays: 45, referral: { 'Niv.1': 12, 'Niv.2': 6 } },
-    { id: 'visionnaire', name: 'Quantum-Master', level: 3, price: 50000, nlxPerHour: 5, dailyCap: 120, manualTaps: -1, lifetimeDays: 60, referral: { 'Niv.1': 15, 'Niv.2': 8 } }
-  ];
-
-  await MiningConfig.findOneAndUpdate({}, {
-    enabled: true, rewardPerBlock: 0.5, difficulty: 'medium',
-    maxHashratePerPack: { starter: 100, booster: 500, pro: 2000, elite: 8000, diamond: 30000 },
-    robots: robotConfigs
-  }, { upsert: true });
-  console.log('Mining config seeded');
-
   await PlatformConfig.findOneAndUpdate({}, {
-    platformName: 'NELIAXA', supportEmail: 'support@neliaxa.com',
+    platformName: 'IMC', supportEmail: 'support@imc.com',
     withdrawalFee: 2, minWithdrawal: 1, maxWithdrawal: 50000,
-    modules: { mining: true, watchToEarn: true, academy: true, referral: true, vipExpeditions: true },
-    nlxRate: 0.5
+    modules: { academy: true, referral: true }
   }, { upsert: true });
   console.log('Platform config seeded');
 
-  const levels = [
-    { id: 'bronze', tier: '\uD83E\uDD47 Bronze', name: 'Bronze', destination: 'Sénégal', quarter: 'Q1 2025', thresholds: { referrals: 5, revenue: 5000 }, perks: ['Hébergement 5*', 'Transport local', 'Dîner de gala'] },
-    { id: 'silver', tier: '\uD83E\uDD48 Silver', name: 'Silver', destination: 'Maroc', quarter: 'Q2 2025', thresholds: { referrals: 15, revenue: 25000 }, perks: ['Hébergement 5*', 'Transport local', 'Dîner de gala', 'Excursion'] },
-    { id: 'gold', tier: '\uD83E\uDD49 Gold', name: 'Gold', destination: 'Dubai', quarter: 'Q3 2025', thresholds: { referrals: 30, revenue: 75000 }, perks: ['Vol aller-retour', 'Hébergement 5*', 'Transport local', 'Dîner de gala', 'Shopping'] },
-    { id: 'diamond', tier: '\uD83D\uDC8E Diamond', name: 'Diamond', destination: 'Maldives', quarter: 'Q4 2025', thresholds: { referrals: 50, revenue: 150000 }, perks: ['Vol aller-retour', 'Villa privée', 'Transport local', 'Dîner de gala', 'Spa'] },
-    { id: 'ambassador', tier: '\uD83C\uDFC6 Ambassador', name: 'Ambassador', destination: 'Miami', quarter: 'AnnuEL', thresholds: { referrals: 100, revenue: 500000, special: 'Invitation spéciale' }, perks: ['Vol aller-retour', 'Suite présidentielLE', 'Transport VIP', 'Gala', 'Rencontre CEO'] }
+  const academyVideos = [
+    { title: 'Introduction à la Crypto', level: 1, duration: 300, category: 'crypto', youtubeId: 'dQw4w9WgXcQ', description: 'Les bases de la cryptomonnaie' },
+    { title: 'Stratégies d\'investissement', level: 2, duration: 600, category: 'investment', youtubeId: 'dQw4w9WgXcQ', description: 'Techniques avancées' }
   ];
-
-  for (const level of levels) {
-    await VIPExpeditionLevel.findOneAndUpdate({ id: level.id }, level, { upsert: true });
+  const AcademyProgress = require('./models/AcademyProgress');
+  const referencedIds = new Set(
+    (await AcademyProgress.find({}, 'completedVideos')).flatMap(p => p.completedVideos.map(String))
+  );
+  for (const video of academyVideos) {
+    // Previous insertMany-based seeding created a fresh duplicate per run —
+    // collapse every existing copy of this title down to one before upserting.
+    const copies = await AcademyVideo.find({ title: video.title }).sort({ createdAt: 1 });
+    const keeper = copies.find(c => referencedIds.has(String(c._id))) || copies[0];
+    if (keeper) {
+      await AcademyVideo.updateOne({ _id: keeper._id }, { $set: video });
+      await AcademyVideo.deleteMany({ title: video.title, _id: { $ne: keeper._id } });
+    } else {
+      await AcademyVideo.create(video);
+    }
   }
-  console.log('VIP levels seeded');
-
-  await Ad.insertMany([
-    { title: 'NELIAXA Platform', description: 'Découvrez notre plateforme', duration: 30, reward: 1, type: 'internal' },
-    { title: 'Crypto News', description: 'Actualités crypto', duration: 45, reward: 1.5, type: 'partner' }
-  ]);
-  console.log('Ads seeded');
-
-  await AcademyVideo.insertMany([
-    { title: 'Introduction à la Crypto', level: 1, duration: 300, reward: 5, category: 'crypto', youtubeId: 'dQw4w9WgXcQ', description: 'Les bases de la cryptomonnaie' },
-    { title: 'Stratégies d\'investissement', level: 2, duration: 600, reward: 10, category: 'investment', youtubeId: 'dQw4w9WgXcQ', description: 'Techniques avancées' }
-  ]);
   console.log('Academy videos seeded');
+
+  // Bitcoin and EUR/USDT pull real prices from free public APIs (CoinGecko,
+  // Frankfurter) — see marketDataService.js. Gold, Nasdaq and the Dollar
+  // Index have no reliable free no-key source, so they stay on the
+  // simulated generator; basePrice is their anchor either way (a fallback
+  // for the live ones, the only source for the simulated ones).
+  const tradingAssets = [
+    { key: 'bitcoin', name: 'Bitcoin', category: 'crypto', symbol: 'BTC', basePrice: 65000, priceSource: 'live', externalProvider: 'coingecko', externalId: 'bitcoin' },
+    { key: 'gold', name: 'Or', category: 'commodity', symbol: 'XAU', basePrice: 2400, priceSource: 'simulated' },
+    { key: 'nasdaq', name: 'Nasdaq', category: 'index', symbol: 'NDX', basePrice: 19500, priceSource: 'simulated' },
+    { key: 'eurusdt', name: 'EUR/USDT', category: 'forex', symbol: 'EURUSDT', basePrice: 1.08, priceSource: 'live', externalProvider: 'frankfurter', externalId: 'EUR:USD' },
+    { key: 'usd', name: 'Dollar Index', category: 'forex', symbol: 'DXY', basePrice: 104, priceSource: 'simulated' }
+  ];
+  for (const asset of tradingAssets) {
+    await TradingAsset.findOneAndUpdate({ key: asset.key }, { $set: asset }, { upsert: true });
+  }
+  console.log('Trading assets seeded');
 
   console.log('Seed complete!');
   process.exit(0);

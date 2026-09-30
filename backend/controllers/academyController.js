@@ -7,7 +7,7 @@ exports.getProgress = async (req, res) => {
     let progress = await AcademyProgress.findOne({ userId: req.user._id });
     if (!progress) progress = await AcademyProgress.create({ userId: req.user._id });
     const videos = await AcademyVideo.find({ active: true });
-    success(res, { completedVideos: progress.completedVideos, totalEarned: progress.totalEarned, videos });
+    success(res, { completedVideos: progress.completedVideos, videos });
   } catch (err) {
     error(res, err.message);
   }
@@ -19,18 +19,31 @@ exports.completeVideo = async (req, res) => {
     const video = await AcademyVideo.findById(videoId);
     if (!video) return error(res, 'Video not found', 404);
 
-    let progress = await AcademyProgress.findOne({ userId: req.user._id });
-    if (!progress) progress = new AcademyProgress({ userId: req.user._id });
+    // Ensure the progress doc exists first (idempotent — relies on the
+    // unique index on userId if two first-ever requests race here).
+    try {
+      await AcademyProgress.findOneAndUpdate(
+        { userId: req.user._id },
+        { $setOnInsert: { userId: req.user._id, completedVideos: [] } },
+        { upsert: true }
+      );
+    } catch (e) { /* duplicate key from a concurrent first-insert — the doc exists now either way */ }
 
-    if (progress.completedVideos.includes(videoId)) {
-      return success(res, { progress, message: 'Already completed' });
+    // Atomic check-and-append: the $ne filter means two concurrent
+    // completions of the same video can't both pass "not yet completed"
+    // before either has recorded it.
+    const progress = await AcademyProgress.findOneAndUpdate(
+      { userId: req.user._id, completedVideos: { $ne: videoId } },
+      { $push: { completedVideos: videoId } },
+      { new: true }
+    );
+
+    if (!progress) {
+      const existing = await AcademyProgress.findOne({ userId: req.user._id });
+      return success(res, { progress: existing, message: 'Already completed' });
     }
 
-    progress.completedVideos.push(videoId);
-    progress.totalEarned += video.reward;
-    await progress.save();
-
-    success(res, { progress, reward: video.reward });
+    success(res, { progress });
   } catch (err) {
     error(res, err.message);
   }

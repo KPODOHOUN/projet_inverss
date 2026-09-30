@@ -3,6 +3,9 @@ const EmailOTP = require('../models/EmailOTP');
 const { success, error } = require('../utils/response');
 const emailService = require('../services/emailService');
 const { generateOTP, verifyOTP } = require('../utils/tokens');
+const { isValidEmail, isStrongPassword, passwordRequirementsMessage } = require('../utils/validators');
+
+const isDev = process.env.NODE_ENV !== 'production';
 
 exports.updateProfile = async (req, res) => {
   try {
@@ -17,6 +20,8 @@ exports.updateProfile = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
+    if (!isStrongPassword(newPassword)) return error(res, passwordRequirementsMessage);
+
     const user = await User.findById(req.user._id).select('+password');
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) return error(res, 'Current password is incorrect');
@@ -61,13 +66,18 @@ exports.requestEmailChange = async (req, res) => {
       expiresAt
     });
 
+    let devOtp = null;
     try {
       await emailService.sendOTPEmail(newEmail, user.firstName, otp, 'email_change');
     } catch (e) {
       console.error('Email change OTP send failed:', e.message);
+      if (isDev) {
+        console.log(`[dev] Code de changement d'email pour ${newEmail} : ${otp}`);
+        devOtp = otp;
+      }
     }
 
-    success(res, { message: 'Verification code sent to new email' });
+    success(res, { message: 'Verification code sent to new email', ...(devOtp ? { devOtp } : {}) });
   } catch (err) {
     error(res, err.message);
   }

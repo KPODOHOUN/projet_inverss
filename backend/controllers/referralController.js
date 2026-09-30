@@ -1,12 +1,16 @@
 const Referral = require('../models/Referral');
+const PlatformConfig = require('../models/PlatformConfig');
 const { success, error } = require('../utils/response');
 
 exports.getStats = async (req, res) => {
   try {
-    const referrals = await Referral.find({ referrerId: req.user._id }).populate('referredId', 'firstName lastName status createdAt');
+    const [referrals, config] = await Promise.all([
+      Referral.find({ referrerId: req.user._id }).populate('referredId', 'firstName lastName status createdAt'),
+      PlatformConfig.findOne()
+    ]);
     const totalReferrals = referrals.length;
     const activeReferrals = referrals.filter(r => r.referredId && r.referredId.status === 'active').length;
-    const totalCommissionsNLX = referrals.reduce((sum, r) => sum + r.commissionsEarned, 0);
+    const totalCommissionsUSD = referrals.reduce((sum, r) => sum + r.commissionsEarned, 0);
 
     const referralsList = referrals.map(r => ({
       _id: r._id,
@@ -19,8 +23,8 @@ exports.getStats = async (req, res) => {
     success(res, {
       totalReferrals,
       activeReferrals,
-      totalCommissionsNLX,
-      totalCommissionsEUR: totalCommissionsNLX * 0.5,
+      totalCommissionsUSD,
+      commissionRate: config?.referralCommissionRate ?? 10,
       referralCode: req.user.referralCode,
       referrals: referralsList
     });

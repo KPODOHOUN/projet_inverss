@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
+const PERIOD_OPTIONS = [
+  { value: 'all', label: 'Tout' },
+  { value: 'today', label: "Aujourd'hui" },
+  { value: 'week', label: 'Cette semaine' },
+  { value: 'month', label: 'Ce mois' },
+];
+const PERIOD_MS = { today: 24 * 60 * 60 * 1000, week: 7 * 24 * 60 * 60 * 1000, month: 30 * 24 * 60 * 60 * 1000 };
+const withinPeriod = (dateStr, period) => {
+  if (period === 'all') return true;
+  return Date.now() - new Date(dateStr).getTime() <= PERIOD_MS[period];
+};
+
 export default function Referral() {
   const { user, api } = useAuth();
   const [referralData, setReferralData] = useState(null);
   const [referralLink, setReferralLink] = useState('');
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [periodFilter, setPeriodFilter] = useState('all');
 
   useEffect(() => {
     fetchReferralData();
@@ -17,7 +30,7 @@ export default function Referral() {
       const response = await api.get('/referral/stats');
       if (response.data.success) {
         setReferralData(response.data.data);
-        setReferralLink(`https://neliaxa.com/invite/${response.data.data.referralCode}`);
+        setReferralLink(`${window.location.origin}/register?ref=${response.data.data.referralCode}`);
       }
     } catch (error) {
       console.error('Error fetching referral data:', error);
@@ -33,7 +46,7 @@ export default function Referral() {
   };
 
   const shareOnSocial = (platform) => {
-    const text = `Rejoignez NELIAXA, la plateforme d'investissement intelligente ! 🚀 Rendements de 4-10% ROI`;
+    const text = `Rejoignez IMC, la plateforme d'investissement intelligente ! 🚀 Rendements de 4-10% ROI`;
     const urls = {
       whatsapp: `https://wa.me/?text=${encodeURIComponent(text + '\n' + referralLink)}`,
       telegram: `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(text)}`,
@@ -59,7 +72,7 @@ export default function Referral() {
     <div className="max-w-7xl mx-auto px-6 py-12">
       {}
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+        <h1 className="text-3xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
           PROGRAMME DE PARRAINAGE
         </h1>
         <p className="text-xl text-gray-400">
@@ -68,34 +81,28 @@ export default function Referral() {
       </div>
 
       {}
-      <div className="grid md:grid-cols-4 gap-6 mb-12">
+      <div className="grid md:grid-cols-3 gap-6 mb-12">
         <div className="bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 text-black shadow-2xl shadow-yellow-500/30">
           <p className="text-sm font-semibold mb-2">TOTAL FILLEULS</p>
-          <h3 className="text-4xl font-black mb-2">{referralData?.totalReferrals || 0}</h3>
+          <h3 className="text-2xl font-black mb-2">{referralData?.totalReferrals || 0}</h3>
           <p className="text-sm opacity-80">Utilisateurs parrainés</p>
         </div>
 
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 p-6 text-white">
+        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 text-white">
           <p className="text-sm font-semibold mb-2 text-yellow-500">FILLEULS ACTIFS</p>
-          <h3 className="text-4xl font-black mb-2">{referralData?.activeReferrals || 0}</h3>
+          <h3 className="text-2xl font-black mb-2">{referralData?.activeReferrals || 0}</h3>
           <p className="text-sm text-gray-400">Avec investissements actifs</p>
         </div>
 
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-green-900/30 p-6 text-white">
-          <p className="text-sm font-semibold mb-2 text-green-500">COMMISSIONS NLX</p>
-          <h3 className="text-4xl font-black mb-2">{referralData?.totalCommissionsNLX?.toFixed(2) || 0}</h3>
-          <p className="text-sm text-gray-400">Tokens gagnés</p>
-        </div>
-
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-blue-900/30 p-6 text-white">
-          <p className="text-sm font-semibold mb-2 text-blue-500">COMMISSIONS EUR</p>
-          <h3 className="text-4xl font-black mb-2">€{referralData?.totalCommissionsEUR?.toFixed(2) || 0}</h3>
+        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-blue-900/30 rounded-lg p-6 text-white">
+          <p className="text-sm font-semibold mb-2 text-blue-500">COMMISSIONS</p>
+          <h3 className="text-2xl font-black mb-2">${referralData?.totalCommissionsUSD?.toFixed(2) || 0}</h3>
           <p className="text-sm text-gray-400">Revenus passifs</p>
         </div>
       </div>
 
       {}
-      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-500 p-8 mb-12">
+      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-500 rounded-lg p-6 mb-12">
         <h2 className="text-2xl font-black text-yellow-500 mb-6">VOTRE LIEN DE PARRAINAGE</h2>
         
         <div className="flex gap-4 mb-6">
@@ -103,7 +110,7 @@ export default function Referral() {
             type="text"
             value={referralLink}
             readOnly
-            className="flex-1 px-4 py-3 bg-black border-2 border-yellow-900/30 text-white font-mono"
+            className="flex-1 px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white font-mono"
           />
           <button
             onClick={copyToClipboard}
@@ -142,70 +149,57 @@ export default function Referral() {
       </div>
 
       {}
-      <div className="grid md:grid-cols-2 gap-8 mb-12">
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 p-8">
-          <h3 className="text-2xl font-black text-yellow-500 mb-6">COMMISSIONS PAR ACTION</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center p-4 bg-black/50">
-              <span className="text-white">Inscription via votre lien</span>
-              <span className="text-yellow-500 font-black">100 NLX</span>
-            </div>
-            <div className="flex justify-between items-center p-4 bg-black/50">
-              <span className="text-white">Achat Pack Starter</span>
-              <span className="text-yellow-500 font-black">5% en NLX</span>
-            </div>
-            <div className="flex justify-between items-center p-4 bg-black/50">
-              <span className="text-white">Achat Pack Booster+</span>
-              <span className="text-yellow-500 font-black">7% en NLX</span>
-            </div>
-            <div className="flex justify-between items-center p-4 bg-black/50">
-              <span className="text-white">Visionnage pubs (filleul)</span>
-              <span className="text-yellow-500 font-black">10% des NLX</span>
-            </div>
+      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 mb-12">
+        <h3 className="text-2xl font-black text-yellow-500 mb-6">COMMENT SONT CALCULÉES VOS COMMISSIONS</h3>
+        <div className="p-4 bg-yellow-900/20 border border-yellow-500 rounded">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-white font-bold">Filleul direct</span>
+            <span className="px-3 py-1 bg-yellow-500 text-black text-sm font-black">{referralData?.commissionRate ?? 10}%</span>
           </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 p-8">
-          <h3 className="text-2xl font-black text-yellow-500 mb-6">BONUS RÉSEAU MULTI-NIVEAUX</h3>
-          <div className="space-y-4">
-            <div className="p-4 bg-yellow-900/20 border border-yellow-500">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-white font-bold">Niveau 1 (Directs)</span>
-                <span className="px-3 py-1 bg-yellow-500 text-black text-sm font-black">5-15%</span>
-              </div>
-              <p className="text-sm text-gray-400">Sur tous les achats de vos filleuls directs</p>
-            </div>
-
-            <div className="p-4 bg-yellow-900/10 border border-yellow-900">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-white font-bold">Niveau 2 (Indirects)</span>
-                <span className="px-3 py-1 bg-yellow-600 text-white text-sm font-black">3%</span>
-              </div>
-              <p className="text-sm text-gray-400">Sur les achats des filleuls de vos filleuls</p>
-            </div>
-
-            <div className="p-4 bg-yellow-900/5 border border-yellow-900/50">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-white font-bold">Niveau 3</span>
-                <span className="px-3 py-1 bg-yellow-700 text-white text-sm font-black">1%</span>
-              </div>
-              <p className="text-sm text-gray-400">Niveau 3 de votre réseau</p>
-            </div>
-
-            <div className="p-4 bg-green-900/20 border border-green-500 mt-4">
-              <p className="text-green-400 font-bold text-center">
-                🎁 Bonus si réseau > 10 investisseurs actifs
-              </p>
-            </div>
-          </div>
+          <p className="text-sm text-gray-400">
+            Dès qu'un investissement de votre filleul direct est validé, vous recevez {referralData?.commissionRate ?? 10}% du
+            montant investi, crédité directement sur votre solde.
+          </p>
         </div>
       </div>
 
       {}
-      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 p-8 mb-12">
-        <h3 className="text-2xl font-black text-yellow-500 mb-6">VOS FILLEULS</h3>
-        
-        {referralData?.referrals && referralData.referrals.length > 0 ? (
+      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 mb-12">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
+          <h3 className="text-2xl font-black text-yellow-500">VOS FILLEULS</h3>
+          {referralData?.referrals?.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {PERIOD_OPTIONS.map(({ value, label }) => (
+                <button
+                  key={value}
+                  onClick={() => setPeriodFilter(value)}
+                  className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {(() => {
+          const filteredReferrals = (referralData?.referrals || []).filter(r => withinPeriod(r.joinedAt, periodFilter));
+          if (filteredReferrals.length === 0) {
+            return (
+              <div className="text-center py-12">
+                <div className="text-4xl mb-4">👥</div>
+                {referralData?.referrals?.length > 0 ? (
+                  <p className="text-gray-400">Aucun filleul sur cette période</p>
+                ) : (
+                  <>
+                    <p className="text-gray-400 mb-6">Vous n'avez pas encore de filleuls</p>
+                    <p className="text-white">Partagez votre lien pour commencer à gagner !</p>
+                  </>
+                )}
+              </div>
+            );
+          }
+          return (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-black">
@@ -217,7 +211,7 @@ export default function Referral() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-yellow-900/20">
-                {referralData.referrals.map((referral, index) => (
+                {filteredReferrals.map((referral, index) => (
                   <tr key={index} className="hover:bg-yellow-900/10">
                     <td className="px-6 py-4 text-white">{referral.name}</td>
                     <td className="px-6 py-4 text-gray-400">
@@ -233,52 +227,47 @@ export default function Referral() {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-bold text-yellow-500">
-                      {referral.commissionsEarned} NLX
+                      ${referral.commissionsEarned?.toFixed(2) || 0}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">👥</div>
-            <p className="text-gray-400 mb-6">Vous n'avez pas encore de filleuls</p>
-            <p className="text-white">Partagez votre lien pour commencer à gagner !</p>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* How It Works */}
-      <div className="bg-gradient-to-br from-yellow-600 to-yellow-700 p-8 text-black">
+      <div className="bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 text-black">
         <h3 className="text-2xl font-black mb-6">COMMENT ÇA MARCHE ?</h3>
         <div className="grid md:grid-cols-4 gap-6">
           <div className="text-center">
-            <div className="text-4xl mb-3">1️⃣</div>
+            <div className="text-2xl mb-3">1️⃣</div>
             <h4 className="font-bold mb-2">Partagez votre lien</h4>
             <p className="text-sm opacity-80">
               Envoyez votre lien unique à vos amis
             </p>
           </div>
           <div className="text-center">
-            <div className="text-4xl mb-3">2️⃣</div>
+            <div className="text-2xl mb-3">2️⃣</div>
             <h4 className="font-bold mb-2">Ils s'inscrivent</h4>
             <p className="text-sm opacity-80">
-              Vos amis créent leur compte NELIAXA
+              Vos amis créent leur compte IMC
             </p>
           </div>
           <div className="text-center">
-            <div className="text-4xl mb-3">3️⃣</div>
+            <div className="text-2xl mb-3">3️⃣</div>
             <h4 className="font-bold mb-2">Ils investissent</h4>
             <p className="text-sm opacity-80">
               Vos filleuls achètent des packs
             </p>
           </div>
           <div className="text-center">
-            <div className="text-4xl mb-3">4️⃣</div>
+            <div className="text-2xl mb-3">4️⃣</div>
             <h4 className="font-bold mb-2">Vous gagnez</h4>
             <p className="text-sm opacity-80">
-              Commissions automatiques en NLX
+              Commissions automatiques sur votre solde
             </p>
           </div>
         </div>

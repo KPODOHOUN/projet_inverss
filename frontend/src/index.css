@@ -8,14 +8,221 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-family: 'Outfit', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #050505;
   color: #fff;
 }
+
+/* Reserves room at the bottom of every page while the install banner is
+   showing, so its fixed position never covers a form's submit button or
+   other bottom-of-viewport content. */
+body.has-install-banner {
+  padding-bottom: calc(170px + env(safe-area-inset-bottom, 0px));
+}
+
+html.light-mode body {
+  background: #f7f5f0;
+  color: #14120c;
+}
+
+html.light-mode ::-webkit-scrollbar-track { background: #eee8dc; }
+html.light-mode ::selection { background: rgba(212,175,55,0.35); color: #14120c; }
+
+/* ============================================================
+   Dashboard / Admin light-mode overrides
+   Dashboard.js and AdminDashboard.js are written with literal dark
+   Tailwind utilities (bg-black, text-white, border-yellow-900/*...)
+   instead of theme-aware classes, so the site-wide light/dark toggle
+   never reached them. Rather than rewrite ~3000 lines of className
+   strings, this maps that same fixed set of utilities to light
+   equivalents whenever an ancestor carries `.light-mode` + `.dash-scope`
+   (the root wrapper of both dashboards). New dark utilities added to
+   either file need an entry here to stay theme-aware.
+   ============================================================ */
+
+html.light-mode .dash-scope { color: #14120c; }
+
+/* Surfaces: black/gray-900/gray-800/gray-700 (darkest -> darker) become
+   white/off-white/light-gold-tinted (lightest -> less light). */
+html.light-mode .dash-scope .bg-black,
+html.light-mode .dash-scope .bg-black\/95 { background-color: #ffffff !important; }
+html.light-mode .dash-scope .bg-black\/50 { background-color: #f5f2ea !important; }
+html.light-mode .dash-scope .bg-gray-900 { background-color: #ffffff !important; }
+html.light-mode .dash-scope .bg-gray-900\/50 { background-color: rgba(255,255,255,0.6) !important; }
+html.light-mode .dash-scope .bg-gray-800 { background-color: #f0ede4 !important; }
+html.light-mode .dash-scope .bg-gray-700 { background-color: #e5e0d3 !important; }
+
+/* Gradients: the handful of dark from/to combos used for cards and the
+   page background. Gold gradients (from-yellow-* to to-yellow-*) are left
+   untouched — they read fine on either theme. */
+html.light-mode .dash-scope [class*="from-gray-900"][class*="to-black"] {
+  background-image: linear-gradient(to bottom right, #ffffff, #f0ede4) !important;
+}
+html.light-mode .dash-scope [class*="from-gray-900"][class*="via-black"][class*="to-gray-900"] {
+  background-image: linear-gradient(to bottom right, #f7f5f0, #f0ede4, #f7f5f0) !important;
+}
+
+/* Gold-tinted hairlines: yellow-900 at low opacity reads as a subtle warm
+   line on black; the same dark-brown at low opacity on white just looks
+   muddy, so the base hue shifts to a visible mid-gold at the same alpha. */
+html.light-mode .dash-scope .border-yellow-900\/10 { border-color: rgba(169,121,26,0.10) !important; }
+html.light-mode .dash-scope .divide-yellow-900\/15 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(169,121,26,0.15) !important; }
+html.light-mode .dash-scope .border-yellow-900\/15 { border-color: rgba(169,121,26,0.15) !important; }
+html.light-mode .dash-scope .border-yellow-900\/20 { border-color: rgba(169,121,26,0.20) !important; }
+html.light-mode .dash-scope .border-yellow-900\/25 { border-color: rgba(169,121,26,0.25) !important; }
+html.light-mode .dash-scope .border-yellow-900\/30 { border-color: rgba(169,121,26,0.30) !important; }
+html.light-mode .dash-scope .border-yellow-900\/35 { border-color: rgba(169,121,26,0.35) !important; }
+html.light-mode .dash-scope .border-yellow-900\/40 { border-color: rgba(169,121,26,0.40) !important; }
+html.light-mode .dash-scope .bg-yellow-900\/5  { background-color: rgba(169,121,26,0.05) !important; }
+html.light-mode .dash-scope .bg-yellow-900\/8  { background-color: rgba(169,121,26,0.08) !important; }
+html.light-mode .dash-scope .bg-yellow-900\/10 { background-color: rgba(169,121,26,0.10) !important; }
+html.light-mode .dash-scope .bg-yellow-900\/15 { background-color: rgba(169,121,26,0.15) !important; }
+html.light-mode .dash-scope .bg-yellow-900\/20 { background-color: rgba(169,121,26,0.20) !important; }
+html.light-mode .dash-scope .bg-yellow-900\/40 { background-color: rgba(169,121,26,0.40) !important; }
+html.light-mode .dash-scope .bg-yellow-900\/50 { background-color: rgba(169,121,26,0.50) !important; }
+
+/* Body/label text: white/gray-300..600 (light-to-mid, for reading on
+   black) become near-black/mid-to-dark grays (for reading on white). */
+html.light-mode .dash-scope .text-white { color: #14120c !important; }
+html.light-mode .dash-scope .text-gray-300 { color: #3d3728 !important; }
+html.light-mode .dash-scope .text-gray-400 { color: #574f3d !important; }
+html.light-mode .dash-scope .text-gray-500 { color: #6f6550 !important; }
+html.light-mode .dash-scope .text-gray-600 { color: #877a5f !important; }
+html.light-mode .dash-scope .border-gray-600 { border-color: #cfc7b0 !important; }
+html.light-mode .dash-scope .border-gray-700 { border-color: #ddd6c4 !important; }
+html.light-mode .dash-scope .border-gray-800 { border-color: #e5e0d3 !important; }
+
+/* Gold accent text: bright yellow-300/400/500 reads well on black but
+   fails contrast on white, so it darkens; gold on gold buttons/borders
+   (already a strong hue) and black text on gold buttons are untouched. */
+html.light-mode .dash-scope .text-yellow-300 { color: #8a6118 !important; }
+html.light-mode .dash-scope .text-yellow-400 { color: #9c7015 !important; }
+html.light-mode .dash-scope .text-yellow-500 { color: #a9791a !important; }
+html.light-mode .dash-scope .text-yellow-500\/70 { color: rgba(169,121,26,0.7) !important; }
+
+/* Semantic alerts (success/error/info/warning): dark tinted backgrounds
+   with bright text (for black) become light tinted backgrounds with
+   dark text (for white), keeping the same hue so meaning stays intact. */
+html.light-mode .dash-scope .bg-green-900\/20 { background-color: rgba(21,128,61,0.08) !important; }
+html.light-mode .dash-scope .bg-green-900\/40 { background-color: rgba(21,128,61,0.12) !important; }
+html.light-mode .dash-scope .bg-green-900\/50 { background-color: rgba(21,128,61,0.15) !important; }
+html.light-mode .dash-scope .border-green-500,
+html.light-mode .dash-scope .border-green-800 { border-color: #22c55e !important; }
+html.light-mode .dash-scope .border-green-500\/30 { border-color: rgba(34,197,94,0.35) !important; }
+html.light-mode .dash-scope .border-green-500\/50 { border-color: rgba(34,197,94,0.5) !important; }
+html.light-mode .dash-scope .text-green-300,
+html.light-mode .dash-scope .text-green-400,
+html.light-mode .dash-scope .text-green-500 { color: #15803d !important; }
+
+html.light-mode .dash-scope .bg-red-900\/10 { background-color: rgba(220,38,38,0.05) !important; }
+html.light-mode .dash-scope .bg-red-900\/20 { background-color: rgba(220,38,38,0.08) !important; }
+html.light-mode .dash-scope .bg-red-900\/40 { background-color: rgba(220,38,38,0.12) !important; }
+html.light-mode .dash-scope .bg-red-900\/50 { background-color: rgba(220,38,38,0.15) !important; }
+html.light-mode .dash-scope .border-red-500,
+html.light-mode .dash-scope .border-red-800,
+html.light-mode .dash-scope .border-red-900\/30 { border-color: #ef4444 !important; }
+html.light-mode .dash-scope .border-red-500\/50 { border-color: rgba(239,68,68,0.5) !important; }
+html.light-mode .dash-scope .text-red-300,
+html.light-mode .dash-scope .text-red-400 { color: #b91c1c !important; }
+html.light-mode .dash-scope .text-red-500 { color: #dc2626 !important; }
+
+html.light-mode .dash-scope .bg-blue-900\/20 { background-color: rgba(29,78,216,0.08) !important; }
+html.light-mode .dash-scope .bg-blue-900\/40 { background-color: rgba(29,78,216,0.12) !important; }
+html.light-mode .dash-scope .bg-blue-900\/50 { background-color: rgba(29,78,216,0.15) !important; }
+html.light-mode .dash-scope .border-blue-500,
+html.light-mode .dash-scope .border-blue-800 { border-color: #3b82f6 !important; }
+html.light-mode .dash-scope .border-blue-500\/30 { border-color: rgba(59,130,246,0.35) !important; }
+html.light-mode .dash-scope .text-blue-300,
+html.light-mode .dash-scope .text-blue-400 { color: #1d4ed8 !important; }
+
+html.light-mode .dash-scope .bg-purple-900\/30 { background-color: rgba(126,34,206,0.10) !important; }
+html.light-mode .dash-scope .bg-purple-900\/40 { background-color: rgba(126,34,206,0.12) !important; }
+html.light-mode .dash-scope .bg-purple-900\/50 { background-color: rgba(126,34,206,0.15) !important; }
+html.light-mode .dash-scope .border-purple-500,
+html.light-mode .dash-scope .border-purple-800 { border-color: #a855f7 !important; }
+html.light-mode .dash-scope .border-purple-800\/40 { border-color: rgba(168,85,247,0.4) !important; }
+html.light-mode .dash-scope .text-purple-300,
+html.light-mode .dash-scope .text-purple-400 { color: #7e22ce !important; }
+
+/* Panel background used by Trading/Invest/Wallet cards — an arbitrary hex
+   value Tailwind emits as a literal escaped class, so it needs its own
+   rule like the named grays above rather than being caught by one. */
+html.light-mode .dash-scope .bg-\[\#0d0d0d\] { background-color: #ffffff !important; }
+
+/* Inputs/cards that use a translucent black as a subtle fill on top of a
+   colored (not black/white) surface — e.g. a chip on the gold balance
+   card — are intentionally left unconverted; they read fine either way. */
+
+/* -- Extended set: same rules, covering the tab pages rendered inside
+   the dashboard (Invest, KYC, Mining, Watch-to-Earn, Referral, Wallet,
+   Academy) which use a wider palette than Dashboard/AdminDashboard
+   themselves. Same principle throughout: dark surface -> light surface,
+   bright-on-black text -> dark-on-white text, hue preserved. -- */
+
+html.light-mode .dash-scope .bg-black\/30 { background-color: rgba(20,18,12,0.04) !important; }
+html.light-mode .dash-scope .bg-black\/40 { background-color: rgba(20,18,12,0.05) !important; }
+html.light-mode .dash-scope .text-black\/70 { color: rgba(20,18,12,0.7) !important; }
+
+html.light-mode .dash-scope .border-gray-400 { border-color: #c9c0a8 !important; }
+html.light-mode .dash-scope .border-gray-500 { border-color: #b0a688 !important; }
+
+/* Gold family: solid/vivid golds (500-800) already read fine on white and
+   are left unchanged; only the very dark yellow-900 solid fill and its
+   hairlines shift to the visible mid-gold used elsewhere in this file. */
+html.light-mode .dash-scope .bg-yellow-900 { background-color: rgba(169,121,26,0.55) !important; }
+html.light-mode .dash-scope .bg-yellow-900\/30 { background-color: rgba(169,121,26,0.30) !important; }
+html.light-mode .dash-scope .divide-yellow-900\/10 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(169,121,26,0.10) !important; }
+html.light-mode .dash-scope .divide-yellow-900\/20 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(169,121,26,0.20) !important; }
+html.light-mode .dash-scope .text-yellow-200\/70 { color: rgba(138,97,24,0.7) !important; }
+
+html.light-mode .dash-scope .bg-green-900\/10 { background-color: rgba(21,128,61,0.05) !important; }
+html.light-mode .dash-scope .bg-green-900\/30 { background-color: rgba(21,128,61,0.10) !important; }
+html.light-mode .dash-scope .bg-green-950\/40 { background-color: rgba(21,128,61,0.12) !important; }
+html.light-mode .dash-scope .border-green-600,
+html.light-mode .dash-scope .border-green-800\/40,
+html.light-mode .dash-scope .border-green-800\/50,
+html.light-mode .dash-scope .border-green-900\/30,
+html.light-mode .dash-scope .border-green-900\/40 { border-color: rgba(34,197,94,0.4) !important; }
+html.light-mode .dash-scope .border-green-500\/60 { border-color: rgba(34,197,94,0.6) !important; }
+html.light-mode .dash-scope .text-green-600 { color: #15803d !important; }
+
+html.light-mode .dash-scope .bg-red-900\/30 { background-color: rgba(220,38,38,0.10) !important; }
+html.light-mode .dash-scope .bg-red-950\/20 { background-color: rgba(220,38,38,0.06) !important; }
+html.light-mode .dash-scope .bg-red-950\/30 { background-color: rgba(220,38,38,0.10) !important; }
+html.light-mode .dash-scope .bg-red-950\/40 { background-color: rgba(220,38,38,0.12) !important; }
+html.light-mode .dash-scope .bg-red-950\/50 { background-color: rgba(220,38,38,0.15) !important; }
+html.light-mode .dash-scope .border-red-800\/40,
+html.light-mode .dash-scope .border-red-800\/50 { border-color: rgba(239,68,68,0.4) !important; }
+html.light-mode .dash-scope .text-red-500\/80 { color: rgba(220,38,38,0.8) !important; }
+
+html.light-mode .dash-scope .bg-blue-900\/30 { background-color: rgba(29,78,216,0.10) !important; }
+html.light-mode .dash-scope .bg-blue-950\/10 { background-color: rgba(29,78,216,0.05) !important; }
+html.light-mode .dash-scope .bg-blue-950\/30 { background-color: rgba(29,78,216,0.10) !important; }
+html.light-mode .dash-scope .border-blue-700,
+html.light-mode .dash-scope .border-blue-800\/30,
+html.light-mode .dash-scope .border-blue-800\/40,
+html.light-mode .dash-scope .border-blue-900\/30 { border-color: rgba(59,130,246,0.4) !important; }
+html.light-mode .dash-scope .border-blue-700\/50,
+html.light-mode .dash-scope .border-blue-500\/50 { border-color: rgba(59,130,246,0.5) !important; }
+html.light-mode .dash-scope .text-blue-500 { color: #1d4ed8 !important; }
+
+html.light-mode .dash-scope .border-purple-500\/50 { border-color: rgba(168,85,247,0.5) !important; }
+
+/* Gradient combos beyond from-gray-900/to-black used in tab pages. */
+html.light-mode .dash-scope [class*="from-gray-700"][class*="to-gray-800"] {
+  background-image: linear-gradient(to bottom right, #e5e0d3, #f0ede4) !important;
+}
+html.light-mode .dash-scope [class*="from-blue-950"] { --tw-gradient-from: rgba(29,78,216,0.08) !important; }
+html.light-mode .dash-scope [class*="from-green-950"] { --tw-gradient-from: rgba(21,128,61,0.08) !important; }
 
 @keyframes gradient {
   0% { background-position: 0% 50%; }
@@ -67,8 +274,144 @@ body {
 }
 
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.5); }
+::-webkit-scrollbar-track { background: #050505; }
+::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.35); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.55); }
 
-::selection { background: rgba(212,175,55,0.3); color: #fff; }
+::selection { background: rgba(212, 175, 55, 0.35); color: #fff; }
+
+/* ── UI simple ─────────────────────────────────────────────────── */
+
+.text-gradient-gold {
+  color: #D4AF37;
+}
+
+.imc-glass-nav {
+  background: #000;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+html.light-mode .imc-glass-nav {
+  background: #fff;
+  border-bottom-color: #f0ede4;
+}
+
+.imc-glass-card,
+.imc-stat-card {
+  background: #0d0d0d;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.imc-glass-card:hover,
+.imc-stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+html.light-mode .imc-glass-card,
+html.light-mode .imc-stat-card {
+  background: #fff;
+  border-color: #f0ede4;
+}
+
+.imc-feature-card {
+  border-radius: 0.75rem;
+}
+
+.imc-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #000;
+  background: #D4AF37;
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.imc-btn-primary:hover {
+  background: #9A7B1A;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+}
+
+.imc-btn-primary:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.imc-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #e5e0d3;
+  background: transparent;
+  transition: border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.imc-btn-outline:hover {
+  border-color: #D4AF37;
+  color: #D4AF37;
+  transform: translateY(-2px);
+}
+
+.imc-btn-outline:active {
+  transform: translateY(0) scale(0.97);
+}
+
+html.light-mode .imc-btn-outline {
+  color: #4a4636;
+  border-color: #ddd6bf;
+}
+
+html.light-mode .imc-btn-outline:hover {
+  border-color: #9A7B1A;
+  color: #9A7B1A;
+}
+
+.imc-auth-card {
+  background: #0d0d0d;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 0.75rem;
+}
+
+html.light-mode .imc-auth-card {
+  background: #fff;
+  border-color: #f0ede4;
+}
+
+.imc-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: rgba(212, 175, 55, 0.15);
+  color: #F5D76E;
+}
+
+html.light-mode .imc-badge {
+  background: #fbf3d9;
+  color: #9A7B1A;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

@@ -1,34 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { getApiUrl } from '../utils/apiUrl';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export default function ResetPassword() {
-  const { token } = useParams();
+  const { token: linkToken } = useParams();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get('email') || '';
+  const otpMode = !linkToken && !!email;
+
   const navigate = useNavigate();
+  const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [devOtp, setDevOtp] = useState(() => localStorage.getItem('neliaxaDevOtp') || '');
 
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    if (!linkToken && !email) navigate('/forgot-password', { replace: true });
+  }, [linkToken, email, navigate]);
+
+  const handleResend = async () => {
+    if (!email) return;
+    setResending(true);
+    setError('');
+    try {
+      const res = await axios.post(`${getApiUrl()}/auth/forgot-password`, { email });
+      if (res.data?.data?.devOtp) {
+        localStorage.setItem('neliaxaDevOtp', res.data.data.devOtp);
+        setDevOtp(res.data.data.devOtp);
+      } else {
+        localStorage.removeItem('neliaxaDevOtp');
+        setDevOtp('');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Impossible de renvoyer le code.');
+    } finally {
+      setResending(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (password.length < 8) return setError('8 caractères minimum');
     if (password !== confirmPassword) return setError('Les mots de passe ne correspondent pas');
+    if (otpMode && otp.length !== 6) return setError('Entrez le code à 6 chiffres');
+
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/auth/reset-password`, { token, password });
+      const payload = otpMode
+        ? { email, otp, password }
+        : { token: linkToken, password };
+      await axios.post(`${getApiUrl()}/auth/reset-password`, payload);
+      localStorage.removeItem('neliaxaDevOtp');
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2500);
     } catch (err) {
-      setError(err.response?.data?.message || 'Lien invalide ou expiré');
+      setError(err.response?.data?.message || 'Code ou lien invalide ou expiré');
     } finally {
       setLoading(false);
     }
@@ -54,41 +91,75 @@ export default function ResetPassword() {
 
       <div className={`w-full max-w-md relative z-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="relative">
-              <img src="/images/logo-neliaxa.png" alt="NELIAXA" className="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
-            </div>
-            <div>
-              <p className="text-xs tracking-[0.4em] text-yellow-600 font-bold uppercase">NELIAXA</p>
-              <p className="text-xs text-gray-600 tracking-widest uppercase">Investment Platform</p>
-            </div>
+          <div className="mb-5">
+            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
           </div>
-          <h1 className="text-4xl font-black text-white leading-none mb-2">
+          <h1 className="text-2xl font-black text-white leading-none mb-2">
             {success ? 'Mot de passe modifié' : 'Nouveau mot de passe'}
           </h1>
           <p className="text-gray-500 text-sm">
-            {success ? 'Redirection vers la connexion...' : 'Choisissez un mot de passe sécurisé'}
+            {success
+              ? 'Redirection vers la connexion...'
+              : otpMode
+                ? `Entrez le code reçu à ${email}`
+                : 'Choisissez un mot de passe sécurisé'}
           </p>
         </div>
 
         <div className="relative">
-          <div className="relative bg-[#0d0d0d] border border-yellow-900/20 p-8">
+          <div className="relative bg-[#0d0d0d] border border-yellow-900/20 rounded-lg p-6">
             <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.6), transparent)' }} />
 
             {error && (
-              <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/50 border border-red-800/50">
+              <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/50 border border-red-800/50 rounded">
                 <span className="text-red-400 mt-0.5 text-sm">⚠</span>
                 <p className="text-red-300 text-sm">{error}</p>
               </div>
             )}
 
+            {!success && otpMode && devOtp && (
+              <div className="mb-6 p-4 bg-blue-950/40 border border-blue-800/40 rounded">
+                <p className="text-xs text-blue-300 uppercase tracking-wider font-bold mb-1">Mode local — email non délivré</p>
+                <p className="text-sm text-blue-200">
+                  Votre code : <span className="font-mono text-lg tracking-[0.3em] text-white">{devOtp}</span>
+                </p>
+              </div>
+            )}
+
             {success ? (
               <div className="text-center py-8">
-                <div className="text-6xl mb-6">✅</div>
+                <div className="text-4xl mb-6">✅</div>
                 <p className="text-gray-400 text-sm">Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                {otpMode && (
+                  <div>
+                    <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase">
+                      Code reçu par email
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={otp}
+                      onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
+                      className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 rounded text-white focus:border-yellow-500/60 focus:outline-none text-center text-xl font-mono tracking-[0.5em]"
+                      placeholder="000000"
+                      maxLength={6}
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleResend}
+                      disabled={resending}
+                      className="mt-2 text-xs text-yellow-600 hover:text-yellow-400 disabled:opacity-50"
+                    >
+                      {resending ? 'Envoi...' : 'Renvoyer le code'}
+                    </button>
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase">
                     Mot de passe
@@ -98,7 +169,7 @@ export default function ResetPassword() {
                       type={showPassword ? 'text' : 'password'}
                       required value={password}
                       onChange={e => { setPassword(e.target.value); setError(''); }}
-                      className="w-full px-4 py-3 pr-12 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none text-sm"
+                      className="w-full px-4 py-3 pr-12 bg-black/50 border border-yellow-900/30 rounded text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none text-sm"
                       placeholder="••••••••"
                     />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-yellow-500 transition-colors p-1">
@@ -129,7 +200,7 @@ export default function ResetPassword() {
                     type={showPassword ? 'text' : 'password'}
                     required value={confirmPassword}
                     onChange={e => { setConfirmPassword(e.target.value); setError(''); }}
-                    className={`w-full px-4 py-3 bg-black/50 border text-white placeholder-gray-700 focus:outline-none text-sm transition-colors ${confirmPassword && password !== confirmPassword ? 'border-red-800/60 focus:border-red-700' : 'border-yellow-900/30 focus:border-yellow-500/60'}`}
+                    className={`w-full px-4 py-3 bg-black/50 border rounded text-white placeholder-gray-700 focus:outline-none text-sm transition-colors ${confirmPassword && password !== confirmPassword ? 'border-red-800/60 focus:border-red-700' : 'border-yellow-900/30 focus:border-yellow-500/60'}`}
                     placeholder="••••••••"
                   />
                 </div>
