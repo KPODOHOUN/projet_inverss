@@ -1,21 +1,17 @@
 // Prefer an explicit override (REACT_APP_API_URL) when set — e.g. a real
 // production deployment where the API lives on a different domain entirely.
 //
-// In local development, always use the same-origin `/api` path so the CRA
-// dev-server proxy forwards to the backend — works on any dev port (3000,
-// 3001, …), localhost, 127.0.0.1, and LAN IP (phone) without CORS.
+// Otherwise always use the same-origin `/api` path. In dev, the CRA
+// dev-server proxy (setupProxy.js) forwards it to the backend — works on any
+// dev port, localhost, 127.0.0.1, and LAN IP (phone) without CORS. In
+// production, nginx reverse-proxies `/api/` to the backend on the same
+// origin/port (see the server's nginx site config) — there is no public
+// port 5000 to hit directly, so a same-origin path is the only thing that
+// works there too.
 export const getApiUrl = () => {
   if (process.env.REACT_APP_API_URL) {
     return process.env.REACT_APP_API_URL.replace(/\/$/, '');
   }
 
-  if (typeof window !== 'undefined') {
-    const { protocol, hostname } = window.location;
-    if (process.env.NODE_ENV === 'development') {
-      return '/api';
-    }
-    return `${protocol}//${hostname}:5000/api`;
-  }
-
-  return 'http://localhost:5000/api';
+  return '/api';
 };
