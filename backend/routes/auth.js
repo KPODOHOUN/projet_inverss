@@ -24,7 +24,10 @@ if (googleEnabled) {
   router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
   router.get('/google/callback', (req, res, next) => {
     passport.authenticate('google', { session: false }, (err, user) => {
-      if (err || !user) return res.redirect(`${frontendUrlFromRequest(req)}/login?error=google_failed`);
+      if (err || !user) {
+        console.error('Google OAuth callback failed:', err?.message || err || 'no user returned', req.query.error ? `(provider error: ${req.query.error})` : '');
+        return res.redirect(`${frontendUrlFromRequest(req)}/login?error=google_failed`);
+      }
       req.user = user;
       authController.socialCallback(req, res);
     })(req, res, next);
@@ -39,7 +42,10 @@ if (facebookEnabled) {
   router.get('/facebook', passport.authenticate('facebook', { scope: ['email'], session: false }));
   router.get('/facebook/callback', (req, res, next) => {
     passport.authenticate('facebook', { session: false }, (err, user) => {
-      if (err || !user) return res.redirect(`${frontendUrlFromRequest(req)}/login?error=facebook_failed`);
+      if (err || !user) {
+        console.error('Facebook OAuth callback failed:', err?.message || err || 'no user returned');
+        return res.redirect(`${frontendUrlFromRequest(req)}/login?error=facebook_failed`);
+      }
       req.user = user;
       authController.socialCallback(req, res);
     })(req, res, next);
