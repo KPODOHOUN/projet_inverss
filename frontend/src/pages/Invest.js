@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const INVESTMENT_PACK_KEYS = ['cac40', 'eurostoxx50', 'ftse100', 'nikkei225', 'dowjones30', 'nasdaq100', 'sp500', 'russell2000', 'bund', 'tbonds', 'us10y', 'turbo48h'];
+const INVESTMENT_PACK_KEYS = ['russell2000', 'cac40', 'eurostoxx50', 'ftse100', 'nikkei225', 'dowjones30', 'nasdaq100', 'sp500', 'bund', 'tbonds', 'us10y', 'turbo48h'];
 
 // Deliberately minimal: pack + amount, nothing else. No ROI, duration or
 // projected gain shown before committing — those numbers still exist on the

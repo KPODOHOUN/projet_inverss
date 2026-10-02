@@ -1,13 +1,21 @@
 const router = require('express').Router();
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const auth = require('../middleware/auth');
 const kycController = require('../controllers/kycController');
 
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
 
+// multer's diskStorage never creates its destination directory — on a fresh
+// deploy (uploads/ is gitignored, so a new clone never has it) every upload
+// fails with ENOENT. Create it once at startup so this can't happen again
+// regardless of environment (local, VPS, container, fresh clone).
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+fs.mkdirSync(uploadsDir, { recursive: true });
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'uploads')),
+  destination: (req, file, cb) => cb(null, uploadsDir),
   filename: (req, file, cb) => cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname).toLowerCase()}`)
 });
 

@@ -28,6 +28,7 @@ const seed = async () => {
   // ETF-doubling draft. Turbo 48H stays a separate, distinct high-risk
   // product exactly as in the official IMC presentation.
   const packs = [
+    { key: 'russell2000', name: 'Dangote Petroleum Refinery & Petrochemicals FZE', minAmount: 2000, maxAmount: 2999, roi: '6.5-7', duration: 30, durationUnit: 'days', description: 'Pack thématique inspiré de la raffinerie Dangote — investissement professionnel' },
     { key: 'cac40', name: 'CAC 40', minAmount: 25, maxAmount: 49, roi: '3-3.5', duration: 5, durationUnit: 'days', description: 'Pack thématique CAC 40 — l\'entrée la plus accessible' },
     { key: 'eurostoxx50', name: 'Euro Stoxx 50', minAmount: 50, maxAmount: 99, roi: '3.5-4', duration: 7, durationUnit: 'days', description: 'Pack thématique Euro Stoxx 50 — commencez votre voyage d\'investissement' },
     { key: 'ftse100', name: 'FTSE 100', minAmount: 100, maxAmount: 199, roi: '4-4.5', duration: 10, durationUnit: 'days', description: 'Pack thématique FTSE 100' },
@@ -35,7 +36,6 @@ const seed = async () => {
     { key: 'dowjones30', name: 'Dow Jones 30', minAmount: 300, maxAmount: 499, roi: '5-5.5', duration: 18, durationUnit: 'days', description: 'Pack thématique Dow Jones 30' },
     { key: 'nasdaq100', name: 'Nasdaq 100', minAmount: 500, maxAmount: 999, roi: '5.5-6', duration: 21, durationUnit: 'days', description: 'Pack thématique Nasdaq 100 — amplifiez vos rendements' },
     { key: 'sp500', name: 'S&P 500', minAmount: 1000, maxAmount: 1999, roi: '6-6.5', duration: 25, durationUnit: 'days', description: 'Pack thématique S&P 500 — le benchmark le plus suivi' },
-    { key: 'russell2000', name: 'Raffinerie Dangote', minAmount: 2000, maxAmount: 2999, roi: '6.5-7', duration: 30, durationUnit: 'days', description: 'Pack thématique inspiré de la raffinerie Dangote — investissement professionnel' },
     { key: 'bund', name: 'Bund', minAmount: 3000, maxAmount: 4999, roi: '7-7.5', duration: 35, durationUnit: 'days', description: 'Pack thématique Bund — pour grands investisseurs' },
     { key: 'tbonds', name: 'T-Bonds', minAmount: 5000, maxAmount: 9999, roi: '7.5-8.5', duration: 45, durationUnit: 'days', description: 'Pack thématique T-Bonds — pack élite' },
     { key: 'us10y', name: 'US 10Y', minAmount: 10000, maxAmount: null, roi: '8.5-10', duration: 60, durationUnit: 'days', description: 'Pack thématique US 10Y — investissement institutionnel' },
