@@ -14,17 +14,28 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: root
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          # Default command_timeout (10m) can be too tight for install+build
+          # under load — a step silently dying here leaves the server one
+          # commit ahead of its running process until someone notices.
+          command_timeout: 20m
           script: |
             set -e
             cd /var/www/app
+            echo "== pulling latest code =="
             git fetch origin main
             git reset --hard origin/main
 
+            echo "== backend deps =="
             cd backend
             npm install --production
 
+            echo "== frontend build =="
             cd ../frontend
             npm install
             npm run build
 
+            echo "== restarting backend =="
             pm2 restart neliaxa-api --update-env
+
+            echo "== deploy finished, now running: =="
+            cd /var/www/app && git rev-parse HEAD
