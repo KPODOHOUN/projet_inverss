@@ -28,7 +28,7 @@ const seed = async () => {
   // ETF-doubling draft. Turbo 48H stays a separate, distinct high-risk
   // product exactly as in the official IMC presentation.
   const packs = [
-    { key: 'russell2000', name: 'Dangote Petroleum Refinery & Petrochemicals FZE', minAmount: 2000, maxAmount: 2999, roi: '6.5-7', duration: 30, durationUnit: 'days', description: 'Pack thématique inspiré de la raffinerie Dangote — investissement professionnel' },
+    { key: 'russell2000', name: 'Dangote Petroleum Refinery & Petrochemicals FZE', minAmount: 25, maxAmount: 2999, roi: '6.5-7', duration: 30, durationUnit: 'days', description: 'Pack thématique inspiré de la raffinerie Dangote — investissement professionnel' },
     { key: 'cac40', name: 'CAC 40', minAmount: 25, maxAmount: 49, roi: '3-3.5', duration: 5, durationUnit: 'days', description: 'Pack thématique CAC 40 — l\'entrée la plus accessible' },
     { key: 'eurostoxx50', name: 'Euro Stoxx 50', minAmount: 50, maxAmount: 99, roi: '3.5-4', duration: 7, durationUnit: 'days', description: 'Pack thématique Euro Stoxx 50 — commencez votre voyage d\'investissement' },
     { key: 'ftse100', name: 'FTSE 100', minAmount: 100, maxAmount: 199, roi: '4-4.5', duration: 10, durationUnit: 'days', description: 'Pack thématique FTSE 100' },
