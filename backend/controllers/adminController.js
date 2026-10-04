@@ -502,17 +502,20 @@ exports.listTransactions = async (req, res) => {
 // of one click silently standing in for the whole payout process.
 exports.approveTransaction = async (req, res) => {
   try {
-    const txn = await Transaction.findById(req.params.txId);
-    if (!txn) return error(res, 'Transaction not found', 404);
-    if (txn.status !== 'pending') return error(res, 'Transaction already processed');
+    const existing = await Transaction.findById(req.params.txId);
+    if (!existing) return error(res, 'Transaction not found', 404);
 
-    if (txn.type === 'withdrawal') {
-      txn.status = 'approved';
-    } else {
-      txn.status = 'completed';
-    }
-    txn.updatedAt = new Date();
-    await txn.save();
+    // Atomic status flip, guarded by the current status — if two admin
+    // clicks (or two tabs) race on the same transaction, only the first
+    // one actually transitions it; the second gets "already processed"
+    // instead of both going on to credit the balance below.
+    const newStatus = existing.type === 'withdrawal' ? 'approved' : 'completed';
+    const txn = await Transaction.findOneAndUpdate(
+      { _id: req.params.txId, status: 'pending' },
+      { status: newStatus, updatedAt: new Date() },
+      { new: true }
+    );
+    if (!txn) return error(res, 'Transaction already processed');
 
     // A deposit never touched the balance at request time (unlike a
     // withdrawal, which reserves it upfront) — approving is what actually
@@ -580,14 +583,17 @@ exports.completeTransaction = async (req, res) => {
 exports.rejectTransaction = async (req, res) => {
   try {
     const { reason } = req.body;
-    const txn = await Transaction.findById(req.params.txId);
-    if (!txn) return error(res, 'Transaction not found', 404);
-    if (!['pending', 'approved'].includes(txn.status)) return error(res, 'Transaction already processed');
+    const existing = await Transaction.findById(req.params.txId);
+    if (!existing) return error(res, 'Transaction not found', 404);
 
-    txn.status = 'rejected';
-    txn.rejectionReason = reason;
-    txn.updatedAt = new Date();
-    await txn.save();
+    // Same atomic guard as approve — a withdrawal reject refunds the
+    // balance below, so a race here would double-credit the user.
+    const txn = await Transaction.findOneAndUpdate(
+      { _id: req.params.txId, status: { $in: ['pending', 'approved'] } },
+      { status: 'rejected', rejectionReason: reason, updatedAt: new Date() },
+      { new: true }
+    );
+    if (!txn) return error(res, 'Transaction already processed');
 
     // A rejected deposit never credited anything (see approve, above) — just
     // marking it rejected above is the whole job, nothing to undo here.
@@ -614,14 +620,16 @@ exports.rejectTransaction = async (req, res) => {
 exports.cancelTransaction = async (req, res) => {
   try {
     const { reason } = req.body;
-    const txn = await Transaction.findById(req.params.txId);
-    if (!txn) return error(res, 'Transaction not found', 404);
-    if (!['pending', 'approved', 'processing'].includes(txn.status)) return error(res, 'Transaction already processed');
+    const existing = await Transaction.findById(req.params.txId);
+    if (!existing) return error(res, 'Transaction not found', 404);
 
-    txn.status = 'cancelled';
-    txn.rejectionReason = reason || '';
-    txn.updatedAt = new Date();
-    await txn.save();
+    // Same atomic guard — a withdrawal cancel also refunds the balance.
+    const txn = await Transaction.findOneAndUpdate(
+      { _id: req.params.txId, status: { $in: ['pending', 'approved', 'processing'] } },
+      { status: 'cancelled', rejectionReason: reason || '', updatedAt: new Date() },
+      { new: true }
+    );
+    if (!txn) return error(res, 'Transaction already processed');
 
     if (txn.type === 'withdrawal') {
       await User.findByIdAndUpdate(txn.userId, { $inc: { balance: Math.abs(txn.amount) } });
