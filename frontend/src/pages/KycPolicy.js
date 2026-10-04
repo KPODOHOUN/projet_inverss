@@ -58,10 +58,6 @@ export default function KycPolicy() {
             </section>
           ))}
         </div>
-
-        <p className="mt-12 text-xs text-gray-600 border-t border-yellow-900/20 pt-6">
-          Ce document est un modèle général et ne remplace pas un avis juridique. Il est recommandé de le faire réviser par un professionnel du droit adapté à votre juridiction avant un lancement public.
-        </p>
       </div>
     </div>
   );

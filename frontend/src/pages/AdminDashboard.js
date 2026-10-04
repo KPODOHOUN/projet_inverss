@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import useForceDarkMode from '../hooks/useForceDarkMode';
 import { packDisplayName, PACK_NAMES } from '../utils/packNames';
 import { tierOf } from '../utils/packTiers';
-import ThemeToggle from '../components/ThemeToggle';
 
 const INVESTMENT_PACK_KEYS = Object.keys(PACK_NAMES).filter(k => k !== 'turbo48h');
 const TIER_COLOR = { bronze: 'gray', silver: 'blue', gold: 'yellow', platinum: 'purple', diamond: 'green' };
 
 export default function AdminDashboard() {
+  useForceDarkMode();
   const { user, logout, api } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
@@ -106,7 +107,6 @@ export default function AdminDashboard() {
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-xs text-gray-400">Système opérationnel</span>
           </div>
-          <ThemeToggle />
           <div className="text-right hidden sm:block">
             <p className="text-xs font-bold text-white">{user?.firstName} {user?.lastName}</p>
             <p className="text-xs text-yellow-500 uppercase tracking-widest">{user?.role || 'Admin'}</p>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import useForceDarkMode from '../hooks/useForceDarkMode';
 import { packDisplayName } from '../utils/packNames';
-import ThemeToggle from '../components/ThemeToggle';
 import NotificationBell from '../components/NotificationBell';
 import TwoFactorAuth from '../components/auth/TwoFactorAuth';
 import KYC from './KYC';
@@ -138,6 +138,7 @@ const IC = {
 };
 
 export default function Dashboard() {
+  useForceDarkMode();
   const { user, logout, api } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab]       = useState('trading');
@@ -230,7 +231,6 @@ export default function Dashboard() {
           {}
           <div className="flex items-center gap-2 sm:gap-4">
             <NotificationBell onNavigate={handleNotificationNavigate} />
-            <ThemeToggle />
             <div className="text-right hidden sm:block">
               <p className="font-semibold text-sm text-white leading-tight">
                 {user?.firstName} {user?.lastName}

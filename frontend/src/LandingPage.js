@@ -281,12 +281,15 @@ function HeroSection({ scrollToSection }) {
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="text-left animate-hero-in">
-            <p className="imc-badge mb-4">Plateforme d&apos;investissement</p>
+            <p className="imc-badge mb-4">Hub financier dédié aux décideurs</p>
 
             <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight max-w-xl ${isLight ? 'text-gray-900' : 'text-white'}`}>
               Investissez intelligemment avec IMC
             </h1>
 
+            <p className={`text-base mb-1 font-semibold max-w-xl leading-relaxed ${isLight ? 'text-gray-800' : 'text-gray-200'}`}>
+              Maximisez votre patrimoine avec les stratégies ETF signées IMC.
+            </p>
             <p className={`text-base mb-6 max-w-xl leading-relaxed ${isLight ? 'text-gray-600' : 'text-gray-400'}`}>
               Trading, packs d&apos;investissement et formation dans un espace sécurisé.
             </p>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import ThemeToggle from '../components/ThemeToggle';
+import useForceDarkMode from '../hooks/useForceDarkMode';
 
 const PERIOD_OPTIONS = [
   { value: 'all', label: 'Tout' },
@@ -19,6 +19,7 @@ const withinPeriod = (dateStr, period) => {
 // program's rules ("son rôle principal est uniquement de parrainer"). No
 // sidebar/tabs like Dashboard.js — a single focused screen.
 export default function AmbassadorDashboard() {
+  useForceDarkMode();
   const { user, logout, api } = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
@@ -64,7 +65,6 @@ export default function AmbassadorDashboard() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-8 w-auto object-contain" />
           <div className="flex items-center gap-3 sm:gap-4">
-            <ThemeToggle />
             <div className="text-right hidden sm:block">
               <p className="font-semibold text-sm text-white leading-tight">{user?.firstName} {user?.lastName}</p>
               <p className="text-xs text-gray-500">Ambassadeur</p>
