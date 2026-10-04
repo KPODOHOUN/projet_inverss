@@ -50,7 +50,7 @@ exports.deposit = async (req, res) => {
   }
 };
 
-const MIN_REFERRALS_BEFORE_FIRST_WITHDRAWAL = 3;
+const { MIN_REFERRALS_BEFORE_FIRST_WITHDRAWAL } = require('../config/constants');
 
 exports.getDepositInfo = async (req, res) => {
   try {

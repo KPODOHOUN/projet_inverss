@@ -60,7 +60,7 @@ export default function WeeklyPayment({ onNavigate }) {
         setTransactions(txs);
         const hasWithdrawnBefore = txs.some(t => t.type === 'withdrawal');
         if (!hasWithdrawnBefore) {
-          setReferralGate({ count: refRes.data?.data?.totalReferrals || 0, required: 5 });
+          setReferralGate({ count: refRes.data?.data?.totalReferrals || 0, required: refRes.data?.data?.withdrawalReferralRequirement ?? 3 });
         }
       }
       if (depRes.data.success) {

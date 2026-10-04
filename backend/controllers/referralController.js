@@ -1,6 +1,7 @@
 const Referral = require('../models/Referral');
 const PlatformConfig = require('../models/PlatformConfig');
 const { success, error } = require('../utils/response');
+const { MIN_REFERRALS_BEFORE_FIRST_WITHDRAWAL } = require('../config/constants');
 
 exports.getStats = async (req, res) => {
   try {
@@ -26,7 +27,8 @@ exports.getStats = async (req, res) => {
       totalCommissionsUSD,
       commissionRate: config?.referralCommissionRate ?? 10,
       referralCode: req.user.referralCode,
-      referrals: referralsList
+      referrals: referralsList,
+      withdrawalReferralRequirement: MIN_REFERRALS_BEFORE_FIRST_WITHDRAWAL
     });
   } catch (err) {
     error(res, err.message);
