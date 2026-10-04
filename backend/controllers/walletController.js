@@ -18,7 +18,7 @@ exports.deposit = async (req, res) => {
     const amount = Number(req.body.amount);
     const { txHash, network } = req.body;
     if (!Number.isFinite(amount) || amount <= 0) return error(res, 'Montant invalide');
-    if (!txHash?.trim()) return error(res, 'Le hash de la transaction USDT est requis');
+    if (!txHash?.trim()) return error(res, "L'ID de transaction USDT est requis");
     if (req.user.kycStatus !== 'verified') return error(res, 'Vérification KYC requise avant tout dépôt', 403);
 
     const config = await PlatformConfig.findOne();
@@ -33,7 +33,7 @@ exports.deposit = async (req, res) => {
     // Same hash claimed twice (by mistake or on purpose) must never pay out
     // twice — this was a real gap before (nothing enforced uniqueness here).
     const duplicate = await Transaction.findOne({ type: 'deposit', proof: txHash.trim() });
-    if (duplicate) return error(res, 'Ce hash de transaction a déjà été utilisé pour un dépôt.');
+    if (duplicate) return error(res, 'Cet ID de transaction a déjà été utilisé pour un dépôt.');
 
     const transaction = await Transaction.create({
       userId: req.user._id,

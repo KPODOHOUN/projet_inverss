@@ -242,13 +242,16 @@ export default function WeeklyPayment({ onNavigate }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Hash de la transaction</label>
+                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">ID de transaction</label>
                   <input
                     type="text"
                     value={depositTxHash} onChange={e => setDepositTxHash(e.target.value)}
-                    placeholder="0x... ou identifiant de transaction"
+                    placeholder="0x..."
                     className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-sm rounded"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Disponible dans l'historique de votre wallet ou de la plateforme utilisée pour l'envoi, juste après la transaction.
+                  </p>
                 </div>
                 <button
                   type="submit"

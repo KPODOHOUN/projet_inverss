@@ -1821,7 +1821,7 @@ function TransactionsTab({ api }) {
                   ) : (
                     <div className="border border-yellow-900/30 rounded p-3">
                       <p className="text-xs text-gray-600 mb-1">
-                        {selected.type === 'withdrawal' ? 'Adresse USDT de destination' : 'Hash de la transaction USDT'}
+                        {selected.type === 'withdrawal' ? 'Adresse USDT de destination' : 'ID de transaction USDT'}
                       </p>
                       <code className="block text-yellow-300 text-xs break-all">{selected.proof}</code>
                     </div>
