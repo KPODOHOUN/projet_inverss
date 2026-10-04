@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getApiUrl } from '../../utils/apiUrl';
+import useForceDarkMode from '../../hooks/useForceDarkMode';
 
 export default function Register() {
+  useForceDarkMode();
   const navigate = useNavigate();
   const { register } = useAuth();
   const [searchParams] = useSearchParams();

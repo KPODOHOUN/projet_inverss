@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getApiUrl } from '../../utils/apiUrl';
+import useForceDarkMode from '../../hooks/useForceDarkMode';
 
 const OAUTH_ERROR_MESSAGES = {
   google_not_configured: "La connexion Google n'est pas encore configurée sur ce site.",
@@ -10,6 +11,7 @@ const OAUTH_ERROR_MESSAGES = {
 };
 
 export default function Login() {
+  useForceDarkMode();
   const navigate = useNavigate();
   const { login } = useAuth();
   const [searchParams] = useSearchParams();
