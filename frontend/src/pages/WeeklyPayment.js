@@ -8,6 +8,7 @@ const PERIOD_OPTIONS = [
   { value: 'month', label: 'Ce mois' },
 ];
 const PERIOD_MS = { today: 24 * 60 * 60 * 1000, week: 7 * 24 * 60 * 60 * 1000, month: 30 * 24 * 60 * 60 * 1000 };
+const NETWORK_LABELS = { TRC20: 'TRC20 (Tron)', ERC20: 'ERC20 (Ethereum)', BEP20: 'BEP20 (BNB Chain)', POLYGON: 'Polygon' };
 const withinPeriod = (dateStr, period) => {
   if (period === 'all') return true;
   return Date.now() - new Date(dateStr).getTime() <= PERIOD_MS[period];
@@ -26,6 +27,7 @@ export default function WeeklyPayment({ onNavigate }) {
   const [loadError, setLoadError] = useState(false);
 
   const [depositInfo, setDepositInfo] = useState(null);
+  const [depositNetwork, setDepositNetwork] = useState('');
   const [depositAmount, setDepositAmount] = useState('');
   const [depositTxHash, setDepositTxHash] = useState('');
   const [copied, setCopied] = useState(false);
@@ -61,7 +63,10 @@ export default function WeeklyPayment({ onNavigate }) {
           setReferralGate({ count: refRes.data?.data?.totalReferrals || 0, required: 5 });
         }
       }
-      if (depRes.data.success) setDepositInfo(depRes.data.data);
+      if (depRes.data.success) {
+        setDepositInfo(depRes.data.data);
+        setDepositNetwork(prev => prev || depRes.data.data.wallets?.[0]?.network || '');
+      }
     } catch (e) {
       setLoadError(true);
     } finally {
@@ -71,9 +76,11 @@ export default function WeeklyPayment({ onNavigate }) {
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
+  const selectedWallet = depositInfo?.wallets?.find(w => w.network === depositNetwork);
+
   const copyAddress = () => {
-    if (!depositInfo?.usdtWalletAddress) return;
-    navigator.clipboard.writeText(depositInfo.usdtWalletAddress).then(() => {
+    if (!selectedWallet?.address) return;
+    navigator.clipboard.writeText(selectedWallet.address).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -89,7 +96,7 @@ export default function WeeklyPayment({ onNavigate }) {
 
     setDepositing(true);
     try {
-      await api.post('/wallet/deposit', { amount, txHash: depositTxHash.trim() });
+      await api.post('/wallet/deposit', { amount, txHash: depositTxHash.trim(), network: depositNetwork });
       setDepositSuccess('Dépôt soumis — en attente de vérification par un administrateur.');
       setDepositAmount('');
       setDepositTxHash('');
@@ -199,15 +206,30 @@ export default function WeeklyPayment({ onNavigate }) {
               {depositSuccess && <div className="mb-4 p-3 bg-green-900/30 border border-green-600 text-green-400 text-sm rounded">{depositSuccess}</div>}
               {depositError && <div className="mb-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{depositError}</div>}
 
+              {depositInfo.wallets.length > 1 && (
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {depositInfo.wallets.map(w => (
+                    <button
+                      key={w.network}
+                      type="button"
+                      onClick={() => setDepositNetwork(w.network)}
+                      className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${depositNetwork === w.network ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+                    >
+                      {NETWORK_LABELS[w.network] || w.network}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="mb-4 p-3 bg-black/40 border border-yellow-900/30 rounded">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold text-yellow-600 uppercase tracking-widest">Adresse ({depositInfo.usdtNetwork})</span>
+                  <span className="text-xs font-bold text-yellow-600 uppercase tracking-widest">Adresse ({NETWORK_LABELS[selectedWallet?.network] || selectedWallet?.network})</span>
                   <button type="button" onClick={copyAddress} className="text-xs text-yellow-500 hover:text-yellow-400 font-bold">
                     {copied ? 'Copié ✓' : 'Copier'}
                   </button>
                 </div>
-                <code className="block text-yellow-300 text-xs break-all">{depositInfo.usdtWalletAddress}</code>
-                <p className="text-xs text-red-400 mt-2">⚠️ Envoyez uniquement du USDT sur le réseau {depositInfo.usdtNetwork}.</p>
+                <code className="block text-yellow-300 text-xs break-all">{selectedWallet?.address}</code>
+                <p className="text-xs text-red-400 mt-2">⚠️ Envoyez uniquement du USDT sur le réseau {NETWORK_LABELS[selectedWallet?.network] || selectedWallet?.network}.</p>
               </div>
 
               <form onSubmit={handleDeposit} className="space-y-3">
@@ -284,6 +306,7 @@ export default function WeeklyPayment({ onNavigate }) {
                 <option value="TRC20">USDT — TRC20 (Tron)</option>
                 <option value="ERC20">USDT — ERC20 (Ethereum)</option>
                 <option value="BEP20">USDT — BEP20 (BNB Chain)</option>
+                <option value="POLYGON">USDT — Polygon</option>
               </select>
             </div>
 

@@ -15,20 +15,27 @@ const { computeAccruedEarnings } = require('../utils/investmentEarnings');
 exports.deposit = async (req, res) => {
   try {
     const amount = Number(req.body.amount);
-    const { txHash } = req.body;
+    const { txHash, network } = req.body;
     if (!Number.isFinite(amount) || amount <= 0) return error(res, 'Montant invalide');
     if (!txHash?.trim()) return error(res, 'Le hash de la transaction USDT est requis');
     if (req.user.kycStatus !== 'verified') return error(res, 'Vérification KYC requise avant tout dépôt', 403);
 
     const config = await PlatformConfig.findOne();
-    if (!config?.usdtWalletAddress) return error(res, 'Les dépôts ne sont pas encore configurés. Contactez le support.', 503);
+    if (!config?.usdtWallets?.length) return error(res, 'Les dépôts ne sont pas encore configurés. Contactez le support.', 503);
+
+    // The user deposited to one of possibly several configured networks —
+    // required once more than one exists, so we know which address they
+    // actually sent to (matters for the admin verifying against a block
+    // explorer later).
+    const wallet = config.usdtWallets.find(w => w.network === network);
+    if (!wallet) return error(res, 'Réseau de dépôt invalide');
 
     const transaction = await Transaction.create({
       userId: req.user._id,
       type: 'deposit',
       amount,
       status: 'pending',
-      method: `usdt-${config.usdtNetwork}`,
+      method: `usdt-${wallet.network}`,
       proof: txHash.trim()
     });
 
@@ -43,10 +50,10 @@ const MIN_REFERRALS_BEFORE_FIRST_WITHDRAWAL = 5;
 exports.getDepositInfo = async (req, res) => {
   try {
     const config = await PlatformConfig.findOne();
+    const wallets = config?.usdtWallets || [];
     success(res, {
-      usdtWalletAddress: config?.usdtWalletAddress || '',
-      usdtNetwork: config?.usdtNetwork || 'TRC20',
-      configured: !!config?.usdtWalletAddress
+      wallets,
+      configured: wallets.length > 0
     });
   } catch (err) {
     error(res, err.message);
@@ -94,7 +101,7 @@ exports.getBalances = async (req, res) => {
   }
 };
 
-const WITHDRAWAL_NETWORKS = ['TRC20', 'ERC20', 'BEP20'];
+const WITHDRAWAL_NETWORKS = ['TRC20', 'ERC20', 'BEP20', 'POLYGON'];
 
 exports.withdraw = async (req, res) => {
   try {

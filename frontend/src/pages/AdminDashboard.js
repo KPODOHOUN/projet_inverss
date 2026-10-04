@@ -2278,8 +2278,7 @@ function ConfigTab({ api }) {
     withdrawalFee: 2.5,
     minWithdrawal: 50,
     maxWithdrawal: 10000,
-    usdtWalletAddress: '',
-    usdtNetwork: 'TRC20',
+    usdtWallets: [],
     modules: {
       academy: true,
       referral: true,
@@ -2287,6 +2286,8 @@ function ConfigTab({ api }) {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [newWalletNetwork, setNewWalletNetwork] = useState('TRC20');
+  const [newWalletAddress, setNewWalletAddress] = useState('');
   const [msg, setMsg] = useState('');
 
   const [loadError, setLoadError] = useState('');
@@ -2367,28 +2368,63 @@ function ConfigTab({ api }) {
         </SectionBox>
 
         {}
-        <SectionBox title="Portefeuille USDT (dépôts)">
+        <SectionBox title="Portefeuilles USDT (dépôts)">
           <div className="space-y-3">
-            {!config.usdtWalletAddress && (
-              <Alert type="warning">Aucune adresse configurée — les utilisateurs ne peuvent pas encore investir en USDT.</Alert>
+            {config.usdtWallets.length === 0 && (
+              <Alert type="warning">Aucune adresse configurée — les utilisateurs ne peuvent pas encore déposer en USDT.</Alert>
             )}
-            <Select
-              label="Réseau"
-              value={config.usdtNetwork}
-              onChange={e => setConfig({ ...config, usdtNetwork: e.target.value })}
-              options={[
-                { value: 'TRC20', label: 'TRC20 (Tron)' },
-                { value: 'ERC20', label: 'ERC20 (Ethereum)' },
-                { value: 'BEP20', label: 'BEP20 (BNB Chain)' },
-              ]}
-            />
-            <Input
-              label="Adresse de dépôt USDT"
-              value={config.usdtWalletAddress}
-              onChange={e => setConfig({ ...config, usdtWalletAddress: e.target.value })}
-              placeholder="Adresse affichée aux utilisateurs pour leurs dépôts"
-              hint="Cette adresse doit correspondre au réseau choisi ci-dessus"
-            />
+
+            {config.usdtWallets.map((w, i) => (
+              <div key={i} className="flex items-center gap-3 border border-yellow-900/20 rounded p-3">
+                <Badge label={w.network} color="yellow" />
+                <code className="flex-1 text-xs text-gray-300 break-all">{w.address}</code>
+                <button
+                  type="button"
+                  onClick={() => setConfig({ ...config, usdtWallets: config.usdtWallets.filter((_, idx) => idx !== i) })}
+                  className="text-red-500 hover:text-red-400 text-xs font-bold bg-transparent border-none cursor-pointer"
+                >
+                  SUPPRIMER
+                </button>
+              </div>
+            ))}
+
+            <div className="flex flex-wrap items-end gap-3 pt-2 border-t border-yellow-900/20">
+              <div className="w-40">
+                <Select
+                  label="Réseau"
+                  value={newWalletNetwork}
+                  onChange={e => setNewWalletNetwork(e.target.value)}
+                  options={[
+                    { value: 'TRC20', label: 'TRC20 (Tron)' },
+                    { value: 'ERC20', label: 'ERC20 (Ethereum)' },
+                    { value: 'BEP20', label: 'BEP20 (BNB Chain)' },
+                    { value: 'POLYGON', label: 'Polygon' },
+                  ]}
+                />
+              </div>
+              <div className="flex-1 min-w-[220px]">
+                <Input
+                  label="Adresse de dépôt"
+                  value={newWalletAddress}
+                  onChange={e => setNewWalletAddress(e.target.value)}
+                  placeholder="Adresse affichée aux utilisateurs pour ce réseau"
+                />
+              </div>
+              <AdminBtn
+                color="green"
+                size="md"
+                disabled={!newWalletAddress.trim() || config.usdtWallets.some(w => w.network === newWalletNetwork)}
+                onClick={() => {
+                  setConfig({ ...config, usdtWallets: [...config.usdtWallets, { network: newWalletNetwork, address: newWalletAddress.trim() }] });
+                  setNewWalletAddress('');
+                }}
+              >
+                + AJOUTER
+              </AdminBtn>
+            </div>
+            {config.usdtWallets.some(w => w.network === newWalletNetwork) && (
+              <p className="text-xs text-gray-600">Ce réseau a déjà une adresse configurée — supprimez-la d'abord pour la remplacer.</p>
+            )}
           </div>
         </SectionBox>
 

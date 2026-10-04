@@ -8,11 +8,15 @@ const platformConfigSchema = new mongoose.Schema({
   withdrawalFee: { type: Number, default: 2 },
   minWithdrawal: { type: Number, default: 1 },
   maxWithdrawal: { type: Number, default: 50000 },
-  // USDT is the platform's only payment asset (deposits and withdrawals) —
-  // set once a real wallet exists; left empty until then so the deposit UI
-  // can show a clear "not yet configured" state instead of a fake address.
-  usdtWalletAddress: { type: String, default: '' },
-  usdtNetwork: { type: String, enum: ['TRC20', 'ERC20', 'BEP20'], default: 'TRC20' },
+  // USDT is the platform's only payment asset (deposits and withdrawals).
+  // Multiple networks can be configured at once (the same USDT token exists
+  // on several chains) — the user picks one at deposit time and sends to its
+  // matching address. Left empty until an admin adds at least one, so the
+  // deposit UI can show a clear "not yet configured" state.
+  usdtWallets: [{
+    network: { type: String, enum: ['TRC20', 'ERC20', 'BEP20', 'POLYGON'], required: true },
+    address: { type: String, required: true }
+  }],
   modules: {
     academy: { type: Boolean, default: true },
     referral: { type: Boolean, default: true }
