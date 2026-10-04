@@ -207,17 +207,16 @@ export default function WeeklyPayment({ onNavigate }) {
               {depositError && <div className="mb-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{depositError}</div>}
 
               {depositInfo.wallets.length > 1 && (
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {depositInfo.wallets.map(w => (
-                    <button
-                      key={w.network}
-                      type="button"
-                      onClick={() => setDepositNetwork(w.network)}
-                      className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${depositNetwork === w.network ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
-                    >
-                      {NETWORK_LABELS[w.network] || w.network}
-                    </button>
-                  ))}
+                <div className="mb-3">
+                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Réseau</label>
+                  <select
+                    value={depositNetwork} onChange={e => setDepositNetwork(e.target.value)}
+                    className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none rounded"
+                  >
+                    {depositInfo.wallets.map(w => (
+                      <option key={w.network} value={w.network}>USDT — {NETWORK_LABELS[w.network] || w.network}</option>
+                    ))}
+                  </select>
                 </div>
               )}
 
