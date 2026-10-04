@@ -7,11 +7,12 @@ const { success, error } = require('../utils/response');
 const emailService = require('../services/emailService');
 const { computeAccruedEarnings } = require('../utils/investmentEarnings');
 
-// A deposit is a claimed on-chain USDT payment with no blockchain/node
-// integration behind it — it sits pending until an admin checks the
-// transaction hash against a block explorer and approves it (see
-// adminController.approveTransaction), which is what actually credits the
-// balance. Requesting one never touches the balance itself.
+// A deposit is a claimed on-chain USDT payment. It's created pending, then
+// backend/services/depositVerification.js polls it against the real
+// blockchain (via free explorer APIs — see utils/blockchainVerification.js)
+// and auto-credits the balance once confirmed, with no admin step needed.
+// If the verification API isn't configured for a network (no API key set),
+// it just stays pending for the existing manual admin review instead.
 exports.deposit = async (req, res) => {
   try {
     const amount = Number(req.body.amount);
@@ -25,10 +26,14 @@ exports.deposit = async (req, res) => {
 
     // The user deposited to one of possibly several configured networks —
     // required once more than one exists, so we know which address they
-    // actually sent to (matters for the admin verifying against a block
-    // explorer later).
+    // actually sent to (matters for verification against a block explorer).
     const wallet = config.usdtWallets.find(w => w.network === network);
     if (!wallet) return error(res, 'Réseau de dépôt invalide');
+
+    // Same hash claimed twice (by mistake or on purpose) must never pay out
+    // twice — this was a real gap before (nothing enforced uniqueness here).
+    const duplicate = await Transaction.findOne({ type: 'deposit', proof: txHash.trim() });
+    if (duplicate) return error(res, 'Ce hash de transaction a déjà été utilisé pour un dépôt.');
 
     const transaction = await Transaction.create({
       userId: req.user._id,
@@ -39,7 +44,7 @@ exports.deposit = async (req, res) => {
       proof: txHash.trim()
     });
 
-    success(res, { transaction, message: 'Dépôt soumis, en attente de vérification par un administrateur' }, 201);
+    success(res, { transaction, message: 'Dépôt soumis — vérification automatique en cours, votre solde sera crédité dès confirmation.' }, 201);
   } catch (err) {
     error(res, err.message);
   }
