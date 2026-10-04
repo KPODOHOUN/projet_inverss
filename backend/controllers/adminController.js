@@ -10,6 +10,7 @@ const AcademyVideo = require('../models/AcademyVideo');
 const PlatformConfig = require('../models/PlatformConfig');
 const ActivityLog = require('../models/ActivityLog');
 const BlockedIP = require('../models/BlockedIP');
+const { refreshBlockedIpsCache } = require('../middleware/checkBlockedIp');
 const TradingAsset = require('../models/TradingAsset');
 const TradingCode = require('../models/TradingCode');
 const TradingPosition = require('../models/TradingPosition');
@@ -696,7 +697,13 @@ exports.blockedIps = async (req, res) => {
 exports.blockIp = async (req, res) => {
   try {
     const { ip, reason } = req.body;
-    const blocked = await BlockedIP.create({ ip, reason });
+    if (!ip?.trim()) return error(res, 'Adresse IP requise');
+    // Blocking is enforced before routing even resolves — blocking your own
+    // IP would lock every admin (including you) out of the panel with no
+    // way back in except direct database access.
+    if (ip.trim() === req.ip) return error(res, 'Vous ne pouvez pas bloquer votre propre adresse IP');
+    const blocked = await BlockedIP.create({ ip: ip.trim(), reason });
+    await refreshBlockedIpsCache();
     success(res, { blockedIp: blocked }, 201);
   } catch (err) { error(res, err.message); }
 };
@@ -704,6 +711,7 @@ exports.blockIp = async (req, res) => {
 exports.unblockIp = async (req, res) => {
   try {
     await BlockedIP.findOneAndDelete({ ip: req.params.ip });
+    await refreshBlockedIpsCache();
     success(res, { message: 'IP unblocked' });
   } catch (err) { error(res, err.message); }
 };

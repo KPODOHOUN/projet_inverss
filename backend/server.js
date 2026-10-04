@@ -6,6 +6,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const jwt = require('jsonwebtoken');
 const connectDB = require('./config/db');
 const { apiLimiter, authLimiter } = require('./middleware/rateLimiters');
+const { checkBlockedIp, startBlockedIpsCache } = require('./middleware/checkBlockedIp');
 const { passport } = require('./config/passport');
 const PlatformConfig = require('./models/PlatformConfig');
 const User = require('./models/User');
@@ -15,6 +16,7 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 app.use(helmet());
+app.use(checkBlockedIp);
 
 // Accept the configured FRONTEND_URL plus any extra origins listed in
 // EXTRA_CORS_ORIGINS (comma-separated) — e.g. a LAN IP so the site can be
@@ -120,6 +122,7 @@ const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
   require('./services/investmentMaturity').start();
   require('./services/tradingSettlement').start();
+  startBlockedIpsCache();
   const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);
   });
