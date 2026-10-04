@@ -151,6 +151,7 @@ export default function Dashboard() {
   const [stats, setStats]               = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [balance, setBalance]           = useState(user?.balance || 0);
+  const [summary, setSummary]           = useState(null);
   const [loading, setLoading]           = useState(true);
   const [sidebarOpen, setSidebarOpen]   = useState(false);
 
@@ -172,6 +173,7 @@ export default function Dashboard() {
       }
       if (balRes.data.success) {
         setBalance(balRes.data.data.summary.available);
+        setSummary(balRes.data.data.summary);
       }
     } catch (err) {
       console.error('Dashboard fetch error:', err);
@@ -329,7 +331,7 @@ export default function Dashboard() {
 
           {}
           <main className="lg:col-span-3 min-w-0">
-            {activeTab === 'overview'     && <OverviewTab user={user} balance={balance} investments={investments} stats={stats} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
+            {activeTab === 'overview'     && <OverviewTab user={user} balance={balance} summary={summary} investments={investments} transactions={transactions} stats={stats} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
             {activeTab === 'invest'       && <Invest onNavigate={setActiveTab} />}
             {activeTab === 'investments'  && <InvestmentsTab investments={investments} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
             {activeTab === 'wallet'       && <WeeklyPayment onNavigate={setActiveTab} />}
@@ -401,8 +403,7 @@ function Badge({ status }) {
   );
 }
 
-function OverviewTab({ user, balance, investments, stats, loading, onRefresh, onNavigate }) {
-  const [overviewPeriod, setOverviewPeriod] = useState('all');
+function OverviewTab({ user, balance, summary, investments, transactions, stats, loading, onRefresh, onNavigate }) {
   if (loading) return <Spinner />;
 
   const quickLinks = [
@@ -411,7 +412,9 @@ function OverviewTab({ user, balance, investments, stats, loading, onRefresh, on
     { id: 'referral', Icon: IC.Referral, title: 'Parrainage', desc: 'Invitez vos contacts' },
   ];
 
-  const recentInvestments = investments.filter(inv => withinPeriod(inv.createdAt, overviewPeriod));
+  const recentActivity = [...(transactions || [])]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 5);
 
   return (
     <div className="space-y-6">
@@ -425,40 +428,55 @@ function OverviewTab({ user, balance, investments, stats, loading, onRefresh, on
       </div>
 
       {}
-      <div className="bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 sm:p-6 shadow-2xl shadow-yellow-500/20 relative overflow-hidden">
-        {}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-black/10 rounded-bl-full pointer-events-none" />
-        <p className="text-xs font-bold tracking-widest uppercase text-black/50 mb-2">Solde disponible</p>
-        <h3 className="text-xl sm:text-2xl font-bold text-black mb-5 tracking-tight">
-          $ {balance.toFixed(2)}
-        </h3>
-        <div className="flex flex-wrap gap-3">
-          <button
-            onClick={() => onNavigate('wallet')}
-            className="flex items-center gap-2 px-5 py-2.5 rounded bg-black text-yellow-500 font-bold text-sm hover:bg-gray-900 transition-colors tracking-wide cursor-pointer border-none"
-          >
-            Déposer <IC.ArrowRight />
-          </button>
-          <button
-            onClick={() => onNavigate('invest')}
-            className="flex items-center gap-2 px-5 py-2.5 border-2 border-black/40 rounded font-bold text-sm hover:bg-black/10 transition-colors tracking-wide text-black cursor-pointer bg-transparent"
-          >
-            Investir
-          </button>
-          <button
-            onClick={() => onNavigate('wallet')}
-            className="flex items-center gap-2 px-5 py-2.5 border-2 border-black/40 rounded font-bold text-sm hover:bg-black/10 transition-colors tracking-wide text-black cursor-pointer bg-transparent"
-          >
-            Retirer
-          </button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-1 bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 shadow-2xl shadow-yellow-500/20 relative overflow-hidden rounded-lg">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-black/10 rounded-bl-full pointer-events-none" />
+          <p className="text-xs font-bold tracking-widest uppercase text-black/50 mb-2">Solde disponible</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-black mb-5 tracking-tight">
+            $ {balance.toFixed(2)}
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => onNavigate('wallet')}
+              className="flex items-center gap-1.5 px-4 py-2 rounded bg-black text-yellow-500 font-bold text-xs hover:bg-gray-900 transition-colors tracking-wide cursor-pointer border-none"
+            >
+              Déposer <IC.ArrowRight />
+            </button>
+            <button
+              onClick={() => onNavigate('invest')}
+              className="flex items-center gap-1.5 px-4 py-2 border-2 border-black/40 rounded font-bold text-xs hover:bg-black/10 transition-colors tracking-wide text-black cursor-pointer bg-transparent"
+            >
+              Investir
+            </button>
+            <button
+              onClick={() => onNavigate('wallet')}
+              className="flex items-center gap-1.5 px-4 py-2 border-2 border-black/40 rounded font-bold text-xs hover:bg-black/10 transition-colors tracking-wide text-black cursor-pointer bg-transparent"
+            >
+              Retirer
+            </button>
+          </div>
         </div>
-      </div>
 
-      {}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard Icon={IC.Briefcase} title="Investissements actifs" value={stats?.activeInvestments || 0}   accent="yellow" />
-        <StatCard Icon={IC.TrendUp}   title="ROI total"              value={`${stats?.totalROI?.toFixed(2) || 0} %`}  accent="green" />
-        <StatCard Icon={IC.Coin}      title="Gains totaux"           value={`$ ${stats?.totalEarnings?.toFixed(2) || 0}`} accent="blue" />
+        <button
+          onClick={() => onNavigate('investments')}
+          className="text-left bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg p-6 hover:border-yellow-700/50 transition-colors cursor-pointer"
+        >
+          <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">Investi</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 tracking-tight">
+            $ {(summary?.invested ?? 0).toFixed(2)}
+          </h3>
+          <span className="text-xs text-yellow-500 font-bold flex items-center gap-1">
+            Voir mes investissements <IC.ArrowRight />
+          </span>
+        </button>
+
+        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg p-6">
+          <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">Valeur du portefeuille</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 tracking-tight">
+            $ {(summary?.currentValue ?? 0).toFixed(2)}
+          </h3>
+          <span className="text-xs text-gray-500">Capital investi + gains accumulés</span>
+        </div>
       </div>
 
       {}
@@ -479,53 +497,62 @@ function OverviewTab({ user, balance, investments, stats, loading, onRefresh, on
       </div>
 
       {}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase">Investissements récents</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <Card className="lg:col-span-2 p-6">
+          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase mb-4">Mon portefeuille</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <StatCard Icon={IC.Wallet}    title="Déposé total"          value={`$ ${(summary?.deposited ?? 0).toFixed(2)}`} accent="yellow" />
+            <StatCard Icon={IC.Coin}      title="Gains totaux"          value={`$ ${stats?.totalEarnings?.toFixed(2) || 0}`} accent="blue" />
+            <StatCard Icon={IC.Briefcase} title="Investissements actifs" value={stats?.activeInvestments || 0}   accent="green" />
+            <StatCard Icon={IC.TrendUp}   title="ROI total"              value={`${stats?.totalROI?.toFixed(2) || 0} %`}  accent="purple" />
+          </div>
+        </Card>
+
+        <Card className="lg:col-span-3 p-6">
+          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase mb-4">Flux de trésorerie</h3>
+          <CashFlowChart transactions={transactions || []} />
+        </Card>
+      </div>
+
+      {}
+      <Card className="overflow-hidden">
+        <div className="flex items-center justify-between flex-wrap gap-3 p-6 pb-0">
+          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase">Activités récentes</h3>
           <button
-            onClick={() => onNavigate('investments')}
+            onClick={() => onNavigate('transactions')}
             className="text-xs text-gray-500 hover:text-yellow-500 transition-colors flex items-center gap-1 bg-transparent border-none cursor-pointer"
           >
             Voir tout <IC.ArrowRight />
           </button>
         </div>
-        {investments.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {PERIOD_OPTIONS.map(({ value, label }) => (
-              <button
-                key={value}
-                onClick={() => setOverviewPeriod(value)}
-                className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${overviewPeriod === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        )}
-        {recentInvestments.length > 0 ? (
-          <div className="space-y-2">
-            {recentInvestments.slice(0, 3).map((inv, i) => (
-              <div key={i} className="flex items-center justify-between p-4 bg-black/50 border border-yellow-900/15 rounded hover:border-yellow-900/35 transition-colors">
-                <div>
-                  <p className="font-semibold text-white text-sm">{packDisplayName(inv.pack)}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    {new Date(inv.createdAt).toLocaleDateString('fr-FR')}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-yellow-500 text-sm">$ {inv.amount}</p>
-                  <p className="text-xs text-green-400 mt-0.5">+{inv.roi} %</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : investments.length > 0 ? (
-          <div className="text-center py-10">
-            <p className="text-gray-600 text-sm">Aucun investissement sur cette période</p>
+        {recentActivity.length > 0 ? (
+          <div className="overflow-x-auto mt-4">
+            <table className="w-full">
+              <thead className="bg-black/60">
+                <tr>
+                  {['Activité', 'Référence', 'Date', 'Montant', 'Statut'].map(col => (
+                    <th key={col} className="px-5 py-3 text-left text-xs font-bold text-yellow-500 tracking-widest uppercase">
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-yellow-900/15">
+                {recentActivity.map((tx, i) => (
+                  <tr key={i} className="hover:bg-yellow-900/8 transition-colors">
+                    <td className="px-5 py-4"><Badge status={tx.type} /></td>
+                    <td className="px-5 py-4 text-xs text-gray-500 font-mono">#{String(tx._id).slice(-6).toUpperCase()}</td>
+                    <td className="px-5 py-4 text-sm text-gray-400">{new Date(tx.createdAt).toLocaleDateString('fr-FR')}</td>
+                    <td className="px-5 py-4 text-sm font-bold text-white">$ {tx.amount}</td>
+                    <td className="px-5 py-4"><Badge status={tx.status} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div className="text-center py-10">
-            <p className="text-gray-600 text-sm mb-4">Aucun investissement actif</p>
+            <p className="text-gray-600 text-sm mb-4">Aucune activité pour l'instant</p>
             <button
               onClick={() => onNavigate('invest')}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors tracking-wide cursor-pointer border-none"
@@ -540,13 +567,66 @@ function OverviewTab({ user, balance, investments, stats, loading, onRefresh, on
 }
 
 function StatCard({ Icon, title, value, accent }) {
-  const border = { yellow: 'border-yellow-500/30', green: 'border-green-500/30', blue: 'border-blue-500/30' };
-  const text   = { yellow: 'text-yellow-500',       green: 'text-green-400',      blue: 'text-blue-400'      };
+  const border = { yellow: 'border-yellow-500/30', green: 'border-green-500/30', blue: 'border-blue-500/30', purple: 'border-purple-500/30' };
+  const text   = { yellow: 'text-yellow-500',       green: 'text-green-400',      blue: 'text-blue-400',     purple: 'text-purple-400'      };
   return (
-    <div className={`bg-gradient-to-br from-gray-900 to-black border-2 ${border[accent]} rounded-lg p-5`}>
-      <div className={`${text[accent]} mb-3`}><Icon /></div>
-      <p className="text-gray-500 text-xs mb-1 font-medium">{title}</p>
-      <p className="text-lg sm:text-xl font-bold text-white tracking-tight">{value}</p>
+    <div className={`bg-black/40 border-2 ${border[accent]} rounded-lg p-4`}>
+      <div className={`${text[accent]} mb-2`}><Icon /></div>
+      <p className="text-gray-500 text-[11px] mb-1 font-medium">{title}</p>
+      <p className="text-base sm:text-lg font-bold text-white tracking-tight">{value}</p>
+    </div>
+  );
+}
+
+// Net cash in/out (completed deposits minus withdrawals) per month, last 6
+// months — hand-rolled bars rather than pulling in a chart library, same
+// approach as Trading's SimulatedChart.
+function CashFlowChart({ transactions }) {
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({ key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('fr-FR', { month: 'short' }), net: 0 });
+  }
+  transactions
+    .filter(t => t.status === 'completed' && (t.type === 'deposit' || t.type === 'withdrawal'))
+    .forEach(t => {
+      const d = new Date(t.createdAt);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const m = months.find(m => m.key === key);
+      if (m) m.net += t.amount;
+    });
+  const maxAbs = Math.max(1, ...months.map(m => Math.abs(m.net)));
+  const hasData = months.some(m => m.net !== 0);
+
+  if (!hasData) {
+    return <div className="h-[160px] flex items-center justify-center text-gray-600 text-sm">Pas encore de mouvements à afficher</div>;
+  }
+
+  return (
+    <div>
+      <div className="flex items-end justify-between gap-2 h-[140px] mb-2">
+        {months.map(m => {
+          const h = m.net === 0 ? 2 : Math.max(6, (Math.abs(m.net) / maxAbs) * 120);
+          const isUp = m.net >= 0;
+          return (
+            <div key={m.key} className="flex-1 flex flex-col items-center justify-end h-full">
+              <span className={`text-[10px] font-bold mb-1 whitespace-nowrap ${m.net === 0 ? 'text-gray-700' : isUp ? 'text-green-400' : 'text-red-400'}`}>
+                {m.net !== 0 ? `${isUp ? '+' : '-'}$${Math.abs(m.net) >= 1000 ? (Math.abs(m.net) / 1000).toFixed(1) + 'k' : Math.abs(m.net).toFixed(0)}` : ''}
+              </span>
+              <div
+                className={`w-full rounded-t ${m.net === 0 ? 'bg-gray-800' : isUp ? 'bg-gradient-to-t from-yellow-700 to-yellow-400' : 'bg-gradient-to-t from-red-900 to-red-500'}`}
+                style={{ height: `${h}px` }}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex justify-between gap-2">
+        {months.map(m => (
+          <span key={m.key} className="flex-1 text-center text-[10px] text-gray-500 capitalize">{m.label}</span>
+        ))}
+      </div>
     </div>
   );
 }

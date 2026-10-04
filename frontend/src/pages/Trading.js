@@ -1,31 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 
-// Catmull-Rom -> cubic Bézier: turns the daily points into a smooth curve
-// instead of a jagged connect-the-dots line, without inventing data between
-// them (the curve still passes through every real point).
-const smoothPath = (pts) => {
-  if (pts.length < 3) return `M ${pts.map(p => `${p[0]},${p[1]}`).join(' L ')}`;
-  let d = `M ${pts[0][0]},${pts[0][1]}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i - 1] || pts[i];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[i + 2] || p2;
-    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
-    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
-    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
-    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
-    d += ` C ${c1x},${c1y} ${c2x},${c2y} ${p2[0]},${p2[1]}`;
-  }
-  return d;
-};
-
-// A single-series line chart, hand-drawn in SVG — a smooth 2px gold line
-// (reads fine on both themes so no light/dark branching needed), gridlines
-// with price labels, a few date ticks, and a hover crosshair + tooltip
-// since this chart *is* interactive by default.
-function SimulatedChart({ series, source }) {
+// A candlestick chart, hand-drawn in SVG like the line chart it replaces.
+// The backend only hands us one close value per day, so each candle's
+// open is the previous point's close and the wick is derived from the
+// real local move (not fabricated volatility) — candles still trace
+// actual price action, just rendered the way a trading terminal expects.
+function CandlestickChart({ series, source }) {
   const svgRef = useRef(null);
   const [hover, setHover] = useState(null);
   const width = 680, height = 260;
@@ -36,44 +17,50 @@ function SimulatedChart({ series, source }) {
     return <div className="h-[260px] flex items-center justify-center text-gray-600 text-sm">Pas assez de données</div>;
   }
 
-  const values = series.map(p => p.value);
-  const rawMin = Math.min(...values), rawMax = Math.max(...values);
-  const margin = (rawMax - rawMin) * 0.1 || rawMax * 0.02 || 1;
+  const candles = series.map((p, i) => {
+    const open = i === 0 ? p.value : series[i - 1].value;
+    const close = p.value;
+    const wick = Math.abs(close - open) * 0.6 || close * 0.002;
+    return { date: p.date, open, close, high: Math.max(open, close) + wick, low: Math.min(open, close) - wick };
+  });
+
+  const allVals = candles.flatMap(c => [c.high, c.low]);
+  const rawMin = Math.min(...allVals), rawMax = Math.max(...allVals);
+  const margin = (rawMax - rawMin) * 0.08 || rawMax * 0.02 || 1;
   const min = rawMin - margin, max = rawMax + margin;
   const range = max - min || 1;
 
-  const xAt = (i) => padL + (i / (series.length - 1)) * plotW;
+  const n = candles.length;
+  const slot = plotW / n;
+  const bodyW = Math.max(2, slot * 0.6);
+  const xAt = (i) => padL + slot * i + slot / 2;
   const yAt = (v) => padT + plotH - ((v - min) / range) * plotH;
-  const pts = series.map((p, i) => [xAt(i), yAt(p.value)]);
-
-  const linePath = smoothPath(pts);
-  const areaPath = `${linePath} L ${pts[pts.length - 1][0]},${padT + plotH} L ${pts[0][0]},${padT + plotH} Z`;
 
   const gridLines = [0, 0.5, 1].map(f => ({ y: padT + plotH * f, value: max - range * f }));
-  const dateTickIdx = [0, Math.floor((series.length - 1) / 2), series.length - 1];
+  const dateTickIdx = [0, Math.floor((n - 1) / 2), n - 1];
 
   const handleMove = (e) => {
     const rect = svgRef.current.getBoundingClientRect();
     const relX = ((e.clientX - rect.left) / rect.width) * width;
-    const i = Math.round(((relX - padL) / plotW) * (series.length - 1));
-    setHover(Math.min(series.length - 1, Math.max(0, i)));
+    const i = Math.round((relX - padL - slot / 2) / slot);
+    setHover(Math.min(n - 1, Math.max(0, i)));
   };
 
-  const last = series[series.length - 1];
-  const first = series[0];
-  const changePct = ((last.value - first.value) / first.value) * 100;
+  const last = candles[n - 1];
+  const first = candles[0];
+  const changePct = ((last.close - first.close) / first.close) * 100;
   const isUp = changePct >= 0;
-  const shown = hover !== null ? series[hover] : last;
-  const tooltipRight = hover !== null && hover > series.length * 0.65;
+  const shown = hover !== null ? candles[hover] : last;
+  const tooltipRight = hover !== null && hover > n * 0.65;
 
   return (
     <div>
       <div className="flex items-baseline gap-3 mb-4 flex-wrap">
-        <span className="text-2xl font-black text-white">${last.value.toLocaleString('fr-FR')}</span>
+        <span className="text-2xl font-black text-white">${last.close.toLocaleString('fr-FR')}</span>
         <span className={`text-sm font-bold ${isUp ? 'text-green-400' : 'text-red-400'}`}>
           {isUp ? '▲' : '▼'} {Math.abs(changePct).toFixed(2)}%
         </span>
-        <span className="text-xs text-gray-600">sur {series.length} jours</span>
+        <span className="text-xs text-gray-600">sur {n} jours</span>
       </div>
       <div className="relative">
         <svg
@@ -83,13 +70,6 @@ function SimulatedChart({ series, source }) {
           onMouseMove={handleMove}
           onMouseLeave={() => setHover(null)}
         >
-          <defs>
-            <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="#D4AF37" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-
           {gridLines.map((g, i) => (
             <g key={i}>
               <line x1={padL} y1={g.y} x2={width - padR} y2={g.y} stroke="currentColor" className="text-gray-800" strokeWidth="1" />
@@ -101,20 +81,27 @@ function SimulatedChart({ series, source }) {
 
           {dateTickIdx.map((i, k) => (
             <text key={k} x={xAt(i)} y={height - 8} textAnchor={k === 0 ? 'start' : k === dateTickIdx.length - 1 ? 'end' : 'middle'} fontSize="10" fill="currentColor" className="text-gray-500">
-              {series[i].date.slice(5)}
+              {candles[i].date.slice(5)}
             </text>
           ))}
 
-          <path d={areaPath} fill="url(#chartFill)" stroke="none" />
-          <path d={linePath} fill="none" stroke="#D4AF37" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-
-          <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3.5" fill="#D4AF37" />
+          {candles.map((c, i) => {
+            const up = c.close >= c.open;
+            const color = up ? '#22c55e' : '#ef4444';
+            const x = xAt(i);
+            const bodyTop = yAt(Math.max(c.open, c.close));
+            const bodyBottom = yAt(Math.min(c.open, c.close));
+            const bodyH = Math.max(1.5, bodyBottom - bodyTop);
+            return (
+              <g key={i} opacity={hover !== null && hover !== i ? 0.35 : 1}>
+                <line x1={x} y1={yAt(c.high)} x2={x} y2={yAt(c.low)} stroke={color} strokeWidth="1.5" />
+                <rect x={x - bodyW / 2} y={bodyTop} width={bodyW} height={bodyH} fill={color} rx="1" />
+              </g>
+            );
+          })}
 
           {hover !== null && (
-            <>
-              <line x1={xAt(hover)} y1={padT} x2={xAt(hover)} y2={padT + plotH} stroke="currentColor" className="text-gray-600" strokeWidth="1" strokeDasharray="3,3" />
-              <circle cx={pts[hover][0]} cy={pts[hover][1]} r="4.5" fill="#0a0a0a" stroke="#D4AF37" strokeWidth="2" />
-            </>
+            <line x1={xAt(hover)} y1={padT} x2={xAt(hover)} y2={padT + plotH} stroke="currentColor" className="text-gray-600" strokeWidth="1" strokeDasharray="3,3" />
           )}
         </svg>
 
@@ -122,12 +109,12 @@ function SimulatedChart({ series, source }) {
           <div
             className="absolute top-2 bg-black border border-yellow-900/40 rounded px-3 py-2 pointer-events-none shadow-lg"
             style={{
-              left: `${(hover / (series.length - 1)) * 100}%`,
+              left: `${(hover / (n - 1)) * 100}%`,
               transform: tooltipRight ? 'translateX(calc(-100% - 10px))' : 'translateX(10px)'
             }}
           >
             <p className="text-[10px] text-gray-500 whitespace-nowrap">{shown.date}</p>
-            <p className="text-sm font-bold text-yellow-400 whitespace-nowrap">${shown.value.toLocaleString('fr-FR')}</p>
+            <p className="text-sm font-bold text-yellow-400 whitespace-nowrap">${shown.close.toLocaleString('fr-FR')}</p>
           </div>
         )}
       </div>
@@ -140,10 +127,26 @@ function SimulatedChart({ series, source }) {
   );
 }
 
+const formatCountdown = (ms) => {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = String(Math.floor(total / 3600)).padStart(2, '0');
+  const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+  const s = String(total % 60).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+};
+
 function PositionRow({ p }) {
   const isCode = p.mode === 'code';
   const running = p.status === 'open';
   const amountShown = running ? (isCode ? p.previewResult : null) : p.resultAmount;
+  const [remaining, setRemaining] = useState(() => new Date(p.closesAt) - Date.now());
+
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setRemaining(new Date(p.closesAt) - Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [running, p.closesAt]);
+
   return (
     <div className="p-3 bg-black/40 border border-yellow-900/10 rounded">
       <div className="flex justify-between items-start mb-1 gap-2">
@@ -167,6 +170,9 @@ function PositionRow({ p }) {
           <span className="text-gray-600 italic">Résultat à la clôture</span>
         ) : null}
       </div>
+      {running && remaining > 0 && (
+        <p className="text-[10px] text-yellow-600 mt-1 font-mono">Clôture dans {formatCountdown(remaining)}</p>
+      )}
     </div>
   );
 }
@@ -188,6 +194,19 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
   const [selfError, setSelfError] = useState('');
   const [selfSuccess, setSelfSuccess] = useState('');
   const [selfSubmitting, setSelfSubmitting] = useState('');
+
+  // Live "if I open now, it closes at..." countdown — purely a preview
+  // before submission, rolls forward to a fresh window once it hits zero.
+  const [previewCloseAt, setPreviewCloseAt] = useState(() => Date.now() + 5 * 60000);
+  const [nowTick, setNowTick] = useState(Date.now());
+  useEffect(() => { setPreviewCloseAt(Date.now() + selfDuration * 60000); }, [selfDuration]);
+  useEffect(() => {
+    const id = setInterval(() => setNowTick(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  useEffect(() => {
+    if (nowTick >= previewCloseAt) setPreviewCloseAt(nowTick + selfDuration * 60000);
+  }, [nowTick, previewCloseAt, selfDuration]);
 
   // Scenario code state (fully independent)
   const [code, setCode] = useState('');
@@ -366,16 +385,32 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
       {/* ── Self-directed trading: BUY/SELL live on the chart ─────────────── */}
       {currentAsset && (
         <div className="mb-8 p-6 bg-[#0d0d0d] border border-yellow-900/20 rounded-lg">
-          <div className="mb-4">
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
             <h2 className="font-black text-white">{currentAsset.name}</h2>
+            <span className="text-xs font-bold text-yellow-500 bg-yellow-900/20 border border-yellow-700/40 px-2 py-0.5 rounded">
+              {settings.payoutPercent}%
+            </span>
           </div>
 
-          {chart ? <SimulatedChart series={chart.series} source={chart.source} /> : <div className="h-[220px]" />}
+          {chart ? <CandlestickChart series={chart.series} source={chart.source} /> : <div className="h-[220px]" />}
 
           {selfError && <div className="mt-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{selfError}</div>}
           {selfSuccess && <div className="mt-4 p-3 bg-green-950/40 border border-green-800/40 text-green-300 text-sm rounded font-bold">✓ {selfSuccess}</div>}
 
-          <div className="mt-5 flex flex-wrap items-end gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
+            <div className="flex-1 min-w-[140px] p-3 bg-black/50 border border-yellow-900/20 rounded">
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Clôture dans</p>
+              <p className="text-lg font-black text-yellow-400 font-mono">{formatCountdown(previewCloseAt - nowTick)}</p>
+            </div>
+            <div className="flex-1 min-w-[140px] p-3 bg-black/50 border border-yellow-900/20 rounded">
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Revenu estimé</p>
+              <p className="text-lg font-black text-green-400">
+                +${((parseFloat(selfAmount) || 0) * (settings.payoutPercent / 100)).toFixed(2)}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-end gap-3">
             <div className="flex-1 min-w-[120px]">
               <label className="block text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Montant ($)</label>
               <input
@@ -401,18 +436,18 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
               disabled={!!selfSubmitting || user.kycStatus !== 'verified'}
               className="flex-1 min-w-[110px] py-3 bg-red-600 hover:bg-red-500 text-white font-black rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              {selfSubmitting === 'SELL' ? '...' : '▼ SELL'}
+              {selfSubmitting === 'SELL' ? '...' : '▼ EN BAS'}
             </button>
             <button
               onClick={() => openSelfPosition('BUY')}
               disabled={!!selfSubmitting || user.kycStatus !== 'verified'}
               className="flex-1 min-w-[110px] py-3 bg-green-600 hover:bg-green-500 text-white font-black rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              {selfSubmitting === 'BUY' ? '...' : '▲ BUY'}
+              {selfSubmitting === 'BUY' ? '...' : '▲ EN HAUT'}
             </button>
           </div>
           <p className="text-[10px] text-gray-600 mt-2">
-            Disponible : ${balance.toFixed(2)} — BUY gagne si le prix monte, SELL gagne si le prix baisse, à la clôture de la durée choisie.
+            Disponible : ${balance.toFixed(2)} — EN HAUT gagne si le prix monte, EN BAS gagne si le prix baisse, à la clôture de la durée choisie.
           </p>
         </div>
       )}
