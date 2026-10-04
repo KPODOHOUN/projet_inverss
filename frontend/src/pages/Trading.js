@@ -456,9 +456,6 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
       <div className="mb-8 p-6 bg-[#0d0d0d] border border-blue-900/20 rounded-lg">
         <div className="flex items-center gap-2 mb-1">
           <h2 className="font-black text-white">Code de scénario</h2>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-blue-300 bg-blue-900/30 border border-blue-800/40 px-2 py-0.5 rounded">
-            Indépendant du graphe
-          </span>
         </div>
         <p className="text-xs text-gray-500 mb-4">
           Vous avez reçu un code de l'administrateur ? Entrez-le avec un montant : le résultat appliqué sera exactement le pourcentage défini sur ce code, quel que soit le marché.
