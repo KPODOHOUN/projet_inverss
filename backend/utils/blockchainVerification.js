@@ -1,28 +1,35 @@
-// Verifies a claimed USDT deposit against the real blockchain, using each
-// chain's free block explorer API (Etherscan-family — Etherscan, BscScan
-// and Polygonscan all share the same API shape). No paid service, no
-// private keys, no custody — just reading public chain data.
+// Verifies a claimed USDT deposit against the real blockchain, using
+// Etherscan's unified multichain API (api.etherscan.io/v2 — one API key,
+// `chainid` picks the network, covers Ethereum/BSC/Polygon and more). No
+// paid service, no private keys, no custody — just reading public chain
+// data.
 //
 // USDT contract addresses are canonical/stable per network — safe to
 // hardcode. Note BSC's USDT uses 18 decimals, unlike the 6 decimals used
 // on Ethereum and Polygon — a well-known gotcha that silently produces
 // wildly wrong amounts (off by 10^12) if missed.
+const API_BASE = 'https://api.etherscan.io/v2/api';
+const API_KEY_ENV = 'ETHERSCAN_API_KEY';
+
 const NETWORKS = {
   ERC20: {
-    apiBase: 'https://api.etherscan.io/api',
-    apiKeyEnv: 'ETHERSCAN_API_KEY',
+    chainId: 1,
     usdtContract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
     decimals: 6
   },
+  // BSC IS on the unified API (chainid=56) but the free plan rejects it
+  // ("Free API access is not supported for this chain") — confirmed live.
+  // Kept configured here for when/if the plan is upgraded; freePlan:false
+  // keeps it out of isConfigured() so BEP20 deposits just stay pending for
+  // manual admin review instead of silently failing or false-rejecting.
   BEP20: {
-    apiBase: 'https://api.bscscan.com/api',
-    apiKeyEnv: 'BSCSCAN_API_KEY',
+    chainId: 56,
     usdtContract: '0x55d398326f99059ff775485246999027b3197955',
-    decimals: 18
+    decimals: 18,
+    freePlan: false
   },
   POLYGON: {
-    apiBase: 'https://api.polygonscan.com/api',
-    apiKeyEnv: 'POLYGONSCAN_API_KEY',
+    chainId: 137,
     usdtContract: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
     decimals: 6
   }
@@ -32,7 +39,7 @@ const TRANSFER_EVENT_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a116
 
 const isConfigured = (network) => {
   const cfg = NETWORKS[network];
-  return !!(cfg && process.env[cfg.apiKeyEnv]);
+  return !!(cfg && cfg.freePlan !== false && process.env[API_KEY_ENV]);
 };
 
 // Reads a 32-byte topic/data hex word as an address (last 20 bytes) or a
@@ -47,16 +54,19 @@ const hexToBigInt = (hex) => BigInt(hex);
 const verifyDeposit = async ({ network, txHash, expectedToAddress, expectedAmount }) => {
   const cfg = NETWORKS[network];
   if (!cfg) return { verified: false, reason: `Réseau non supporté pour la vérification automatique: ${network}` };
-  const apiKey = process.env[cfg.apiKeyEnv];
+  const apiKey = process.env[API_KEY_ENV];
   if (!apiKey) return { verified: false, reason: 'not_configured' };
 
   try {
-    const url = `${cfg.apiBase}?module=proxy&action=eth_getTransactionReceipt&txhash=${txHash}&apikey=${apiKey}`;
+    const url = `${API_BASE}?chainid=${cfg.chainId}&module=proxy&action=eth_getTransactionReceipt&txhash=${txHash}&apikey=${apiKey}`;
     const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
     const data = await res.json();
     const receipt = data?.result;
 
-    if (!receipt) return { verified: false, reason: 'not_found_yet' };
+    // An API/plan error comes back as {status:"0", message:"NOTOK", result:"<string>"}
+    // — a string, not a receipt object. Must not be mistaken for a found-but-failed
+    // transaction (that would wrongly auto-reject a legitimate deposit).
+    if (!receipt || typeof receipt !== 'object') return { verified: false, reason: 'not_found_yet' };
     if (receipt.status !== '0x1') return { verified: false, reason: 'transaction_failed' };
 
     const targetAddr = expectedToAddress.toLowerCase();
