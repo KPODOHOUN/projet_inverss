@@ -17,7 +17,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [step, setStep] = useState(1);
-  const referralCode = searchParams.get('ref') || '';
+  const [referralCode, setReferralCode] = useState(searchParams.get('ref') || '');
 
   const handleSocialLogin = (provider) => {
     setSocialLoading(provider);
@@ -73,7 +73,8 @@ export default function Register() {
     if (!validateForm()) return;
     setLoading(true);
     const { confirmPassword, ...userData } = formData;
-    const result = await register(referralCode ? { ...userData, referralCode } : userData);
+    const trimmedReferral = referralCode.trim();
+    const result = await register(trimmedReferral ? { ...userData, referralCode: trimmedReferral } : userData);
     if (result.success) {
       if (result.requiresEmailVerification) navigate('/verify-email');
       else navigate('/dashboard');
@@ -105,9 +106,6 @@ export default function Register() {
           <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto mb-4" />
           <h1 className="text-xl font-bold text-white mb-1">Inscription</h1>
           <p className="text-gray-400 text-sm">Créez votre compte investisseur</p>
-          {referralCode && (
-            <p className="mt-2 text-xs text-yellow-400">Code parrain : {referralCode}</p>
-          )}
         </div>
 
         <div className="flex items-center gap-2 mb-6 text-sm">
@@ -165,6 +163,11 @@ export default function Register() {
                     <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase transition-colors duration-300">Téléphone <span className="text-gray-600 font-normal normal-case">(optionnel)</span></label>
                     <input name="phone" type="tel" value={formData.phone} onChange={handleChange}
                       className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded" placeholder="+31 6 XX XX XX XX" />
+                  </div>
+                  <div className="group/input">
+                    <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase transition-colors duration-300">Code de parrainage <span className="text-gray-600 font-normal normal-case">(optionnel)</span></label>
+                    <input name="referralCode" type="text" value={referralCode} onChange={e => setReferralCode(e.target.value.toUpperCase())}
+                      className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded uppercase" placeholder="Ex: IMCJG6W4Q" />
                   </div>
                   <button type="submit" className="relative w-full py-3.5 overflow-hidden font-black text-black text-sm tracking-widest uppercase transition-all duration-300 group/btn rounded">
                     <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 bg-[length:200%_100%] animate-gradient" />
