@@ -195,19 +195,6 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
   const [selfSuccess, setSelfSuccess] = useState('');
   const [selfSubmitting, setSelfSubmitting] = useState('');
 
-  // Live "if I open now, it closes at..." countdown — purely a preview
-  // before submission, rolls forward to a fresh window once it hits zero.
-  const [previewCloseAt, setPreviewCloseAt] = useState(() => Date.now() + 5 * 60000);
-  const [nowTick, setNowTick] = useState(Date.now());
-  useEffect(() => { setPreviewCloseAt(Date.now() + selfDuration * 60000); }, [selfDuration]);
-  useEffect(() => {
-    const id = setInterval(() => setNowTick(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  useEffect(() => {
-    if (nowTick >= previewCloseAt) setPreviewCloseAt(nowTick + selfDuration * 60000);
-  }, [nowTick, previewCloseAt, selfDuration]);
-
   // Scenario code state (fully independent)
   const [code, setCode] = useState('');
   const [codeAmount, setCodeAmount] = useState('');
@@ -397,20 +384,7 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
           {selfError && <div className="mt-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{selfError}</div>}
           {selfSuccess && <div className="mt-4 p-3 bg-green-950/40 border border-green-800/40 text-green-300 text-sm rounded font-bold">✓ {selfSuccess}</div>}
 
-          <div className="mt-5 flex flex-wrap gap-3">
-            <div className="flex-1 min-w-[140px] p-3 bg-black/50 border border-yellow-900/20 rounded">
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Clôture dans</p>
-              <p className="text-lg font-black text-yellow-400 font-mono">{formatCountdown(previewCloseAt - nowTick)}</p>
-            </div>
-            <div className="flex-1 min-w-[140px] p-3 bg-black/50 border border-yellow-900/20 rounded">
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Revenu estimé</p>
-              <p className="text-lg font-black text-green-400">
-                +${((parseFloat(selfAmount) || 0) * (settings.payoutPercent / 100)).toFixed(2)}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-3 flex flex-wrap items-end gap-3">
+          <div className="mt-5 flex flex-wrap items-end gap-3">
             <div className="flex-1 min-w-[120px]">
               <label className="block text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Montant ($)</label>
               <input
