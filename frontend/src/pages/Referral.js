@@ -105,16 +105,16 @@ export default function Referral() {
       <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-500 rounded-lg p-6 mb-12">
         <h2 className="text-2xl font-black text-yellow-500 mb-6">VOTRE LIEN DE PARRAINAGE</h2>
         
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <input
             type="text"
             value={referralLink}
             readOnly
-            className="flex-1 px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white font-mono"
+            className="flex-1 min-w-0 px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white font-mono text-sm"
           />
           <button
             onClick={copyToClipboard}
-            className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all"
+            className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all whitespace-nowrap"
           >
             {copied ? '✓ COPIÉ' : 'COPIER'}
           </button>
@@ -123,27 +123,27 @@ export default function Referral() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <button
             onClick={() => shareOnSocial('whatsapp')}
-            className="px-4 py-3 bg-green-600 text-white font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2"
+            className="px-4 py-3 bg-green-600 text-white font-bold hover:bg-green-700 transition-all"
           >
-            <span>📱</span> WhatsApp
+            WhatsApp
           </button>
           <button
             onClick={() => shareOnSocial('telegram')}
-            className="px-4 py-3 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+            className="px-4 py-3 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all"
           >
-            <span>✈️</span> Telegram
+            Telegram
           </button>
           <button
             onClick={() => shareOnSocial('twitter')}
-            className="px-4 py-3 bg-sky-500 text-white font-bold hover:bg-sky-600 transition-all flex items-center justify-center gap-2"
+            className="px-4 py-3 bg-sky-500 text-white font-bold hover:bg-sky-600 transition-all"
           >
-            <span>🐦</span> Twitter
+            Twitter
           </button>
           <button
             onClick={() => shareOnSocial('facebook')}
-            className="px-4 py-3 bg-blue-700 text-white font-bold hover:bg-blue-800 transition-all flex items-center justify-center gap-2"
+            className="px-4 py-3 bg-blue-700 text-white font-bold hover:bg-blue-800 transition-all"
           >
-            <span>👍</span> Facebook
+            Facebook
           </button>
         </div>
       </div>

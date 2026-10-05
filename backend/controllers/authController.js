@@ -3,8 +3,7 @@ const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const crypto = require('crypto');
 const User = require('../models/User');
-const Referral = require('../models/Referral');
-const AmbassadorReferral = require('../models/AmbassadorReferral');
+const { applyReferralCode } = require('../utils/applyReferral');
 const EmailVerification = require('../models/EmailVerification');
 const PasswordReset = require('../models/PasswordReset');
 const EmailOTP = require('../models/EmailOTP');
@@ -77,24 +76,7 @@ exports.register = async (req, res) => {
     if (exists) return error(res, 'Cet email est déjà utilisé');
 
     const user = await User.create({ firstName: firstName.trim(), lastName: lastName.trim(), email, password, phone });
-
-    if (referralCode) {
-      const referrer = await User.findOne({ referralCode });
-      if (referrer && !referrer._id.equals(user._id)) {
-        // A code belonging to an Ambassador routes into the entirely
-        // separate Ambassador referral/commission system — never mixed
-        // with the standard referredBy/Referral bookkeeping.
-        if (referrer.role === 'ambassador') {
-          user.referredByAmbassador = referrer._id;
-          await user.save();
-          await AmbassadorReferral.create({ ambassadorId: referrer._id, referredId: user._id });
-        } else {
-          user.referredBy = referrer._id;
-          await user.save();
-          await Referral.create({ referrerId: referrer._id, referredId: user._id, level: 1 });
-        }
-      }
-    }
+    await applyReferralCode(user, referralCode);
 
     let devOtp = null;
     try {

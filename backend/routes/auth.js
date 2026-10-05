@@ -21,7 +21,12 @@ router.post('/reset-password', authController.resetPassword);
 // .env — otherwise redirect to login with a clear "not configured" error
 // instead of a 500 from passport.authenticate() on a missing strategy.
 if (googleEnabled) {
-  router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
+  // The referral code (if any) is handed off via the OAuth `state` param —
+  // the only thing that survives Google's redirect round trip without a
+  // server session (auth runs with session: false throughout).
+  router.get('/google', (req, res, next) => {
+    passport.authenticate('google', { scope: ['profile', 'email'], session: false, state: req.query.ref || '' })(req, res, next);
+  });
   router.get('/google/callback', (req, res, next) => {
     passport.authenticate('google', { session: false }, (err, user) => {
       if (err || !user) {
@@ -45,7 +50,9 @@ if (googleEnabled) {
 }
 
 if (facebookEnabled) {
-  router.get('/facebook', passport.authenticate('facebook', { scope: ['email'], session: false }));
+  router.get('/facebook', (req, res, next) => {
+    passport.authenticate('facebook', { scope: ['email'], session: false, state: req.query.ref || '' })(req, res, next);
+  });
   router.get('/facebook/callback', (req, res, next) => {
     passport.authenticate('facebook', { session: false }, (err, user) => {
       if (err || !user) {

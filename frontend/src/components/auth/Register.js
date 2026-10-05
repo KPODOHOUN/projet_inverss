@@ -21,7 +21,8 @@ export default function Register() {
 
   const handleSocialLogin = (provider) => {
     setSocialLoading(provider);
-    window.location.href = `${getApiUrl()}/auth/${provider}`;
+    const ref = referralCode.trim();
+    window.location.href = `${getApiUrl()}/auth/${provider}${ref ? `?ref=${encodeURIComponent(ref)}` : ''}`;
   };
 
   const handleChange = (e) => {

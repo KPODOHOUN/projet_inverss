@@ -2085,7 +2085,7 @@ function TradingTab({ api }) {
 
   return (
     <div>
-      <PageHeader title="TRADING / SIMULATION" subtitle="Actifs, codes de scénario et positions" />
+      <PageHeader title="TRADING " subtitle="Actifs, codes de scénario et positions" />
 
       {msg && <div className="mb-4"><Alert type={msg.includes('Erreur') || msg.includes('Impossible') ? 'error' : 'success'}>{msg}</Alert></div>}
 
