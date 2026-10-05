@@ -446,9 +446,6 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
               {selfSubmitting === 'BUY' ? '...' : '▲ EN HAUT'}
             </button>
           </div>
-          <p className="text-[10px] text-gray-600 mt-2">
-            Disponible : ${balance.toFixed(2)} — EN HAUT gagne si le prix monte, EN BAS gagne si le prix baisse, à la clôture de la durée choisie.
-          </p>
         </div>
       )}
 
