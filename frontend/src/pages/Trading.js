@@ -120,7 +120,7 @@ function CandlestickChart({ series, source }) {
       </div>
       <p className="text-[10px] text-gray-600 mt-2 italic">
         {source === 'live'
-          ? 'Prix de marché réel (source publique). L\'exécution de la position reste une simulation contrôlée par la plateforme.'
+          ? 'Prix de marché réel (source publique). Le résultat de votre position est déterminé par le mouvement réel du prix, pas par la plateforme.'
           : 'Simulation interne — ne reflète pas un marché externe réel.'}
       </p>
     </div>
