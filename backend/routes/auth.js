@@ -25,7 +25,13 @@ if (googleEnabled) {
   router.get('/google/callback', (req, res, next) => {
     passport.authenticate('google', { session: false }, (err, user) => {
       if (err || !user) {
-        console.error('Google OAuth callback failed:', err?.message || err || 'no user returned', req.query.error ? `(provider error: ${req.query.error})` : '');
+        // passport-oauth2's InternalOAuthError hides the actual reason Google
+        // gave behind a generic "Bad Request" .message — .oauthError carries
+        // Google's real response body (e.g. invalid_grant, redirect_uri
+        // mismatch, consent screen in testing mode), which is what actually
+        // explains a failure instead of just confirming one happened.
+        const detail = err?.oauthError?.data || err?.oauthError || err?.message || err || 'no user returned';
+        console.error('Google OAuth callback failed:', detail, req.query.error ? `(provider error: ${req.query.error})` : '');
         return res.redirect(`${frontendUrlFromRequest(req)}/login?error=google_failed`);
       }
       req.user = user;
