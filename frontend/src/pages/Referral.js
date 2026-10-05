@@ -243,28 +243,24 @@ export default function Referral() {
         <h3 className="text-2xl font-black mb-6">COMMENT ÇA MARCHE ?</h3>
         <div className="grid md:grid-cols-4 gap-6">
           <div className="text-center">
-            <div className="text-2xl mb-3">1️⃣</div>
             <h4 className="font-bold mb-2">Partagez votre lien</h4>
             <p className="text-sm opacity-80">
               Envoyez votre lien unique à vos amis
             </p>
           </div>
           <div className="text-center">
-            <div className="text-2xl mb-3">2️⃣</div>
             <h4 className="font-bold mb-2">Ils s'inscrivent</h4>
             <p className="text-sm opacity-80">
               Vos amis créent leur compte IMC
             </p>
           </div>
           <div className="text-center">
-            <div className="text-2xl mb-3">3️⃣</div>
             <h4 className="font-bold mb-2">Ils investissent</h4>
             <p className="text-sm opacity-80">
               Vos filleuls achètent des packs
             </p>
           </div>
           <div className="text-center">
-            <div className="text-2xl mb-3">4️⃣</div>
             <h4 className="font-bold mb-2">Vous gagnez</h4>
             <p className="text-sm opacity-80">
               Commissions automatiques sur votre solde
