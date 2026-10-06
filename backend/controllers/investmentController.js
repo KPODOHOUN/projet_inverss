@@ -6,7 +6,14 @@ const { success, error } = require('../utils/response');
 const emailService = require('../services/emailService');
 const { payReferralCommission } = require('../services/referralCommissions');
 const { payAmbassadorCommission } = require('../services/ambassadorCommissions');
-const { computeAccruedEarnings } = require('../utils/investmentEarnings');
+const { computeAccruedEarnings, totalRoiFor } = require('../utils/investmentEarnings');
+
+const packTermDays = (pack) => {
+  const unitDays = { hours: 1 / 24, days: 1, weeks: 7 };
+  return pack.duration * (unitDays[pack.durationUnit] ?? 1);
+};
+
+const INVALID_AMOUNT_MESSAGE = 'Montant non accepté. Montants acceptés : 25 à 500, 1 000 à 2 000, 3 000 à 10 000 USD.';
 
 exports.getPacks = async (req, res) => {
   try {
@@ -25,8 +32,8 @@ exports.calculate = async (req, res) => {
     if (amount < pack.minAmount) return error(res, `Minimum amount is ${pack.minAmount} USD`);
     if (pack.maxAmount && amount > pack.maxAmount) return error(res, `Maximum amount is ${pack.maxAmount} USD`);
 
-    const roiParts = pack.roi.split('-');
-    const roi = roiParts.length > 1 ? (parseFloat(roiParts[0]) + parseFloat(roiParts[1])) / 2 : parseFloat(roiParts[0]);
+    const roi = totalRoiFor(Number(amount), packTermDays(pack));
+    if (roi === null) return error(res, INVALID_AMOUNT_MESSAGE);
     const estimatedEarnings = amount * (roi / 100);
     const totalReturn = amount + estimatedEarnings;
 
@@ -37,11 +44,9 @@ exports.calculate = async (req, res) => {
 };
 
 // Investing always spends from the available balance — never a direct
-// external payment. To get funds into that balance, the user deposits USDT
-// first (see walletController.deposit); an admin verifies that deposit
-// against the blockchain and credits the balance. By the time someone
-// invests, the money is already confirmed and sitting in their account, so
-// the purchase itself can settle immediately with no pending/approval step.
+// external payment. Funds reach that balance through a confirmed NOWPayments
+// deposit (see walletController.nowpaymentsIpn), so the purchase itself can
+// settle immediately with no pending/approval step.
 exports.purchase = async (req, res) => {
   try {
     const { pack: packKey, amount } = req.body;
@@ -53,8 +58,8 @@ exports.purchase = async (req, res) => {
     if (numAmount < pack.minAmount) return error(res, `Minimum: ${pack.minAmount} USD`);
     if (pack.maxAmount && numAmount > pack.maxAmount) return error(res, `Maximum: ${pack.maxAmount} USD`);
 
-    const roiParts = pack.roi.split('-');
-    const roi = roiParts.length > 1 ? (parseFloat(roiParts[0]) + parseFloat(roiParts[1])) / 2 : parseFloat(roiParts[0]);
+    const roi = totalRoiFor(numAmount, packTermDays(pack));
+    if (roi === null) return error(res, INVALID_AMOUNT_MESSAGE);
 
     const durationMs = pack.durationUnit === 'hours' ? pack.duration * 3600000
       : pack.durationUnit === 'weeks' ? pack.duration * 7 * 86400000
