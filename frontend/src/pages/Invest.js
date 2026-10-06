@@ -128,38 +128,60 @@ export default function Invest({ onNavigate }) {
         </div>
       )}
 
-      <div className="grid sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {INVESTMENT_PACK_KEYS.map(key => {
           const pack = packs[key];
           if (!pack) return null;
+          const fmt = (n) => String(n).replace('.', ',');
+          const rateText = pack.dailyRate
+            ? (pack.dailyRate.min === pack.dailyRate.max
+                ? fmt(pack.dailyRate.min)
+                : `${fmt(pack.dailyRate.min)} – ${fmt(pack.dailyRate.max)}`)
+            : null;
+          const totalText = pack.totalRoi
+            ? (pack.totalRoi.min === pack.totalRoi.max
+                ? `${fmt(pack.totalRoi.min)} %`
+                : `${fmt(pack.totalRoi.min)} – ${fmt(pack.totalRoi.max)} %`)
+            : null;
           return (
-            <button
+            <div
               key={key}
-              onClick={() => openPurchaseModal(key)}
-              disabled={user.kycStatus !== 'verified'}
-              className="flex items-center justify-between p-5 bg-[#0d0d0d] border border-yellow-900/20 hover:border-yellow-600 transition-colors rounded-lg text-left disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex flex-col bg-gradient-to-b from-[#121212] to-[#0a0a0a] border border-yellow-900/25 hover:border-yellow-600/60 transition-colors rounded-xl p-5 sm:p-6"
             >
-              <div>
-                <p className="font-bold text-white">{pack.name}</p>
-                <p className="text-xs text-gray-600 mt-0.5">à partir de ${pack.minAmount}</p>
-                {pack.dailyRate && (
-                  <p className="text-xs text-yellow-500 mt-1 font-bold">
-                    {pack.dailyRate.min === pack.dailyRate.max
-                      ? `${String(pack.dailyRate.min).replace('.', ',')} %/jour`
-                      : `${String(pack.dailyRate.min).replace('.', ',')} à ${String(pack.dailyRate.max).replace('.', ',')} %/jour`}
-                    {' '}· {pack.termDays} jours
-                    {pack.totalRoi && (
-                      <span className="block text-gray-400 font-normal">
-                        Rendement total : {pack.totalRoi.min === pack.totalRoi.max
-                          ? `${String(pack.totalRoi.min).replace('.', ',')} %`
-                          : `${String(pack.totalRoi.min).replace('.', ',')} à ${String(pack.totalRoi.max).replace('.', ',')} %`}
-                      </span>
-                    )}
-                  </p>
-                )}
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className="min-w-0">
+                  <p className="font-bold text-white text-base leading-snug">{pack.name}</p>
+                  <p className="text-xs text-gray-500 mt-1">À partir de ${pack.minAmount}</p>
+                </div>
+                <span className="shrink-0 text-[10px] font-bold tracking-widest uppercase text-yellow-500 bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 rounded">
+                  {pack.termDays} j
+                </span>
               </div>
-              <span className="text-yellow-500 font-bold text-sm">Investir →</span>
-            </button>
+
+              {rateText && (
+                <div className="mb-4">
+                  <p className="text-[11px] uppercase tracking-widest text-gray-500 mb-1">Taux journalier</p>
+                  <p className="text-3xl font-black text-yellow-400 leading-none">
+                    {rateText}<span className="text-base font-bold text-yellow-600 ml-1">%</span>
+                  </p>
+                </div>
+              )}
+
+              {totalText && (
+                <div className="flex items-center justify-between py-3 border-t border-yellow-900/20 mb-4">
+                  <span className="text-sm text-gray-400">Rendement total</span>
+                  <span className="text-sm font-bold text-green-400">{totalText}</span>
+                </div>
+              )}
+
+              <button
+                onClick={() => openPurchaseModal(key)}
+                disabled={user.kycStatus !== 'verified'}
+                className="mt-auto w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-black text-sm tracking-wide rounded-lg hover:from-yellow-400 hover:to-yellow-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                Investir
+              </button>
+            </div>
           );
         })}
       </div>
