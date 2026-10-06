@@ -142,6 +142,21 @@ export default function Invest({ onNavigate }) {
               <div>
                 <p className="font-bold text-white">{pack.name}</p>
                 <p className="text-xs text-gray-600 mt-0.5">à partir de ${pack.minAmount}</p>
+                {pack.dailyRate && (
+                  <p className="text-xs text-yellow-500 mt-1 font-bold">
+                    {pack.dailyRate.min === pack.dailyRate.max
+                      ? `${String(pack.dailyRate.min).replace('.', ',')} %/jour`
+                      : `${String(pack.dailyRate.min).replace('.', ',')} à ${String(pack.dailyRate.max).replace('.', ',')} %/jour`}
+                    {' '}· {pack.termDays} jours
+                    {pack.totalRoi && (
+                      <span className="block text-gray-400 font-normal">
+                        Rendement total : {pack.totalRoi.min === pack.totalRoi.max
+                          ? `${String(pack.totalRoi.min).replace('.', ',')} %`
+                          : `${String(pack.totalRoi.min).replace('.', ',')} à ${String(pack.totalRoi.max).replace('.', ',')} %`}
+                      </span>
+                    )}
+                  </p>
+                )}
               </div>
               <span className="text-yellow-500 font-bold text-sm">Investir →</span>
             </button>

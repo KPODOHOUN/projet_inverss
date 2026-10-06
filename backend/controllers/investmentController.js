@@ -6,7 +6,7 @@ const { success, error } = require('../utils/response');
 const emailService = require('../services/emailService');
 const { payReferralCommission } = require('../services/referralCommissions');
 const { payAmbassadorCommission } = require('../services/ambassadorCommissions');
-const { computeAccruedEarnings, totalRoiFor } = require('../utils/investmentEarnings');
+const { computeAccruedEarnings, totalRoiFor, dailyRateRangeFor } = require('../utils/investmentEarnings');
 
 const packTermDays = (pack) => {
   const unitDays = { hours: 1 / 24, days: 1, weeks: 7 };
@@ -17,7 +17,18 @@ const INVALID_AMOUNT_MESSAGE = 'Montant non accepté. Montants acceptés : 25 à
 
 exports.getPacks = async (req, res) => {
   try {
-    const packs = await InvestmentPack.find({ active: true });
+    const docs = await InvestmentPack.find({ active: true });
+    const packs = docs.map(doc => {
+      const pack = doc.toObject();
+      const termDays = packTermDays(pack);
+      const daily = dailyRateRangeFor(pack.minAmount, pack.maxAmount);
+      return {
+        ...pack,
+        termDays,
+        dailyRate: daily,
+        totalRoi: daily ? { min: Number((daily.min * termDays).toFixed(2)), max: Number((daily.max * termDays).toFixed(2)) } : null
+      };
+    });
     success(res, { packs });
   } catch (err) {
     error(res, err.message);

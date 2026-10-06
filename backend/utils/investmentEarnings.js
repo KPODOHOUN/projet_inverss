@@ -11,6 +11,17 @@ const dailyRateFor = (amount) => {
   return tier ? tier.dailyPercent : null;
 };
 
+// The daily-rate span a pack's amount range covers, for display on the pack
+// card. Returns null if no tier overlaps the range at all.
+const dailyRateRangeFor = (minAmount, maxAmount) => {
+  const max = maxAmount ?? Infinity;
+  const rates = DAILY_RATE_TIERS
+    .filter(t => t.min <= max && t.max >= minAmount)
+    .map(t => t.dailyPercent);
+  if (!rates.length) return null;
+  return { min: Math.min(...rates), max: Math.max(...rates) };
+};
+
 // Total ROI over a term, so it can be stored on the investment exactly like
 // the old per-pack ROI was — the rest of the earnings maths is unchanged.
 const totalRoiFor = (amount, days) => {
@@ -31,4 +42,4 @@ const computeAccruedEarnings = (investment) => {
   return Number((investment.amount * (investment.roi / 100) * fraction).toFixed(2));
 };
 
-module.exports = { computeAccruedEarnings, dailyRateFor, totalRoiFor, DAILY_RATE_TIERS };
+module.exports = { computeAccruedEarnings, dailyRateFor, dailyRateRangeFor, totalRoiFor, DAILY_RATE_TIERS };
