@@ -122,7 +122,6 @@ const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
   require('./services/investmentMaturity').start();
   require('./services/tradingSettlement').start();
-  require('./services/depositVerification').start();
   startBlockedIpsCache();
   const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);

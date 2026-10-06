@@ -8,7 +8,6 @@ const PERIOD_OPTIONS = [
   { value: 'month', label: 'Ce mois' },
 ];
 const PERIOD_MS = { today: 24 * 60 * 60 * 1000, week: 7 * 24 * 60 * 60 * 1000, month: 30 * 24 * 60 * 60 * 1000 };
-const NETWORK_LABELS = { TRC20: 'TRC20 (Tron)', ERC20: 'ERC20 (Ethereum)', BEP20: 'BEP20 (BNB Chain)', POLYGON: 'Polygon' };
 const withinPeriod = (dateStr, period) => {
   if (period === 'all') return true;
   return Date.now() - new Date(dateStr).getTime() <= PERIOD_MS[period];
@@ -26,13 +25,8 @@ export default function WeeklyPayment({ onNavigate }) {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
 
-  const [depositInfo, setDepositInfo] = useState(null);
-  const [depositNetwork, setDepositNetwork] = useState('');
   const [depositAmount, setDepositAmount] = useState('');
-  const [depositTxHash, setDepositTxHash] = useState('');
-  const [copied, setCopied] = useState(false);
   const [depositing, setDepositing] = useState(false);
-  const [depositSuccess, setDepositSuccess] = useState('');
   const [depositError, setDepositError] = useState('');
 
   const [withdrawAmount, setWithdrawAmount] = useState('');
@@ -48,10 +42,9 @@ export default function WeeklyPayment({ onNavigate }) {
   const fetchAll = useCallback(async () => {
     setLoadError(false);
     try {
-      const [balRes, txRes, depRes, refRes] = await Promise.all([
+      const [balRes, txRes, refRes] = await Promise.all([
         api.get('/wallet/balances'),
         api.get('/transactions/history'),
-        api.get('/wallet/deposit-info'),
         api.get('/referral/stats'),
       ]);
       if (balRes.data.success) setSummary(balRes.data.data.summary);
@@ -63,10 +56,6 @@ export default function WeeklyPayment({ onNavigate }) {
           setReferralGate({ count: refRes.data?.data?.totalReferrals || 0, required: refRes.data?.data?.withdrawalReferralRequirement ?? 3 });
         }
       }
-      if (depRes.data.success) {
-        setDepositInfo(depRes.data.data);
-        setDepositNetwork(prev => prev || depRes.data.data.wallets?.[0]?.network || '');
-      }
     } catch (e) {
       setLoadError(true);
     } finally {
@@ -76,34 +65,18 @@ export default function WeeklyPayment({ onNavigate }) {
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
-  const selectedWallet = depositInfo?.wallets?.find(w => w.network === depositNetwork);
-
-  const copyAddress = () => {
-    if (!selectedWallet?.address) return;
-    navigator.clipboard.writeText(selectedWallet.address).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
   const handleDeposit = async (e) => {
     e.preventDefault();
     setDepositError('');
-    setDepositSuccess('');
     const amount = parseFloat(depositAmount);
-    if (!amount || amount <= 0) return setDepositError('Indiquez un montant valide.');
-    if (!depositTxHash.trim()) return setDepositError('Indiquez le hash de votre transaction USDT.');
+    if (!amount || amount < 1) return setDepositError('Montant minimum : 1 USD.');
 
     setDepositing(true);
     try {
-      await api.post('/wallet/deposit', { amount, txHash: depositTxHash.trim(), network: depositNetwork });
-      setDepositSuccess('Dépôt soumis — en attente de vérification par un administrateur.');
-      setDepositAmount('');
-      setDepositTxHash('');
-      fetchAll();
+      const res = await api.post('/wallet/deposit/invoice', { amount });
+      window.location.href = res.data.data.invoiceUrl;
     } catch (err) {
-      setDepositError(err.response?.data?.message || 'Erreur lors du dépôt');
-    } finally {
+      setDepositError(err.response?.data?.message || 'Erreur lors de la création du paiement');
       setDepositing(false);
     }
   };
@@ -197,60 +170,21 @@ export default function WeeklyPayment({ onNavigate }) {
               Vérification KYC requise avant tout dépôt.{' '}
               <button onClick={() => onNavigate?.('kyc')} className="underline font-bold">Compléter mon KYC →</button>
             </div>
-          ) : !depositInfo?.configured ? (
-            <div className="p-4 bg-red-950/30 border border-red-800/40 text-red-300 text-sm rounded">
-              Les dépôts ne sont pas encore configurés. Contactez le support.
-            </div>
           ) : (
             <>
-              {depositSuccess && <div className="mb-4 p-3 bg-green-900/30 border border-green-600 text-green-400 text-sm rounded">{depositSuccess}</div>}
               {depositError && <div className="mb-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{depositError}</div>}
-
-              {depositInfo.wallets.length > 1 && (
-                <div className="mb-3">
-                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Réseau</label>
-                  <select
-                    value={depositNetwork} onChange={e => setDepositNetwork(e.target.value)}
-                    className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none rounded"
-                  >
-                    {depositInfo.wallets.map(w => (
-                      <option key={w.network} value={w.network}>USDT — {NETWORK_LABELS[w.network] || w.network}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              <div className="mb-4 p-3 bg-black/40 border border-yellow-900/30 rounded">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-bold text-yellow-600 uppercase tracking-widest">Adresse ({NETWORK_LABELS[selectedWallet?.network] || selectedWallet?.network})</span>
-                  <button type="button" onClick={copyAddress} className="text-xs text-yellow-500 hover:text-yellow-400 font-bold">
-                    {copied ? 'Copié ✓' : 'Copier'}
-                  </button>
-                </div>
-                <code className="block text-yellow-300 text-xs break-all">{selectedWallet?.address}</code>
-                <p className="text-xs text-red-400 mt-2">⚠️ Envoyez uniquement du USDT sur le réseau {NETWORK_LABELS[selectedWallet?.network] || selectedWallet?.network}.</p>
-              </div>
 
               <form onSubmit={handleDeposit} className="space-y-3">
                 <div>
-                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Montant (USDT)</label>
+                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Montant (USD)</label>
                   <input
-                    type="number" step="0.01" min="0.01"
+                    type="number" step="0.01" min="1"
                     value={depositAmount} onChange={e => setDepositAmount(e.target.value)}
                     placeholder="0.00"
                     className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-lg font-bold rounded"
                   />
-                </div>
-                <div>
-                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">ID de transaction</label>
-                  <input
-                    type="text"
-                    value={depositTxHash} onChange={e => setDepositTxHash(e.target.value)}
-                    placeholder="0x..."
-                    className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-sm rounded"
-                  />
                   <p className="text-xs text-gray-500 mt-1">
-                    Disponible dans l'historique de votre wallet ou de la plateforme utilisée pour l'envoi, juste après la transaction.
+                    Vous choisirez la crypto (USDT, BTC, ETH…) et le réseau sur la page de paiement sécurisée.
                   </p>
                 </div>
                 <button
@@ -258,7 +192,7 @@ export default function WeeklyPayment({ onNavigate }) {
                   disabled={depositing}
                   className="w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-black disabled:opacity-50 disabled:cursor-not-allowed hover:from-yellow-600 hover:to-yellow-700 transition-all rounded"
                 >
-                  {depositing ? 'ENVOI...' : 'SOUMETTRE LE DÉPÔT'}
+                  {depositing ? 'REDIRECTION...' : 'PAYER PAR CRYPTO →'}
                 </button>
               </form>
             </>

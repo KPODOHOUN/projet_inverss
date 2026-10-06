@@ -6,47 +6,68 @@ const PlatformConfig = require('../models/PlatformConfig');
 const { success, error } = require('../utils/response');
 const emailService = require('../services/emailService');
 const { computeAccruedEarnings } = require('../utils/investmentEarnings');
+const { createInvoice, verifyIpnSignature } = require('../utils/nowpayments');
 
-// A deposit is a claimed on-chain USDT payment. It's created pending, then
-// backend/services/depositVerification.js polls it against the real
-// blockchain (via free explorer APIs — see utils/blockchainVerification.js)
-// and auto-credits the balance once confirmed, with no admin step needed.
-// If the verification API isn't configured for a network (no API key set),
-// it just stays pending for the existing manual admin review instead.
-exports.deposit = async (req, res) => {
+// A deposit is a NOWPayments invoice: the user pays on NOWPayments' hosted
+// page, and the balance is credited only when their IPN webhook reports the
+// payment as finished (see nowpaymentsIpn below) — never on the user's word.
+exports.createDepositInvoice = async (req, res) => {
   try {
     const amount = Number(req.body.amount);
-    const { txHash, network } = req.body;
-    if (!Number.isFinite(amount) || amount <= 0) return error(res, 'Montant invalide');
-    if (!txHash?.trim()) return error(res, "L'ID de transaction USDT est requis");
+    if (!Number.isFinite(amount) || amount < 1) return error(res, 'Montant minimum : 1 USD');
     if (req.user.kycStatus !== 'verified') return error(res, 'Vérification KYC requise avant tout dépôt', 403);
-
-    const config = await PlatformConfig.findOne();
-    if (!config?.usdtWallets?.length) return error(res, 'Les dépôts ne sont pas encore configurés. Contactez le support.', 503);
-
-    // The user deposited to one of possibly several configured networks —
-    // required once more than one exists, so we know which address they
-    // actually sent to (matters for verification against a block explorer).
-    const wallet = config.usdtWallets.find(w => w.network === network);
-    if (!wallet) return error(res, 'Réseau de dépôt invalide');
-
-    // Same hash claimed twice (by mistake or on purpose) must never pay out
-    // twice — this was a real gap before (nothing enforced uniqueness here).
-    const duplicate = await Transaction.findOne({ type: 'deposit', proof: txHash.trim() });
-    if (duplicate) return error(res, 'Cet ID de transaction a déjà été utilisé pour un dépôt.');
 
     const transaction = await Transaction.create({
       userId: req.user._id,
       type: 'deposit',
       amount,
       status: 'pending',
-      method: `usdt-${wallet.network}`,
-      proof: txHash.trim()
+      method: 'nowpayments'
     });
 
-    success(res, { transaction, message: 'Dépôt soumis — vérification automatique en cours, votre solde sera crédité dès confirmation.' }, 201);
+    const frontendUrl = process.env.FRONTEND_URL;
+    const backendUrl = process.env.BACKEND_URL;
+    const invoice = await createInvoice({
+      amount,
+      orderId: String(transaction._id),
+      ipnCallbackUrl: `${backendUrl}/api/wallet/nowpayments-ipn`,
+      successUrl: `${frontendUrl}/dashboard`,
+      cancelUrl: `${frontendUrl}/dashboard`,
+      description: `Dépôt IMC — ${req.user.email}`
+    });
+
+    transaction.proof = invoice.id;
+    await transaction.save();
+
+    success(res, { invoiceUrl: invoice.invoiceUrl, transactionId: transaction._id }, 201);
   } catch (err) {
     error(res, err.message);
+  }
+};
+
+exports.nowpaymentsIpn = async (req, res) => {
+  try {
+    if (!verifyIpnSignature(req.body, req.headers['x-nowpayments-sig'])) {
+      return res.status(401).json({ success: false });
+    }
+    const { order_id: orderId, payment_status: status } = req.body;
+    if (status !== 'finished') return res.status(200).json({ success: true });
+
+    // Atomic claim: only the first 'finished' notification for a pending
+    // deposit flips it to completed and credits the balance; any retry or
+    // duplicate delivery finds it already completed and does nothing.
+    const claimed = await Transaction.findOneAndUpdate(
+      { _id: orderId, type: 'deposit', status: 'pending' },
+      { status: 'completed', updatedAt: new Date() },
+      { new: true }
+    );
+    if (claimed) {
+      await User.findByIdAndUpdate(claimed.userId, { $inc: { balance: claimed.amount } });
+    }
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error('NOWPayments IPN failed:', err.message);
+    res.status(500).json({ success: false });
   }
 };
 
