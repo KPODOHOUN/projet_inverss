@@ -137,11 +137,26 @@ const IC = {
   ),
 };
 
+const TAB_IDS = ['overview', 'invest', 'investments', 'wallet', 'trading', 'academy', 'referral', 'transactions', 'kyc', 'security', 'profile'];
+const readTabFromHash = () => {
+  const id = window.location.hash.replace('#', '');
+  return TAB_IDS.includes(id) ? id : 'trading';
+};
+
 export default function Dashboard() {
   useForceDarkMode();
   const { user, logout, api } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab]       = useState('trading');
+  const [activeTab, setActiveTabState] = useState(readTabFromHash);
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    window.history.replaceState(null, '', `#${tab}`);
+  };
+  useEffect(() => {
+    const onHashChange = () => setActiveTabState(readTabFromHash());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
   const [tradingPrefillCode, setTradingPrefillCode] = useState(null);
   const handleNotificationNavigate = (tab, opts) => {
     setActiveTab(tab);
