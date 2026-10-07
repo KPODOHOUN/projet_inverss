@@ -93,7 +93,11 @@ function CandlestickChart({ series, source }) {
             const bodyBottom = yAt(Math.min(c.open, c.close));
             const bodyH = Math.max(1.5, bodyBottom - bodyTop);
             return (
-              <g key={i} opacity={hover !== null && hover !== i ? 0.35 : 1}>
+              <g
+                key={i}
+                className="animate-fadeIn"
+                style={{ animationDelay: `${Math.min(i * 10, 500)}ms`, opacity: hover !== null && hover !== i ? 0.35 : 1 }}
+              >
                 <line x1={x} y1={yAt(c.high)} x2={x} y2={yAt(c.low)} stroke={color} strokeWidth="1.5" />
                 <rect x={x - bodyW / 2} y={bodyTop} width={bodyW} height={bodyH} fill={color} rx="1" />
               </g>

@@ -20,6 +20,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AmbassadorDashboard from './pages/AmbassadorDashboard';
 import InstallPWA from './components/InstallPWA';
 import AIAssistant from './components/AIAssistant';
+import ToastContainer from './components/ToastContainer';
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
         </Routes>
         <InstallPWA />
         <AIAssistant />
+        <ToastContainer />
       </AuthProvider>
       </ThemeProvider>
     </Router>

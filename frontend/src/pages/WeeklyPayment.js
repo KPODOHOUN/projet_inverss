@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
+import AnimatedNumber from '../components/AnimatedNumber';
+import Confetti from '../components/Confetti';
+import { toast } from '../utils/toast';
 
 const PERIOD_OPTIONS = [
   { value: 'all', label: 'Tout' },
@@ -36,6 +39,7 @@ export default function WeeklyPayment({ onNavigate }) {
   const [needs2FA, setNeeds2FA] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawSuccess, setWithdrawSuccess] = useState('');
+  const [celebrate, setCelebrate] = useState(false);
   const [withdrawError, setWithdrawError] = useState('');
   const [referralGate, setReferralGate] = useState(null);
 
@@ -74,6 +78,7 @@ export default function WeeklyPayment({ onNavigate }) {
     setDepositing(true);
     try {
       const res = await api.post('/wallet/deposit/invoice', { amount });
+      toast('Redirection vers le paiement sécurisé…', 'info');
       window.location.href = res.data.data.invoiceUrl;
     } catch (err) {
       setDepositError(err.response?.data?.message || 'Erreur lors de la création du paiement');
@@ -104,6 +109,9 @@ export default function WeeklyPayment({ onNavigate }) {
           ? `Retrait de ${amount} USDT initié — ${netPayout} USDT net après ${fee} USDT de frais.`
           : `Retrait de ${amount} USDT initié avec succès !`
       );
+      toast('Demande de retrait envoyée !');
+      setCelebrate(true);
+      setTimeout(() => setCelebrate(false), 1200);
       setWithdrawAmount('');
       setWithdrawAddress('');
       setTwoFactorCode('');
@@ -152,13 +160,15 @@ export default function WeeklyPayment({ onNavigate }) {
           ['Valeur actuelle', summary.currentValue, 'text-yellow-400'],
           ['Gagné', summary.earned, 'text-green-400'],
           ['Disponible', summary.available, 'text-blue-400'],
-        ].map(([label, value, color]) => (
-          <div key={label} className="bg-[#0d0d0d] border border-yellow-900/20 p-4 rounded-lg">
+        ].map(([label, value, color], i) => (
+          <div key={label} style={{ animationDelay: `${i * 60}ms` }} className="animate-cardIn bg-[#0d0d0d] border border-yellow-900/20 p-4 rounded-lg">
             <p className="text-[11px] text-gray-500 uppercase tracking-wider mb-1">{label}</p>
-            <p className={`text-lg font-black ${color}`}>${value.toFixed(2)}</p>
+            <p className={`text-lg font-black ${color}`}>$ <AnimatedNumber value={value} /></p>
           </div>
         ))}
       </div>
+
+      <Confetti active={celebrate} />
 
       <div className="grid md:grid-cols-2 gap-6 mb-10">
         {}

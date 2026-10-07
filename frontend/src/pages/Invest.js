@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
+import Confetti from '../components/Confetti';
+import { toast } from '../utils/toast';
 
 const INVESTMENT_PACK_KEYS = ['russell2000', 'cac40', 'eurostoxx50', 'ftse100', 'nikkei225', 'dowjones30', 'nasdaq100', 'sp500', 'bund', 'tbonds', 'us10y', 'turbo48h'];
 
@@ -15,6 +17,7 @@ export default function Invest({ onNavigate }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [celebrate, setCelebrate] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const fetchPacks = useCallback(async () => {
@@ -70,6 +73,9 @@ export default function Invest({ onNavigate }) {
       if (response.data.success) {
         setBalance(response.data.data.balance);
         setSuccess(`Investissement de $${numAmount} créé avec succès.`);
+        toast(`Investissement de $${numAmount} confirmé !`);
+        setCelebrate(true);
+        setTimeout(() => setCelebrate(false), 1200);
         setShowModal(false);
         setSelectedPack(null);
         setAmount('');
@@ -128,8 +134,10 @@ export default function Invest({ onNavigate }) {
         </div>
       )}
 
+      <Confetti active={celebrate} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {INVESTMENT_PACK_KEYS.map(key => {
+        {INVESTMENT_PACK_KEYS.map((key, i) => {
           const pack = packs[key];
           if (!pack) return null;
           const fmt = (n) => String(n).replace('.', ',');
@@ -146,7 +154,8 @@ export default function Invest({ onNavigate }) {
           return (
             <div
               key={key}
-              className="flex flex-col bg-gradient-to-b from-[#121212] to-[#0a0a0a] border border-yellow-900/25 hover:border-yellow-600/60 transition-colors rounded-xl p-5 sm:p-6"
+              style={{ animationDelay: `${i * 70}ms` }}
+              className="animate-cardIn flex flex-col bg-gradient-to-b from-[#121212] to-[#0a0a0a] border border-yellow-900/25 hover:border-yellow-600/60 transition-all hover:-translate-y-0.5 rounded-xl p-5 sm:p-6"
             >
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div className="min-w-0">
@@ -177,7 +186,7 @@ export default function Invest({ onNavigate }) {
               <button
                 onClick={() => openPurchaseModal(key)}
                 disabled={user.kycStatus !== 'verified'}
-                className="mt-auto w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-black text-sm tracking-wide rounded-lg hover:from-yellow-400 hover:to-yellow-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+                className="mt-auto w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-black text-sm tracking-wide rounded-lg hover:from-yellow-400 hover:to-yellow-500 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 Investir
               </button>
@@ -233,7 +242,7 @@ export default function Invest({ onNavigate }) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-4 font-black text-black transition-all disabled:opacity-40 disabled:cursor-not-allowed rounded bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400"
+                  className="flex-1 py-4 font-black text-black transition-all active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed rounded bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400"
                 >
                   {loading ? 'TRAITEMENT...' : 'CONFIRMER'}
                 </button>

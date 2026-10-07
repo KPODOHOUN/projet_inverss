@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import useForceDarkMode from '../hooks/useForceDarkMode';
 import { packDisplayName } from '../utils/packNames';
+import AnimatedNumber from '../components/AnimatedNumber';
+import { toast } from '../utils/toast';
 import NotificationBell from '../components/NotificationBell';
 import TwoFactorAuth from '../components/auth/TwoFactorAuth';
 import KYC from './KYC';
@@ -457,7 +459,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
           <div className="absolute top-0 right-0 w-32 h-32 bg-black/10 rounded-bl-full pointer-events-none" />
           <p className="text-xs font-bold tracking-widest uppercase text-black/50 mb-2">Solde disponible</p>
           <h3 className="text-xl sm:text-2xl font-bold text-black mb-5 tracking-tight">
-            $ {balance.toFixed(2)}
+            $ <AnimatedNumber value={balance} />
           </h3>
           <div className="flex flex-wrap gap-2">
             <button
@@ -487,7 +489,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
         >
           <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">Investi</p>
           <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 tracking-tight">
-            $ {(summary?.invested ?? 0).toFixed(2)}
+            $ <AnimatedNumber value={summary?.invested ?? 0} />
           </h3>
           <span className="text-xs text-yellow-500 font-bold flex items-center gap-1">
             Voir mes investissements <IC.ArrowRight />
@@ -497,7 +499,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
         <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg p-6">
           <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">Valeur du portefeuille</p>
           <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 tracking-tight">
-            $ {(summary?.currentValue ?? 0).toFixed(2)}
+            $ <AnimatedNumber value={summary?.currentValue ?? 0} />
           </h3>
           <span className="text-xs text-gray-500">Capital investi + gains accumulés</span>
         </div>
@@ -505,11 +507,12 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
 
       {}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {quickLinks.map(({ id, Icon, title, desc }) => (
+        {quickLinks.map(({ id, Icon, title, desc }, i) => (
           <button
             key={id}
             onClick={() => onNavigate(id)}
-            className="w-full text-left p-5 bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/20 rounded-lg hover:border-yellow-500/40 transition-all duration-200 hover:-translate-y-0.5 group cursor-pointer"
+            style={{ animationDelay: `${i * 80}ms` }}
+            className="animate-cardIn w-full text-left p-5 bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/20 rounded-lg hover:border-yellow-500/40 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer"
           >
             <div className="text-yellow-500/70 group-hover:text-yellow-500 transition-colors mb-3">
               <Icon />
@@ -525,10 +528,10 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
         <Card className="lg:col-span-2 p-6">
           <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase mb-4">Mon portefeuille</h3>
           <div className="grid grid-cols-2 gap-3">
-            <StatCard Icon={IC.Wallet}    title="Déposé total"          value={`$ ${(summary?.deposited ?? 0).toFixed(2)}`} accent="yellow" />
-            <StatCard Icon={IC.Coin}      title="Gains totaux"          value={`$ ${stats?.totalEarnings?.toFixed(2) || 0}`} accent="blue" />
-            <StatCard Icon={IC.Briefcase} title="Investissements actifs" value={stats?.activeInvestments || 0}   accent="green" />
-            <StatCard Icon={IC.TrendUp}   title="ROI total"              value={`${stats?.totalROI?.toFixed(2) || 0} %`}  accent="purple" />
+            <StatCard Icon={IC.Wallet}    title="Déposé total"          value={<>$ <AnimatedNumber value={summary?.deposited ?? 0} /></>} accent="yellow" />
+            <StatCard Icon={IC.Coin}      title="Gains totaux"          value={<>$ <AnimatedNumber value={stats?.totalEarnings ?? 0} /></>} accent="blue" />
+            <StatCard Icon={IC.Briefcase} title="Investissements actifs" value={<AnimatedNumber value={stats?.activeInvestments ?? 0} decimals={0} />} accent="green" />
+            <StatCard Icon={IC.TrendUp}   title="ROI total"              value={<><AnimatedNumber value={stats?.totalROI ?? 0} /> %</>}  accent="purple" />
           </div>
         </Card>
 
@@ -1104,6 +1107,7 @@ function ProfileTab({ user }) {
     const res = await updateProfile(form);
     if (res.success) {
       setSuccess('Profil mis à jour avec succès.');
+      toast('Profil mis à jour !');
       setTimeout(() => setSuccess(''), 4000);
     } else {
       setError(res.error);
