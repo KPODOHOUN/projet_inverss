@@ -21,7 +21,14 @@ const userSchema = new mongoose.Schema({
   // googleId/facebookId below: existing accounts get it via a one-off
   // migration, not instantly, so a plain unique index would reject the
   // second pre-migration document for "duplicate" missing values.
-  userId: { type: String, unique: true, sparse: true, immutable: true },
+  //
+  // Deliberately NOT `immutable: true`: Mongoose's immutable guard blocks
+  // writes on any non-new document, including from inside this file's own
+  // pre('save') hook — the migration that backfills existing accounts
+  // would silently never set it. "Can't be changed" is enforced the same
+  // way `balance` and every other sensitive field already is in this
+  // codebase: controllers simply never put it in an update whitelist.
+  userId: { type: String, unique: true, sparse: true },
   country: { type: String, default: '' },
   city: { type: String, default: '' },
   address: { type: String, default: '' },
