@@ -151,7 +151,8 @@ exports.listUsers = async (req, res) => {
       filter.$or = [
         { firstName: { $regex: q, $options: 'i' } },
         { lastName: { $regex: q, $options: 'i' } },
-        { email: { $regex: q, $options: 'i' } }
+        { email: { $regex: q, $options: 'i' } },
+        { userId: q.toUpperCase() }
       ];
     }
     const { page, limit, skip } = parsePagination(req.query);

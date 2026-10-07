@@ -15,6 +15,17 @@ const userSchema = new mongoose.Schema({
   failedLoginAttempts: { type: Number, default: 0 },
   lockUntil: { type: Date, default: null },
   balance: { type: Number, default: 0 },
+  // Human-readable account identifier (e.g. "USR-7F3K9QZ"), separate from
+  // the referral code and from Mongo's _id — what support asks a user for
+  // to look up their account. sparse: true for the same reason as
+  // googleId/facebookId below: existing accounts get it via a one-off
+  // migration, not instantly, so a plain unique index would reject the
+  // second pre-migration document for "duplicate" missing values.
+  userId: { type: String, unique: true, sparse: true, immutable: true },
+  country: { type: String, default: '' },
+  city: { type: String, default: '' },
+  address: { type: String, default: '' },
+  avatarUrl: { type: String, default: '' },
   referralCode: { type: String, unique: true },
   referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   // Set only when the referral code used at signup belonged to an
@@ -45,6 +56,9 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('save', function (next) {
   if (!this.referralCode) {
     this.referralCode = 'IMC' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  }
+  if (!this.userId) {
+    this.userId = 'USR-' + Math.random().toString(36).substring(2, 9).toUpperCase();
   }
   next();
 });

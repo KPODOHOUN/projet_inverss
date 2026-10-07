@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -91,6 +92,11 @@ const maintenanceGate = async (req, res, next) => {
   }
 };
 app.use(maintenanceGate);
+
+// Avatars only — never the parent uploads/ dir, which also holds KYC
+// identity documents that must stay behind the auth/ownership check in
+// kycController, not be served as plain static files.
+app.use('/uploads/avatars', express.static(path.join(__dirname, 'uploads', 'avatars')));
 
 app.use('/api/auth', authLimiter, require('./routes/auth'));
 app.use('/api/user', require('./routes/user'));

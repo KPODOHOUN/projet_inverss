@@ -199,6 +199,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const uploadAvatar = async (file) => {
+    try {
+      setError(null);
+      const formData = new FormData();
+      formData.append('avatar', file);
+      const response = await api.post('/user/avatar', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      if (response.data.success) {
+        const updatedUser = response.data.data.user;
+        setUser(updatedUser);
+        localStorage.setItem('neliaxaUser', JSON.stringify(updatedUser));
+        return { success: true, data: response.data };
+      }
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || "Erreur lors de l'envoi de la photo";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
   const changePassword = async (passwords) => {
     try {
       setError(null);
@@ -282,7 +301,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user, loading, error,
     register, verifyEmail, resendOTP,
-    login, loginWithToken, logout, updateProfile, changePassword,
+    login, loginWithToken, logout, updateProfile, uploadAvatar, changePassword,
     setup2FA, verify2FA, disable2FA,
     forgotPassword, resetPassword,
     isAuthenticated: !!user,

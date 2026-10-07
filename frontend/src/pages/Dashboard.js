@@ -962,11 +962,16 @@ function PasswordChange() {
 }
 
 function ProfileTab({ user }) {
-  const { updateProfile } = useAuth();
-  const [form, setForm]       = useState({ firstName: user?.firstName || '', lastName: user?.lastName || '', phone: user?.phone || '' });
+  const { updateProfile, uploadAvatar } = useAuth();
+  const [form, setForm] = useState({
+    firstName: user?.firstName || '', lastName: user?.lastName || '', phone: user?.phone || '',
+    country: user?.country || '', city: user?.city || '', address: user?.address || ''
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
   const [success, setSuccess] = useState('');
+  const [copied, setCopied]   = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -981,9 +986,68 @@ function ProfileTab({ user }) {
     setLoading(false);
   };
 
+  const copyUserId = () => {
+    if (!user?.userId) return;
+    navigator.clipboard.writeText(user.userId).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    await uploadAvatar(file);
+    setAvatarUploading(false);
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader title="Mon profil" />
+
+      <Card className="p-6">
+        <div className="flex flex-wrap items-center gap-6">
+          <div className="relative shrink-0">
+            <div className="w-20 h-20 rounded-full bg-black border-2 border-yellow-900/30 overflow-hidden flex items-center justify-center">
+              {user?.avatarUrl ? (
+                <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-2xl font-black text-yellow-600">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
+              )}
+            </div>
+            <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-yellow-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-400 transition-colors">
+              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleAvatarChange} className="hidden" disabled={avatarUploading} />
+              <span className="text-black text-xs font-black">{avatarUploading ? '…' : '✎'}</span>
+            </label>
+          </div>
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-gray-500 uppercase tracking-widest font-bold">ID utilisateur</span>
+              <span className={`inline-flex items-center gap-1 text-xs font-bold ${
+                user?.kycStatus === 'verified' ? 'text-green-400' : user?.kycStatus === 'rejected' ? 'text-red-400' : 'text-yellow-400'
+              }`}>
+                {user?.kycStatus === 'verified' && <><IC.Check color="#4ade80" /> Vérifié</>}
+                {user?.kycStatus === 'rejected' && <><IC.X color="#f87171" /> Rejeté</>}
+                {(user?.kycStatus === 'pending' || !user?.kycStatus || user?.kycStatus === 'none') && <>En attente</>}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <code className="text-yellow-400 font-bold text-sm">{user?.userId || '—'}</code>
+              {user?.userId && (
+                <button type="button" onClick={copyUserId} className="text-xs text-gray-500 hover:text-yellow-500 bg-transparent border-none cursor-pointer">
+                  {copied ? '✓ Copié' : 'Copier'}
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-gray-600 mt-1">
+              Membre depuis {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '—'}
+            </p>
+          </div>
+        </div>
+      </Card>
+
       <Card className="p-6">
         {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
         {error   && <div className="mb-4 p-3 bg-red-900/40 border border-red-500/50 rounded text-red-300 text-sm">{error}</div>}
@@ -1017,6 +1081,28 @@ function ProfileTab({ user }) {
               type="tel"
               value={form.phone}
               onChange={e => setForm({ ...form, phone: e.target.value })}
+              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[{ label: 'Pays', key: 'country' }, { label: 'Ville', key: 'city' }].map(({ label, key }) => (
+              <div key={key}>
+                <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">{label}</label>
+                <input
+                  type="text"
+                  value={form[key]}
+                  onChange={e => setForm({ ...form, [key]: e.target.value })}
+                  className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+                />
+              </div>
+            ))}
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Adresse</label>
+            <input
+              type="text"
+              value={form.address}
+              onChange={e => setForm({ ...form, address: e.target.value })}
               className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
             />
           </div>

@@ -9,9 +9,27 @@ const isDev = process.env.NODE_ENV !== 'production';
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, phone } = req.body;
-    const user = await User.findByIdAndUpdate(req.user._id, { firstName, lastName, phone, updatedAt: new Date() }, { new: true });
+    const { firstName, lastName, phone, country, city, address } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { firstName, lastName, phone, country, city, address, updatedAt: new Date() },
+      { new: true }
+    );
     success(res, { user });
+  } catch (err) {
+    error(res, err.message);
+  }
+};
+
+// Avatars are casual profile pictures, not sensitive documents like KYC —
+// served statically (see server.js) rather than streamed through an
+// ownership check, so other users/admins can simply display them.
+exports.uploadAvatar = async (req, res) => {
+  try {
+    if (!req.file) return error(res, 'Aucune image fournie');
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    const user = await User.findByIdAndUpdate(req.user._id, { avatarUrl, updatedAt: new Date() }, { new: true });
+    success(res, { user, avatarUrl });
   } catch (err) {
     error(res, err.message);
   }

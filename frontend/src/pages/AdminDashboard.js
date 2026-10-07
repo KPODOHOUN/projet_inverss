@@ -762,7 +762,7 @@ function UsersTab({ api }) {
 
       {}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-4">
-        <Input placeholder="Rechercher..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} />
+        <Input placeholder="Rechercher (nom, email, ID utilisateur)..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} />
         <Select value={filterKYC} onChange={e => { setFilterKYC(e.target.value); setPage(1); }} options={[
           { value: 'all', label: 'KYC: Tous' },
           { value: 'none', label: 'KYC: Aucun' },
@@ -790,6 +790,7 @@ function UsersTab({ api }) {
             <div>
               <p className="font-bold text-white">{r.firstName} {r.lastName}</p>
               <p className="text-gray-600">{r.email}</p>
+              {r.userId && <p className="text-gray-700 font-mono text-[11px] mt-0.5">{r.userId}</p>}
             </div>
           )},
           { key: 'kycStatus', label: 'KYC', render: v => <Badge label={kycLabels[v] || v} color={kycColors[v] || 'gray'} /> },
@@ -883,6 +884,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
 
       <div className="grid grid-cols-2 gap-3 text-xs">
         {[
+          ['ID utilisateur', user.userId || '—'],
           ['Email', user.email],
           ['Membre depuis', new Date(user.createdAt).toLocaleDateString('fr-FR')],
           ['Solde $', `$${user.balance?.toFixed(2)}`],

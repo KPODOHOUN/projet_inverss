@@ -63,6 +63,7 @@ exports.purchase = async (req, res) => {
     const { pack: packKey, amount } = req.body;
     const numAmount = Number(amount);
     if (!Number.isFinite(numAmount) || numAmount <= 0) return error(res, 'Montant invalide');
+    if (req.user.kycStatus !== 'verified') return error(res, 'Vérification KYC requise avant tout investissement', 403);
 
     const pack = await InvestmentPack.findOne({ key: packKey, active: true });
     if (!pack) return error(res, 'Pack not found', 404);
