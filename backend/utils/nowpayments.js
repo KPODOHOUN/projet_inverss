@@ -13,9 +13,22 @@ const sortKeysDeep = (value) => {
   return value;
 };
 
-const createInvoice = async ({ amount, orderId, ipnCallbackUrl, successUrl, cancelUrl, description }) => {
+// Only USDT, on whichever chain the user picks — the platform never
+// touches any other crypto. These are NOWPayments' own currency tickers
+// for USDT per network (confirmed against their API).
+const USDT_PAY_CURRENCY = {
+  TRC20: 'usdttrc20',
+  ERC20: 'usdterc20',
+  BEP20: 'usdtbsc',
+  POLYGON: 'usdtmatic',
+};
+
+const createInvoice = async ({ amount, orderId, ipnCallbackUrl, successUrl, cancelUrl, description, network }) => {
   const apiKey = process.env.NOWPAYMENTS_API_KEY;
   if (!apiKey) throw new Error('NOWPayments non configuré');
+
+  const payCurrency = USDT_PAY_CURRENCY[network];
+  if (!payCurrency) throw new Error('Réseau USDT invalide');
 
   const res = await fetch(`${API_BASE}/invoice`, {
     method: 'POST',
@@ -23,6 +36,7 @@ const createInvoice = async ({ amount, orderId, ipnCallbackUrl, successUrl, canc
     body: JSON.stringify({
       price_amount: amount,
       price_currency: 'usd',
+      pay_currency: payCurrency,
       order_id: orderId,
       order_description: description,
       ipn_callback_url: ipnCallbackUrl,
@@ -48,4 +62,4 @@ const verifyIpnSignature = (body, signature) => {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 };
 
-module.exports = { createInvoice, verifyIpnSignature };
+module.exports = { createInvoice, verifyIpnSignature, USDT_PAY_CURRENCY };

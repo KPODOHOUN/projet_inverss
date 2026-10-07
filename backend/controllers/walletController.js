@@ -6,15 +6,19 @@ const PlatformConfig = require('../models/PlatformConfig');
 const { success, error } = require('../utils/response');
 const emailService = require('../services/emailService');
 const { computeAccruedEarnings } = require('../utils/investmentEarnings');
-const { createInvoice, verifyIpnSignature } = require('../utils/nowpayments');
+const { createInvoice, verifyIpnSignature, USDT_PAY_CURRENCY } = require('../utils/nowpayments');
 
 // A deposit is a NOWPayments invoice: the user pays on NOWPayments' hosted
 // page, and the balance is credited only when their IPN webhook reports the
 // payment as finished (see nowpaymentsIpn below) — never on the user's word.
+// pay_currency locks the invoice to USDT on the chosen network specifically
+// — the platform only ever deals in USDT, never any other crypto.
 exports.createDepositInvoice = async (req, res) => {
   try {
     const amount = Number(req.body.amount);
+    const { network } = req.body;
     if (!Number.isFinite(amount) || amount < 1) return error(res, 'Montant minimum : 1 USD');
+    if (!USDT_PAY_CURRENCY[network]) return error(res, 'Réseau invalide');
     if (req.user.kycStatus !== 'verified') return error(res, 'Vérification KYC requise avant tout dépôt', 403);
 
     const transaction = await Transaction.create({
@@ -22,13 +26,14 @@ exports.createDepositInvoice = async (req, res) => {
       type: 'deposit',
       amount,
       status: 'pending',
-      method: 'nowpayments'
+      method: `usdt-${network}`
     });
 
     const frontendUrl = process.env.FRONTEND_URL;
     const backendUrl = process.env.BACKEND_URL;
     const invoice = await createInvoice({
       amount,
+      network,
       orderId: String(transaction._id),
       ipnCallbackUrl: `${backendUrl}/api/wallet/nowpayments-ipn`,
       successUrl: `${frontendUrl}/dashboard`,

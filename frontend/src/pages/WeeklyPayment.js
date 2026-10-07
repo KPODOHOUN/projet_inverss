@@ -29,6 +29,7 @@ export default function WeeklyPayment({ onNavigate }) {
   const [loadError, setLoadError] = useState(false);
 
   const [depositAmount, setDepositAmount] = useState('');
+  const [depositNetwork, setDepositNetwork] = useState('TRC20');
   const [depositing, setDepositing] = useState(false);
   const [depositError, setDepositError] = useState('');
 
@@ -77,7 +78,7 @@ export default function WeeklyPayment({ onNavigate }) {
 
     setDepositing(true);
     try {
-      const res = await api.post('/wallet/deposit/invoice', { amount });
+      const res = await api.post('/wallet/deposit/invoice', { amount, network: depositNetwork });
       toast('Redirection vers le paiement sécurisé…', 'info');
       window.location.href = res.data.data.invoiceUrl;
     } catch (err) {
@@ -193,8 +194,20 @@ export default function WeeklyPayment({ onNavigate }) {
                     placeholder="0.00"
                     className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-lg font-bold rounded"
                   />
+                </div>
+                <div>
+                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Réseau USDT</label>
+                  <select
+                    value={depositNetwork} onChange={e => setDepositNetwork(e.target.value)}
+                    className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-sm font-bold rounded"
+                  >
+                    <option value="TRC20">USDT — TRC20 (Tron)</option>
+                    <option value="ERC20">USDT — ERC20 (Ethereum)</option>
+                    <option value="BEP20">USDT — BEP20 (BNB Chain)</option>
+                    <option value="POLYGON">USDT — Polygon</option>
+                  </select>
                   <p className="text-xs text-gray-500 mt-1">
-                    Vous choisirez la crypto (USDT, BTC, ETH…) et le réseau sur la page de paiement sécurisée.
+                    Seul l'USDT est accepté sur la plateforme.
                   </p>
                 </div>
                 <button
