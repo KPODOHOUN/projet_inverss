@@ -325,10 +325,18 @@ exports.adjustBalance = async (req, res) => {
     if (!Number.isFinite(amount) || amount === 0) return error(res, 'Montant invalide');
     if (!note?.trim()) return error(res, 'Une raison est requise');
 
-    const user = await User.findById(req.params.userId);
+    // Atomic read-modify-write via an aggregation-pipeline update — plain
+    // `user.balance = user.balance + amount; await user.save()` is a
+    // classic lost-update race (two concurrent adjustments, e.g. a double
+    // click or two admin tabs, can both read the same starting balance and
+    // one silently overwrites the other). $max/$add inside the pipeline
+    // keeps the floor-at-zero behavior atomic too, not a separate step.
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      [{ $set: { balance: { $max: [0, { $add: ['$balance', amount] }] } } }],
+      { new: true }
+    );
     if (!user) return error(res, 'User not found', 404);
-    user.balance = Math.max(0, user.balance + amount);
-    await user.save();
     await ActivityLog.create({ admin: req.user._id, action: 'Ajustement de solde', target: user.email, details: `Montant: ${amount} USD - ${note}`, level: 'warning', ip: req.ip });
     success(res, { user, message: 'Balance adjusted' });
   } catch (err) { error(res, err.message); }
