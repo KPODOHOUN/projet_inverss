@@ -60,6 +60,9 @@ router.post('/transactions/:txId/process', financial, ctrl.processTransaction);
 router.post('/transactions/:txId/complete', financial, ctrl.completeTransaction);
 router.post('/transactions/:txId/reject', financial, ctrl.rejectTransaction);
 router.post('/transactions/:txId/cancel', financial, ctrl.cancelTransaction);
+router.post('/transactions/:txId/execute-payout', financial, ctrl.executeWithdrawalPayout);
+router.post('/transactions/:txId/verify-payout', financial, ctrl.verifyWithdrawalPayout);
+router.post('/transactions/:txId/payout-status', financial, ctrl.checkWithdrawalPayoutStatus);
 
 router.post('/academy/courses', financial, ctrl.createCourse);
 router.put('/academy/courses/:id', financial, ctrl.updateCourse);

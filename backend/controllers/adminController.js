@@ -590,6 +590,86 @@ exports.completeTransaction = async (req, res) => {
   } catch (err) { error(res, err.message); }
 };
 
+// Automates the actual USDT transfer via NOWPayments Custody, replacing the
+// old "admin sends it by hand, then clicks mark-processing" step. NOWPayments
+// may still require a per-payout 2FA code (verifyWithdrawalPayout below)
+// before the funds actually move — this call alone only queues the payout.
+exports.executeWithdrawalPayout = async (req, res) => {
+  try {
+    const { createPayout } = require('../utils/nowpayments');
+    const txn = await Transaction.findById(req.params.txId);
+    if (!txn) return error(res, 'Transaction not found', 404);
+    if (txn.type !== 'withdrawal') return error(res, 'Cette action concerne uniquement les retraits');
+    if (txn.status !== 'approved') return error(res, 'Le retrait doit être approuvé avant le paiement automatique');
+
+    const network = (txn.method || '').replace('usdt-', '').toUpperCase();
+    const netAmount = Number((Math.abs(txn.amount) - (txn.fee || 0)).toFixed(6));
+
+    const payout = await createPayout({ address: txn.proof, network, amount: netAmount });
+
+    txn.status = 'processing';
+    txn.nowpaymentsPayoutId = payout.payoutId;
+    txn.nowpaymentsWithdrawalId = payout.withdrawalId;
+    txn.nowpaymentsStatus = payout.status;
+    txn.updatedAt = new Date();
+    await txn.save();
+
+    await ActivityLog.create({ admin: req.user._id, action: 'Paiement automatique NOWPayments lancé', target: String(txn.userId), details: `${netAmount} USDT (${network}) — payout ${payout.payoutId}`, level: 'info', ip: req.ip });
+    success(res, { transaction: txn, message: 'Paiement envoyé à NOWPayments' });
+  } catch (err) { error(res, err.message); }
+};
+
+// NOWPayments can require a 2FA code (from the account's Google Authenticator
+// or email) per individual payout before it's actually sent — the admin
+// enters the code they receive, and this just relays it to NOWPayments.
+exports.verifyWithdrawalPayout = async (req, res) => {
+  try {
+    const { verifyPayout } = require('../utils/nowpayments');
+    const { code } = req.body;
+    if (!code) return error(res, 'Code de vérification requis');
+    const txn = await Transaction.findById(req.params.txId);
+    if (!txn) return error(res, 'Transaction not found', 404);
+    if (!txn.nowpaymentsWithdrawalId) return error(res, 'Aucun paiement NOWPayments en cours pour ce retrait');
+
+    await verifyPayout({ withdrawalId: txn.nowpaymentsWithdrawalId, code: String(code).trim() });
+
+    txn.nowpaymentsStatus = 'verified';
+    txn.updatedAt = new Date();
+    await txn.save();
+
+    await ActivityLog.create({ admin: req.user._id, action: 'Paiement NOWPayments vérifié (2FA)', target: String(txn.userId), details: `payout ${txn.nowpaymentsPayoutId}`, level: 'info', ip: req.ip });
+    success(res, { transaction: txn, message: "Code vérifié — paiement en cours d'envoi" });
+  } catch (err) { error(res, err.message); }
+};
+
+// Polls NOWPayments for this payout's real status and mirrors the deposit
+// IPN's trust model: the platform only calls a withdrawal completed once
+// NOWPayments itself reports it finished, never on an admin's say-so alone —
+// though the existing manual "Marquer terminé" button stays available as a
+// fallback if NOWPayments' status naming ever drifts from what's expected here.
+exports.checkWithdrawalPayoutStatus = async (req, res) => {
+  try {
+    const { getPayoutStatus } = require('../utils/nowpayments');
+    const txn = await Transaction.findById(req.params.txId);
+    if (!txn) return error(res, 'Transaction not found', 404);
+    if (!txn.nowpaymentsPayoutId) return error(res, 'Aucun paiement NOWPayments associé');
+
+    const data = await getPayoutStatus({ payoutId: txn.nowpaymentsPayoutId });
+    const withdrawal = data.withdrawals?.find(w => String(w.id) === txn.nowpaymentsWithdrawalId) || data.withdrawals?.[0];
+    const rawStatus = withdrawal?.status || '';
+    txn.nowpaymentsStatus = rawStatus;
+
+    if (rawStatus === 'finished' && txn.status !== 'completed') {
+      txn.status = 'completed';
+      await ActivityLog.create({ admin: req.user._id, action: 'Retrait terminé automatiquement (NOWPayments)', target: String(txn.userId), details: `payout ${txn.nowpaymentsPayoutId}`, level: 'info', ip: req.ip });
+    }
+    txn.updatedAt = new Date();
+    await txn.save();
+
+    success(res, { transaction: txn, rawStatus, hash: withdrawal?.hash || '' });
+  } catch (err) { error(res, err.message); }
+};
+
 exports.rejectTransaction = async (req, res) => {
   try {
     const { reason } = req.body;

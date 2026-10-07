@@ -1687,6 +1687,8 @@ function TransactionsTab({ api }) {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [total, setTotal] = useState(0);
+  const [payoutCode, setPayoutCode] = useState('');
+  const [payoutMessage, setPayoutMessage] = useState('');
   const PER_PAGE = 50;
 
   useEffect(() => { fetchTransactions(); }, [filter, typeFilter, periodFilter, page]);
@@ -1728,6 +1730,31 @@ function TransactionsTab({ api }) {
   const handleComplete = (txId) => runAction('complete', txId);
   const handleReject = (txId) => rejectReason && runAction('reject', txId, { reason: rejectReason });
   const handleCancel = (txId) => runAction('cancel', txId, { reason: rejectReason });
+
+  // Separate from runAction: these keep the transaction selected afterward
+  // (the admin needs to stay on it to enter a 2FA code next) and surface the
+  // real NOWPayments response instead of silently swallowing errors — this
+  // moves real money, so a failed call needs to be visible, not just logged.
+  const runPayoutAction = async (action, txId, body) => {
+    setProcessing(true);
+    setPayoutMessage('');
+    try {
+      const res = await api.post(`/admin/transactions/${txId}/${action}`, body);
+      if (res.data.success) {
+        setSelected(res.data.data.transaction);
+        setPayoutMessage(res.data.data.message || (res.data.data.rawStatus ? `Statut NOWPayments : ${res.data.data.rawStatus}` : 'OK'));
+        setPayoutCode('');
+        fetchTransactions();
+      }
+    } catch (e) {
+      setPayoutMessage(e.response?.data?.message || "Erreur lors de l'opération NOWPayments");
+    } finally {
+      setProcessing(false);
+    }
+  };
+  const handleExecutePayout = (txId) => runPayoutAction('execute-payout', txId);
+  const handleVerifyPayout = (txId) => payoutCode.trim() && runPayoutAction('verify-payout', txId, { code: payoutCode.trim() });
+  const handleCheckPayoutStatus = (txId) => runPayoutAction('payout-status', txId);
 
   const typeColors = { deposit: 'green', withdrawal: 'red', investment: 'blue', earning: 'green', reinvestment: 'blue', commission: 'purple', refund: 'gray' };
   const typeLabels = { deposit: 'DÉPÔT', withdrawal: 'RETRAIT', investment: 'INVESTISSEMENT', earning: 'GAIN', reinvestment: 'RÉINVESTISSEMENT', commission: 'COMMISSION', refund: 'REMBOURSEMENT' };
@@ -1788,7 +1815,7 @@ function TransactionsTab({ api }) {
               { key: 'type', label: 'Type', render: v => <Badge label={typeLabels[v] || v?.toUpperCase()} color={typeColors[v] || 'gray'} /> },
               { key: 'amount', label: 'Montant', render: v => <span className="text-yellow-400 font-bold">${v?.toLocaleString()}</span> },
               { key: 'status', label: 'Statut', render: v => <Badge label={statusLabels[v] || v?.toUpperCase()} color={statusColors[v] || 'gray'} /> },
-              { key: 'actions', label: '', render: (_, r) => <AdminBtn size="sm" onClick={() => setSelected(r)}>VOIR</AdminBtn> },
+              { key: 'actions', label: '', render: (_, r) => <AdminBtn size="sm" onClick={() => { setSelected(r); setPayoutMessage(''); setPayoutCode(''); }}>VOIR</AdminBtn> },
             ]}
             data={transactions}
             emptyMsg="Aucune transaction"
@@ -1848,13 +1875,20 @@ function TransactionsTab({ api }) {
                   </>
                 )}
 
+                {payoutMessage && (
+                  <div className="p-3 bg-blue-950/30 border border-blue-800/40 text-blue-300 text-xs rounded">{payoutMessage}</div>
+                )}
+
                 {selected.type === 'withdrawal' && selected.status === 'approved' && (
                   <>
+                    <AdminBtn color="green" size="md" onClick={() => handleExecutePayout(selected.id)} disabled={processing}>
+                      ⚡ PAYER AUTOMATIQUEMENT (NOWPayments)
+                    </AdminBtn>
                     <AdminBtn color="yellow" size="md" onClick={() => handleProcess(selected.id)} disabled={processing}>
-                      ⏳ METTRE EN TRAITEMENT
+                      ⏳ METTRE EN TRAITEMENT (manuel)
                     </AdminBtn>
                     <AdminBtn color="green" size="md" onClick={() => handleComplete(selected.id)} disabled={processing}>
-                      ✓ MARQUER TERMINÉ
+                      ✓ MARQUER TERMINÉ (manuel)
                     </AdminBtn>
                     <div className="space-y-2 border-t border-yellow-900/20 pt-4">
                       <Textarea label="Motif d'annulation" value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={2} placeholder="Raison de l'annulation..." />
@@ -1866,9 +1900,24 @@ function TransactionsTab({ api }) {
                 )}
 
                 {selected.type === 'withdrawal' && selected.status === 'processing' && (
-                  <AdminBtn color="green" size="md" onClick={() => handleComplete(selected.id)} disabled={processing}>
-                    ✓ MARQUER TERMINÉ
-                  </AdminBtn>
+                  <>
+                    {selected.nowpaymentsWithdrawalId && selected.nowpaymentsStatus !== 'verified' && (
+                      <div className="space-y-2 border border-yellow-900/20 rounded p-3">
+                        <Input label="Code de vérification NOWPayments (2FA)" value={payoutCode} onChange={e => setPayoutCode(e.target.value)} placeholder="Code reçu par email / Authenticator" />
+                        <AdminBtn color="green" size="md" onClick={() => handleVerifyPayout(selected.id)} disabled={processing || !payoutCode.trim()}>
+                          ✓ VALIDER LE CODE
+                        </AdminBtn>
+                      </div>
+                    )}
+                    {selected.nowpaymentsPayoutId && (
+                      <AdminBtn color="blue" size="md" onClick={() => handleCheckPayoutStatus(selected.id)} disabled={processing}>
+                        ↻ VÉRIFIER LE STATUT NOWPAYMENTS
+                      </AdminBtn>
+                    )}
+                    <AdminBtn color="green" size="md" onClick={() => handleComplete(selected.id)} disabled={processing}>
+                      ✓ MARQUER TERMINÉ (manuel)
+                    </AdminBtn>
+                  </>
                 )}
               </div>
             </SectionBox>

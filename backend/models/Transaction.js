@@ -14,6 +14,12 @@ const transactionSchema = new mongoose.Schema({
   reference: { type: String, unique: true },
   proof: { type: String, default: '' },
   rejectionReason: { type: String, default: '' },
+  // Set once an admin triggers the automated NOWPayments payout for a
+  // withdrawal — payoutId is the batch id (status lookups), withdrawalId is
+  // the individual payout's id (what the 2FA verify call targets).
+  nowpaymentsPayoutId: { type: String, default: '' },
+  nowpaymentsWithdrawalId: { type: String, default: '' },
+  nowpaymentsStatus: { type: String, default: '' },
   // A user can mask a transaction from their own history view — the row
   // itself is never deleted, so admin reporting, balances, and audits stay
   // complete regardless of what any individual user has hidden.
