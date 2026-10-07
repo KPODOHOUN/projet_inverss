@@ -3,24 +3,18 @@ import { useEffect, useRef, useState } from 'react';
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-// Counts up/down from the previous value to the new one — used on every
-// headline number (balance, invested, earnings) so a figure changing
+// Counts up from 0 on first mount (the deliberate dashboard "reveal") and
+// from the previous value on every change after that, so a figure changing
 // after an action reads as something that just happened, not a silent
 // page refresh. Jumps straight to the final value for prefers-reduced-motion,
 // since requestAnimationFrame isn't covered by the global CSS media query.
 export default function AnimatedNumber({ value, decimals = 2, prefix = '', suffix = '', duration = 800 }) {
   const numericValue = Number(value) || 0;
-  const [display, setDisplay] = useState(numericValue);
-  const prevValue = useRef(numericValue);
-  const isFirstRender = useRef(true);
+  const reduced = prefersReducedMotion();
+  const [display, setDisplay] = useState(reduced ? numericValue : 0);
+  const prevValue = useRef(reduced ? numericValue : 0);
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      prevValue.current = numericValue;
-      setDisplay(numericValue);
-      return;
-    }
     if (prefersReducedMotion()) {
       prevValue.current = numericValue;
       setDisplay(numericValue);
