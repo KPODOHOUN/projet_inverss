@@ -3,7 +3,7 @@ const Transaction = require('../models/Transaction');
 const PlatformConfig = require('../models/PlatformConfig');
 
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
 const ESCALATE_MARKER = '[ESCALATE]';
 
 const SYSTEM_PROMPT = `Tu es l'assistant d'aide d'IMC Corporation, une plateforme d'investissement. Tu réponds UNIQUEMENT aux questions sur : le fonctionnement du compte, les dépôts, les retraits, l'investissement, le trading, le parrainage, la vérification (KYC) et l'académie de formation.
