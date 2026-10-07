@@ -14,6 +14,10 @@ const transactionSchema = new mongoose.Schema({
   reference: { type: String, unique: true },
   proof: { type: String, default: '' },
   rejectionReason: { type: String, default: '' },
+  // A user can mask a transaction from their own history view — the row
+  // itself is never deleted, so admin reporting, balances, and audits stay
+  // complete regardless of what any individual user has hidden.
+  hiddenForUser: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

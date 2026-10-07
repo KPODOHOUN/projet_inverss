@@ -7,6 +7,7 @@ const Referral = require('../models/Referral');
 const AmbassadorReferral = require('../models/AmbassadorReferral');
 const AmbassadorCommission = require('../models/AmbassadorCommission');
 const AcademyVideo = require('../models/AcademyVideo');
+const FAQ = require('../models/FAQ');
 const PlatformConfig = require('../models/PlatformConfig');
 const ActivityLog = require('../models/ActivityLog');
 const BlockedIP = require('../models/BlockedIP');
@@ -187,7 +188,7 @@ exports.createUser = async (req, res) => {
     }
 
     const user = await User.create({ firstName, lastName, email, password, phone, role: finalRole });
-    await ActivityLog.create({ admin: req.user._id, action: 'Création utilisateur', target: user.email, details: `Rôle: ${finalRole}`, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Création utilisateur', target: user.email, details: `Rôle: ${finalRole}`, level: 'info', ip: req.ip });
     success(res, { user }, 201);
   } catch (err) { error(res, err.message); }
 };
@@ -209,7 +210,7 @@ exports.createAmbassador = async (req, res) => {
       firstName: firstName.trim(), lastName: lastName.trim(), email, password, phone,
       role: 'ambassador', emailVerified: true // admin-issued credentials, no self-signup email flow to confirm
     });
-    await ActivityLog.create({ admin: req.user._id, action: 'Création ambassadeur', target: ambassador.email, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Création ambassadeur', target: ambassador.email, level: 'info', ip: req.ip });
     success(res, { ambassador }, 201);
   } catch (err) { error(res, err.message); }
 };
@@ -273,7 +274,7 @@ exports.updateAmbassador = async (req, res) => {
     if (phone !== undefined) ambassador.phone = phone;
 
     await ambassador.save();
-    await ActivityLog.create({ admin: req.user._id, action: 'Modification ambassadeur', target: ambassador.email, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Modification ambassadeur', target: ambassador.email, level: 'info', ip: req.ip });
     success(res, { ambassador });
   } catch (err) { error(res, err.message); }
 };
@@ -288,7 +289,7 @@ exports.resetAmbassadorPassword = async (req, res) => {
 
     ambassador.password = password; // re-hashed by the User pre('save') hook
     await ambassador.save();
-    await ActivityLog.create({ admin: req.user._id, action: 'Réinitialisation mot de passe ambassadeur', target: ambassador.email, level: 'warning' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Réinitialisation mot de passe ambassadeur', target: ambassador.email, level: 'warning', ip: req.ip });
     success(res, { message: 'Mot de passe réinitialisé' });
   } catch (err) { error(res, err.message); }
 };
@@ -303,7 +304,7 @@ exports.suspendUser = async (req, res) => {
     }
     target.status = 'suspended';
     await target.save();
-    await ActivityLog.create({ admin: req.user._id, action: 'Utilisateur suspendu', target: target.email, level: 'warning' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Utilisateur suspendu', target: target.email, level: 'warning', ip: req.ip });
     success(res, { user: target, message: 'User suspended' });
   } catch (err) { error(res, err.message); }
 };
@@ -312,7 +313,7 @@ exports.activateUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.userId, { status: 'active' }, { new: true });
     if (!user) return error(res, 'User not found', 404);
-    await ActivityLog.create({ admin: req.user._id, action: 'Utilisateur réactivé', target: user.email, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Utilisateur réactivé', target: user.email, level: 'info', ip: req.ip });
     success(res, { user, message: 'User activated' });
   } catch (err) { error(res, err.message); }
 };
@@ -328,7 +329,7 @@ exports.adjustBalance = async (req, res) => {
     if (!user) return error(res, 'User not found', 404);
     user.balance = Math.max(0, user.balance + amount);
     await user.save();
-    await ActivityLog.create({ admin: req.user._id, action: 'Ajustement de solde', target: user.email, details: `Montant: ${amount} USD - ${note}`, level: 'warning' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Ajustement de solde', target: user.email, details: `Montant: ${amount} USD - ${note}`, level: 'warning', ip: req.ip });
     success(res, { user, message: 'Balance adjusted' });
   } catch (err) { error(res, err.message); }
 };
@@ -350,7 +351,7 @@ exports.changeUserRole = async (req, res) => {
 
     target.role = role;
     await target.save();
-    await ActivityLog.create({ admin: req.user._id, action: 'Changement de rôle', target: target.email, details: `Nouveau rôle: ${role}`, level: 'warning' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Changement de rôle', target: target.email, details: `Nouveau rôle: ${role}`, level: 'warning', ip: req.ip });
     success(res, { user: target });
   } catch (err) { error(res, err.message); }
 };
@@ -475,7 +476,7 @@ exports.closeInvestment = async (req, res) => {
     const payout = investment.amount + earnings;
     await User.findByIdAndUpdate(investment.userId, { $inc: { balance: payout } });
     await Transaction.create({ userId: investment.userId, type: 'earning', amount: payout, status: 'completed', method: 'wallet', reference: `CLOSE-${investment._id}` });
-    await ActivityLog.create({ admin: req.user._id, action: 'Investissement clôturé', target: String(investment.userId), details: `Payout: ${payout} USD`, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Investissement clôturé', target: String(investment.userId), details: `Payout: ${payout} USD`, level: 'info', ip: req.ip });
 
     success(res, { investment, payout });
   } catch (err) { error(res, err.message); }
@@ -540,7 +541,7 @@ exports.approveTransaction = async (req, res) => {
       }
     }
 
-    await ActivityLog.create({ admin: req.user._id, action: 'Transaction approuvée', target: String(txn.userId), details: `${txn.type} - ${Math.abs(txn.amount)} USD`, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Transaction approuvée', target: String(txn.userId), details: `${txn.type} - ${Math.abs(txn.amount)} USD`, level: 'info', ip: req.ip });
     success(res, { transaction: txn, message: 'Transaction approved' });
   } catch (err) { error(res, err.message); }
 };
@@ -557,7 +558,7 @@ exports.processTransaction = async (req, res) => {
     txn.updatedAt = new Date();
     await txn.save();
 
-    await ActivityLog.create({ admin: req.user._id, action: 'Retrait mis en traitement', target: String(txn.userId), details: `${Math.abs(txn.amount)} USD`, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Retrait mis en traitement', target: String(txn.userId), details: `${Math.abs(txn.amount)} USD`, level: 'info', ip: req.ip });
     success(res, { transaction: txn, message: 'Retrait en traitement' });
   } catch (err) { error(res, err.message); }
 };
@@ -576,7 +577,7 @@ exports.completeTransaction = async (req, res) => {
     txn.updatedAt = new Date();
     await txn.save();
 
-    await ActivityLog.create({ admin: req.user._id, action: 'Retrait marqué terminé', target: String(txn.userId), details: `${Math.abs(txn.amount)} USD`, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Retrait marqué terminé', target: String(txn.userId), details: `${Math.abs(txn.amount)} USD`, level: 'info', ip: req.ip });
     success(res, { transaction: txn, message: 'Retrait terminé' });
   } catch (err) { error(res, err.message); }
 };
@@ -609,7 +610,7 @@ exports.rejectTransaction = async (req, res) => {
       await Investment.findOneAndUpdate({ _id: investmentId, status: 'pending' }, { status: 'cancelled' });
     }
 
-    await ActivityLog.create({ admin: req.user._id, action: 'Transaction rejetée', target: String(txn.userId), details: `${txn.type} - ${reason || ''}`, level: 'warning' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Transaction rejetée', target: String(txn.userId), details: `${txn.type} - ${reason || ''}`, level: 'warning', ip: req.ip });
     success(res, { transaction: txn, message: 'Transaction rejected' });
   } catch (err) { error(res, err.message); }
 };
@@ -640,7 +641,7 @@ exports.cancelTransaction = async (req, res) => {
       await Investment.findOneAndUpdate({ _id: investmentId, status: 'pending' }, { status: 'cancelled' });
     }
 
-    await ActivityLog.create({ admin: req.user._id, action: 'Transaction annulée', target: String(txn.userId), details: `${txn.type} - ${reason || ''}`, level: 'warning' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Transaction annulée', target: String(txn.userId), details: `${txn.type} - ${reason || ''}`, level: 'warning', ip: req.ip });
     success(res, { transaction: txn, message: 'Transaction cancelled' });
   } catch (err) { error(res, err.message); }
 };
@@ -675,6 +676,56 @@ exports.updateCourse = async (req, res) => {
     const course = await AcademyVideo.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!course) return error(res, 'Course not found', 404);
     success(res, { course });
+  } catch (err) { error(res, err.message); }
+};
+
+// A real delete, not just deactivation — but only when safe: if any
+// AcademyProgress already references this video in completedVideos,
+// deleting it would silently corrupt those users' progress history (the
+// ref would point at nothing). Deactivating via `active:false` (already
+// possible through updateCourse) is the right move for a video someone
+// has watched; delete is for a video nobody has completed yet.
+exports.deleteCourse = async (req, res) => {
+  try {
+    const AcademyProgress = require('../models/AcademyProgress');
+    const referenced = await AcademyProgress.exists({ completedVideos: req.params.id });
+    if (referenced) {
+      return error(res, 'Des utilisateurs ont déjà complété cette vidéo — désactivez-la plutôt que de la supprimer.', 409);
+    }
+    const course = await AcademyVideo.findByIdAndDelete(req.params.id);
+    if (!course) return error(res, 'Course not found', 404);
+    await ActivityLog.create({ admin: req.user._id, action: 'Vidéo Académie supprimée', target: req.params.id, details: course.title, level: 'warning', ip: req.ip });
+    success(res, { message: 'Vidéo supprimée' });
+  } catch (err) { error(res, err.message); }
+};
+
+exports.listFAQs = async (req, res) => {
+  try {
+    const faqs = await FAQ.find().sort({ category: 1, order: 1 });
+    success(res, { faqs });
+  } catch (err) { error(res, err.message); }
+};
+
+exports.createFAQ = async (req, res) => {
+  try {
+    const faq = await FAQ.create(req.body);
+    success(res, { faq }, 201);
+  } catch (err) { error(res, err.message); }
+};
+
+exports.updateFAQ = async (req, res) => {
+  try {
+    const faq = await FAQ.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!faq) return error(res, 'FAQ not found', 404);
+    success(res, { faq });
+  } catch (err) { error(res, err.message); }
+};
+
+exports.deleteFAQ = async (req, res) => {
+  try {
+    const faq = await FAQ.findByIdAndDelete(req.params.id);
+    if (!faq) return error(res, 'FAQ not found', 404);
+    success(res, { message: 'FAQ supprimée' });
   } catch (err) { error(res, err.message); }
 };
 
@@ -801,7 +852,7 @@ exports.createTradingAsset = async (req, res) => {
       externalProvider: priceSource === 'live' ? externalProvider : null,
       externalId: priceSource === 'live' ? externalId : ''
     });
-    await ActivityLog.create({ admin: req.user._id, action: 'Actif de trading créé', target: asset.key, details: name, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Actif de trading créé', target: asset.key, details: name, level: 'info', ip: req.ip });
     success(res, { asset }, 201);
   } catch (err) { error(res, err.message); }
 };
@@ -810,7 +861,7 @@ exports.updateTradingAsset = async (req, res) => {
   try {
     const asset = await TradingAsset.findOneAndUpdate({ key: req.params.key }, { $set: req.body }, { new: true });
     if (!asset) return error(res, 'Asset not found', 404);
-    await ActivityLog.create({ admin: req.user._id, action: 'Actif de trading modifié', target: asset.key, details: JSON.stringify(req.body), level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Actif de trading modifié', target: asset.key, details: JSON.stringify(req.body), level: 'info', ip: req.ip });
     success(res, { asset });
   } catch (err) { error(res, err.message); }
 };
@@ -847,7 +898,7 @@ exports.createTradingCode = async (req, res) => {
 
     await ActivityLog.create({
       admin: req.user._id, action: 'Code de trading créé', target: code.code,
-      details: `${asset} ${variationPercent}% / ${durationHours}h`, level: 'info'
+      details: `${asset} ${variationPercent}% / ${durationHours}h`, level: 'info', ip: req.ip
     });
 
     // Surface the code as an in-app notification instead of leaving it
@@ -887,7 +938,7 @@ exports.updateTradingCodeStatus = async (req, res) => {
 
     code.status = status;
     await code.save();
-    await ActivityLog.create({ admin: req.user._id, action: `Code de trading ${status === 'active' ? 'réactivé' : 'désactivé'}`, target: code.code, details: '', level: 'warning' });
+    await ActivityLog.create({ admin: req.user._id, action: `Code de trading ${status === 'active' ? 'réactivé' : 'désactivé'}`, target: code.code, details: '', level: 'warning', ip: req.ip });
     success(res, { code });
   } catch (err) { error(res, err.message); }
 };
@@ -926,7 +977,7 @@ exports.saveTradingSettings = async (req, res) => {
       { $set: { payoutPercent: Number(payoutPercent), durationsMinutes: durations } },
       { upsert: true, new: true }
     );
-    await ActivityLog.create({ admin: req.user._id, action: 'Paramètres de trading modifiés', target: 'trading-config', details: `Taux ${payoutPercent}% / durées ${durations.join(',')}min`, level: 'info' });
+    await ActivityLog.create({ admin: req.user._id, action: 'Paramètres de trading modifiés', target: 'trading-config', details: `Taux ${payoutPercent}% / durées ${durations.join(',')}min`, level: 'info', ip: req.ip });
     success(res, { config });
   } catch (err) { error(res, err.message); }
 };

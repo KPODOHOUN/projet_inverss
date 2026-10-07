@@ -69,6 +69,13 @@ const IC = {
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
+  Help: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M9.5 9a2.5 2.5 0 014.9.8c0 1.7-2.4 1.8-2.4 3.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="12" cy="17" r="0.9" fill="currentColor"/>
+    </svg>
+  ),
   Profile: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
       <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -137,7 +144,7 @@ const IC = {
   ),
 };
 
-const TAB_IDS = ['overview', 'invest', 'investments', 'wallet', 'trading', 'academy', 'referral', 'transactions', 'kyc', 'security', 'profile'];
+const TAB_IDS = ['overview', 'invest', 'investments', 'wallet', 'trading', 'academy', 'referral', 'transactions', 'faq', 'kyc', 'security', 'profile'];
 const readTabFromHash = () => {
   const id = window.location.hash.replace('#', '');
   return TAB_IDS.includes(id) ? id : 'trading';
@@ -220,6 +227,7 @@ export default function Dashboard() {
     { id: 'academy',      Icon: IC.Academy,      label: 'Académie' },
     { id: 'referral',     Icon: IC.Referral,     label: 'Parrainage' },
     { id: 'transactions', Icon: IC.Transactions, label: 'Transactions' },
+    { id: 'faq',          Icon: IC.Help,         label: "Centre d'aide" },
     { id: 'kyc',          Icon: IC.KYC,          label: 'KYC' },
     { id: 'security',     Icon: IC.Security,     label: 'Sécurité' },
     { id: 'profile',      Icon: IC.Profile,      label: 'Profil' },
@@ -352,8 +360,9 @@ export default function Dashboard() {
             {activeTab === 'wallet'       && <WeeklyPayment onNavigate={setActiveTab} />}
             {activeTab === 'trading'      && <Trading onNavigate={setActiveTab} prefillCode={tradingPrefillCode} onPrefillConsumed={() => setTradingPrefillCode(null)} />}
             {activeTab === 'academy'      && <Academy />}
-            {activeTab === 'referral'     && <Referral />}
-            {activeTab === 'transactions' && <TransactionsTab transactions={transactions} loading={loading} />}
+            {activeTab === 'referral'     && <Referral onNavigate={setActiveTab} />}
+            {activeTab === 'transactions' && <TransactionsTab transactions={transactions} loading={loading} onRefresh={fetchDashboardData} />}
+            {activeTab === 'faq'          && <FAQTab />}
             {activeTab === 'kyc'          && <KYC />}
             {activeTab === 'security'     && <SecurityTab />}
             {activeTab === 'profile'      && <ProfileTab user={user} />}
@@ -800,20 +809,48 @@ const withinPeriod = (dateStr, period) => {
   return Date.now() - new Date(dateStr).getTime() <= PERIOD_MS[period];
 };
 
-function TransactionsTab({ transactions, loading }) {
+function TransactionsTab({ transactions, loading, onRefresh }) {
+  const { api } = useAuth();
   const [typeFilter, setTypeFilter] = useState('all');
   const [periodFilter, setPeriodFilter] = useState('today');
+  const [showHidden, setShowHidden] = useState(false);
+  const [hiddenList, setHiddenList] = useState([]);
+  const [busyId, setBusyId] = useState(null);
+
+  useEffect(() => {
+    if (!showHidden) return;
+    api.get('/transactions/history?includeHidden=true').then(res => {
+      if (res.data.success) setHiddenList(res.data.data.transactions.filter(t => t.hiddenForUser));
+    }).catch(() => {});
+  }, [showHidden, api]);
+
   if (loading) return <Spinner />;
 
-  const types = ['all', ...new Set(transactions.map(t => t.type))];
+  const toggleHide = async (tx) => {
+    setBusyId(tx._id);
+    try {
+      await api.put(`/transactions/${tx._id}/hide`, { hidden: !tx.hiddenForUser });
+      if (showHidden) setHiddenList(list => list.filter(t => t._id !== tx._id));
+      onRefresh?.();
+    } catch (e) { /* leave as-is, user can retry */ }
+    setBusyId(null);
+  };
+
+  const source = showHidden ? [...transactions, ...hiddenList] : transactions;
+  const types = ['all', ...new Set(source.map(t => t.type))];
   const typeLabelMap = { all: 'Tous types', deposit: 'Dépôts', investment: 'Investissements', withdrawal: 'Retraits', earning: 'Gains', trading: 'Trading', commission: 'Commissions', refund: 'Remboursements', reinvestment: 'Réinvestissements' };
-  const filtered = transactions
+  const filtered = source
     .filter(t => typeFilter === 'all' || t.type === typeFilter)
     .filter(t => withinPeriod(t.createdAt, periodFilter));
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Historique des transactions" />
+      <PageHeader title="Historique des transactions">
+        <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer select-none">
+          <input type="checkbox" checked={showHidden} onChange={e => setShowHidden(e.target.checked)} className="accent-yellow-500" />
+          Afficher les transactions masquées
+        </label>
+      </PageHeader>
 
       <div className="flex flex-wrap gap-2">
         {types.map(t => (
@@ -845,7 +882,7 @@ function TransactionsTab({ transactions, loading }) {
             <table className="w-full">
               <thead className="bg-black/60">
                 <tr>
-                  {['Date', 'Type', 'Montant', 'Statut'].map(col => (
+                  {['Date', 'Type', 'Montant', 'Statut', ''].map(col => (
                     <th key={col} className="px-5 py-3 text-left text-xs font-bold text-yellow-500 tracking-widest uppercase">
                       {col}
                     </th>
@@ -854,13 +891,22 @@ function TransactionsTab({ transactions, loading }) {
               </thead>
               <tbody className="divide-y divide-yellow-900/15">
                 {filtered.map((tx, i) => (
-                  <tr key={i} className="hover:bg-yellow-900/8 transition-colors">
+                  <tr key={i} className={`hover:bg-yellow-900/8 transition-colors ${tx.hiddenForUser ? 'opacity-50' : ''}`}>
                     <td className="px-5 py-4 text-sm text-gray-400">
                       {new Date(tx.createdAt).toLocaleDateString('fr-FR')}
                     </td>
                     <td className="px-5 py-4"><Badge status={tx.type} /></td>
                     <td className="px-5 py-4 text-sm font-bold text-white">$ {tx.amount}</td>
                     <td className="px-5 py-4"><Badge status={tx.status} /></td>
+                    <td className="px-5 py-4 text-right">
+                      <button
+                        onClick={() => toggleHide(tx)}
+                        disabled={busyId === tx._id}
+                        className="text-xs text-gray-500 hover:text-yellow-500 bg-transparent border-none cursor-pointer disabled:opacity-40"
+                      >
+                        {tx.hiddenForUser ? 'Réafficher' : 'Masquer'}
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -871,6 +917,85 @@ function TransactionsTab({ transactions, loading }) {
         <Card className="p-6 text-center">
           <p className="text-gray-500 text-sm">
             {transactions.length === 0 ? 'Aucune transaction pour le moment' : 'Aucune transaction ne correspond à ces filtres'}
+          </p>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+const FAQ_CATEGORY_LABELS = {
+  compte: 'Compte', depots: 'Dépôts', retraits: 'Retraits', investissement: 'Investissement',
+  trading: 'Trading', parrainage: 'Parrainage', securite: 'Sécurité', verification: 'Vérification', academie: 'Académie'
+};
+
+function FAQTab() {
+  const { api } = useAuth();
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('all');
+  const [openId, setOpenId] = useState(null);
+
+  useEffect(() => {
+    api.get('/faq').then(res => {
+      if (res.data.success) setFaqs(res.data.data.faqs);
+    }).finally(() => setLoading(false));
+  }, [api]);
+
+  if (loading) return <Spinner />;
+
+  const categories = ['all', ...new Set(faqs.map(f => f.category))];
+  const q = search.trim().toLowerCase();
+  const filtered = faqs
+    .filter(f => category === 'all' || f.category === category)
+    .filter(f => !q || f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q));
+
+  return (
+    <div className="space-y-6">
+      <PageHeader title="Centre d'aide" />
+
+      <input
+        type="text"
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        placeholder="Rechercher une question…"
+        className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+      />
+
+      <div className="flex flex-wrap gap-2">
+        {categories.map(c => (
+          <button
+            key={c}
+            onClick={() => setCategory(c)}
+            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${category === c ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+          >
+            {c === 'all' ? 'Toutes' : (FAQ_CATEGORY_LABELS[c] || c)}
+          </button>
+        ))}
+      </div>
+
+      {filtered.length > 0 ? (
+        <div className="space-y-2">
+          {filtered.map(f => (
+            <Card key={f._id} className="overflow-hidden">
+              <button
+                onClick={() => setOpenId(openId === f._id ? null : f._id)}
+                className="w-full flex items-center justify-between gap-3 p-4 text-left bg-transparent border-none cursor-pointer"
+              >
+                <span className="font-semibold text-white text-sm">{f.question}</span>
+                <span className="text-yellow-500 text-sm shrink-0">{openId === f._id ? '−' : '+'}</span>
+              </button>
+              {openId === f._id && (
+                <div className="px-4 pb-4 text-sm text-gray-400 whitespace-pre-wrap">{f.answer}</div>
+              )}
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <Card className="p-6 text-center">
+          <p className="text-gray-500 text-sm">
+            {faqs.length === 0 ? "Aucune question pour l'instant" : 'Aucun résultat pour cette recherche'}
           </p>
         </Card>
       )}

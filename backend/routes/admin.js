@@ -63,6 +63,12 @@ router.post('/transactions/:txId/cancel', financial, ctrl.cancelTransaction);
 
 router.post('/academy/courses', financial, ctrl.createCourse);
 router.put('/academy/courses/:id', financial, ctrl.updateCourse);
+router.delete('/academy/courses/:id', financial, ctrl.deleteCourse);
+
+router.get('/faq', ctrl.listFAQs);
+router.post('/faq', financial, ctrl.createFAQ);
+router.put('/faq/:id', financial, ctrl.updateFAQ);
+router.delete('/faq/:id', financial, ctrl.deleteFAQ);
 
 router.post('/trading/assets', financial, ctrl.createTradingAsset);
 router.put('/trading/assets/:key', financial, ctrl.updateTradingAsset);

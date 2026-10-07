@@ -209,8 +209,27 @@ exports.withdraw = async (req, res) => {
 
 exports.transactionHistory = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    const filter = { userId: req.user._id };
+    if (req.query.includeHidden !== 'true') filter.hiddenForUser = { $ne: true };
+    const transactions = await Transaction.find(filter).sort({ createdAt: -1 });
     success(res, { transactions });
+  } catch (err) {
+    error(res, err.message);
+  }
+};
+
+// Masking only ever touches the caller's own transaction — never deletes
+// the row, so admin views and balance history stay complete regardless.
+exports.setTransactionHidden = async (req, res) => {
+  try {
+    const hidden = req.body.hidden !== false;
+    const transaction = await Transaction.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
+      { hiddenForUser: hidden },
+      { new: true }
+    );
+    if (!transaction) return error(res, 'Transaction introuvable', 404);
+    success(res, { transaction });
   } catch (err) {
     error(res, err.message);
   }

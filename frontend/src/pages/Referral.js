@@ -13,7 +13,7 @@ const withinPeriod = (dateStr, period) => {
   return Date.now() - new Date(dateStr).getTime() <= PERIOD_MS[period];
 };
 
-export default function Referral() {
+export default function Referral({ onNavigate }) {
   const { user, api } = useAuth();
   const [referralData, setReferralData] = useState(null);
   const [referralLink, setReferralLink] = useState('');
@@ -238,36 +238,16 @@ export default function Referral() {
         })()}
       </div>
 
-      {/* How It Works */}
-      <div className="bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 text-black">
-        <h3 className="text-2xl font-black mb-6">COMMENT ÇA MARCHE ?</h3>
-        <div className="grid md:grid-cols-4 gap-6">
-          <div className="text-center">
-            <h4 className="font-bold mb-2">Partagez votre lien</h4>
-            <p className="text-sm opacity-80">
-              Envoyez votre lien unique à vos amis
-            </p>
-          </div>
-          <div className="text-center">
-            <h4 className="font-bold mb-2">Ils s'inscrivent</h4>
-            <p className="text-sm opacity-80">
-              Vos amis créent leur compte IMC
-            </p>
-          </div>
-          <div className="text-center">
-            <h4 className="font-bold mb-2">Ils investissent</h4>
-            <p className="text-sm opacity-80">
-              Vos filleuls achètent des packs
-            </p>
-          </div>
-          <div className="text-center">
-            <h4 className="font-bold mb-2">Vous gagnez</h4>
-            <p className="text-sm opacity-80">
-              Commissions automatiques sur votre solde
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Detailed "how it works" / commission explanations now live in the
+          Centre d'aide (FAQ), reachable from any page — not duplicated here. */}
+      <button
+        type="button"
+        onClick={() => onNavigate?.('faq')}
+        className="w-full text-left p-5 bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 hover:border-yellow-600/60 transition-colors rounded-lg"
+      >
+        <p className="font-bold text-white text-sm">Comment fonctionne le parrainage ?</p>
+        <p className="text-xs text-gray-500 mt-1">Voir les réponses détaillées dans le Centre d'aide →</p>
+      </button>
     </div>
   );
 }

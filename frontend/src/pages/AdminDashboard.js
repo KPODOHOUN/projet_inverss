@@ -55,6 +55,7 @@ export default function AdminDashboard() {
       items: [
         { id: 'academy',       icon: '🎓', label: 'Académie' },
         { id: 'trading',       icon: '📈', label: 'Trading' },
+        { id: 'faq',           icon: '❓', label: "Centre d'aide" },
       ]
     },
     {
@@ -78,6 +79,7 @@ export default function AdminDashboard() {
       case 'investments':   return <InvestmentsTab api={api} />;
       case 'transactions':  return <TransactionsTab api={api} />;
       case 'academy':       return <AcademyTab api={api} />;
+      case 'faq':           return <FAQAdminTab api={api} />;
       case 'trading':       return <TradingTab api={api} />;
       case 'config':        return <ConfigTab api={api} />;
       case 'logs':          return <LogsTab api={api} />;
@@ -1986,6 +1988,116 @@ function AcademyTab({ api }) {
           <div className="flex gap-2 pt-2">
             <AdminBtn size="md" color="yellow" onClick={createCourse} disabled={!newCourse.title || !newCourse.youtubeId}>CRÉER</AdminBtn>
             <AdminBtn size="md" color="gray" onClick={() => setShowAdd(false)}>ANNULER</AdminBtn>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+const FAQ_CATEGORIES = [
+  { value: 'compte', label: 'Compte' },
+  { value: 'depots', label: 'Dépôts' },
+  { value: 'retraits', label: 'Retraits' },
+  { value: 'investissement', label: 'Investissement' },
+  { value: 'trading', label: 'Trading' },
+  { value: 'parrainage', label: 'Parrainage' },
+  { value: 'securite', label: 'Sécurité' },
+  { value: 'verification', label: 'Vérification' },
+  { value: 'academie', label: 'Académie' },
+];
+
+function FAQAdminTab({ api }) {
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({ question: '', answer: '', category: 'compte', order: 0 });
+
+  const fetchFaqs = () => {
+    setLoading(true);
+    api.get('/admin/faq').then(r => {
+      if (r.data.success) setFaqs(r.data.data.faqs || []);
+    }).catch(() => setError('Impossible de charger la FAQ')).finally(() => setLoading(false));
+  };
+
+  useEffect(fetchFaqs, []);
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ question: '', answer: '', category: 'compte', order: 0 });
+    setShowModal(true);
+  };
+
+  const openEdit = (f) => {
+    setEditing(f);
+    setForm({ question: f.question, answer: f.answer, category: f.category, order: f.order });
+    setShowModal(true);
+  };
+
+  const save = async () => {
+    try {
+      if (editing) await api.put(`/admin/faq/${editing._id}`, form);
+      else await api.post('/admin/faq', form);
+      setShowModal(false);
+      fetchFaqs();
+    } catch (e) { setError(e.response?.data?.message || 'Erreur lors de l\'enregistrement'); }
+  };
+
+  const toggleActive = async (f) => {
+    try { await api.put(`/admin/faq/${f._id}`, { active: !f.active }); fetchFaqs(); } catch (e) { /* ignore */ }
+  };
+
+  const remove = async (f) => {
+    if (!window.confirm(`Supprimer "${f.question}" ?`)) return;
+    try { await api.delete(`/admin/faq/${f._id}`); fetchFaqs(); } catch (e) { setError('Erreur lors de la suppression'); }
+  };
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div>
+      <PageHeader
+        title="CENTRE D'AIDE"
+        subtitle={`${faqs.length} question(s)`}
+        actions={<AdminBtn onClick={openCreate}>+ NOUVELLE QUESTION</AdminBtn>}
+      />
+      {error && <div className="mb-4"><Alert type="error">{error}</Alert></div>}
+
+      <div className="space-y-3">
+        {faqs.map(f => (
+          <div key={f._id} className={`border rounded p-4 flex items-center justify-between gap-4 ${f.active ? 'border-yellow-900/30' : 'border-gray-800 opacity-60'}`}>
+            <div className="min-w-0">
+              <p className="font-bold text-white text-sm">{f.question}</p>
+              <div className="flex gap-2 mt-1 items-center">
+                <Badge label={(FAQ_CATEGORIES.find(c => c.value === f.category)?.label || f.category).toUpperCase()} color="gray" />
+                <span className="text-xs text-gray-600">ordre: {f.order}</span>
+              </div>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              <AdminBtn size="sm" color={f.active ? 'gray' : 'green'} onClick={() => toggleActive(f)}>
+                {f.active ? 'DÉSACTIVER' : 'ACTIVER'}
+              </AdminBtn>
+              <AdminBtn size="sm" color="yellow" onClick={() => openEdit(f)}>ÉDITER</AdminBtn>
+              <AdminBtn size="sm" color="red" onClick={() => remove(f)}>SUPPRIMER</AdminBtn>
+            </div>
+          </div>
+        ))}
+        {faqs.length === 0 && <p className="text-gray-500 text-sm text-center py-8">Aucune question pour l'instant</p>}
+      </div>
+
+      <Modal open={showModal} onClose={() => setShowModal(false)} title={editing ? 'MODIFIER LA QUESTION' : 'NOUVELLE QUESTION'}>
+        <div className="space-y-3">
+          <Input label="Question" value={form.question} onChange={e => setForm({ ...form, question: e.target.value })} />
+          <Textarea label="Réponse" value={form.answer} onChange={e => setForm({ ...form, answer: e.target.value })} rows={4} />
+          <div className="grid grid-cols-2 gap-3">
+            <Select label="Catégorie" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} options={FAQ_CATEGORIES} />
+            <Input label="Ordre d'affichage" type="number" value={form.order} onChange={e => setForm({ ...form, order: parseInt(e.target.value) || 0 })} />
+          </div>
+          <div className="flex gap-2 pt-2">
+            <AdminBtn size="md" color="yellow" onClick={save} disabled={!form.question || !form.answer}>{editing ? 'ENREGISTRER' : 'CRÉER'}</AdminBtn>
+            <AdminBtn size="md" color="gray" onClick={() => setShowModal(false)}>ANNULER</AdminBtn>
           </div>
         </div>
       </Modal>
