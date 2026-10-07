@@ -2387,6 +2387,7 @@ function ConfigTab({ api }) {
   const [config, setConfig] = useState({
     platformName: 'IMC',
     supportEmail: 'support@imc.com',
+    supportContactUrl: '',
     maintenanceMode: false,
     maintenanceMsg: '',
     withdrawalFee: 2.5,
@@ -2445,6 +2446,7 @@ function ConfigTab({ api }) {
           <div className="space-y-3">
             <Input label="Nom de la plateforme" value={config.platformName} onChange={e => setConfig({ ...config, platformName: e.target.value })} />
             <Input label="Email support" type="email" value={config.supportEmail} onChange={e => setConfig({ ...config, supportEmail: e.target.value })} />
+            <Input label="Lien de contact support (Telegram, WhatsApp…)" value={config.supportContactUrl} onChange={e => setConfig({ ...config, supportContactUrl: e.target.value })} placeholder="https://t.me/votrecompte" />
           </div>
         </SectionBox>
 

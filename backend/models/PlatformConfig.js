@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const platformConfigSchema = new mongoose.Schema({
   platformName: { type: String, default: 'IMC' },
   supportEmail: { type: String, default: 'support@imc.com' },
+  // Where the "Contacter le support" button sends an escalated AI
+  // assistant conversation — a Telegram link, WhatsApp link, etc. Falls
+  // back to a mailto: of supportEmail when left empty.
+  supportContactUrl: { type: String, default: '' },
   maintenanceMode: { type: Boolean, default: false },
   maintenanceMsg: { type: String, default: '' },
   withdrawalFee: { type: Number, default: 2 },

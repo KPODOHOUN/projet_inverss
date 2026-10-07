@@ -19,6 +19,7 @@ import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AmbassadorDashboard from './pages/AmbassadorDashboard';
 import InstallPWA from './components/InstallPWA';
+import AIAssistant from './components/AIAssistant';
 
 function App() {
   return (
@@ -69,6 +70,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <InstallPWA />
+        <AIAssistant />
       </AuthProvider>
       </ThemeProvider>
     </Router>

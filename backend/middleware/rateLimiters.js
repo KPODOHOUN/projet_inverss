@@ -19,4 +19,16 @@ const authLimiter = rateLimit({
   message: { success: false, message: 'Trop de tentatives, veuillez réessayer dans quelques minutes' }
 });
 
-module.exports = { apiLimiter, authLimiter };
+// The AI assistant calls an external API per message — this caps abuse
+// independently of Gemini's own free-tier quota (shared across every
+// user), so one person spamming the chat can't burn through the whole
+// platform's daily allowance.
+const assistantLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: "Trop de messages à l'assistant, réessayez dans un moment" }
+});
+
+module.exports = { apiLimiter, authLimiter, assistantLimiter };

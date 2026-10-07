@@ -107,6 +107,7 @@ app.use('/api/referral', require('./routes/referral'));
 app.use('/api/ambassador', require('./routes/ambassador'));
 app.use('/api/academy', require('./routes/academy'));
 app.use('/api/faq', require('./routes/faq'));
+app.use('/api/support', require('./routes/support'));
 app.use('/api/transparency', require('./routes/transparency'));
 app.use('/api/transactions', require('./routes/transactions'));
 app.use('/api/trading', require('./routes/trading'));
