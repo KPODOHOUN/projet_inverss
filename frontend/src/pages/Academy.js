@@ -5,6 +5,19 @@ import { tierOf } from '../utils/packTiers';
 const CATEGORY_ICON = { crypto: '₿', investment: '📈', trading: '📊', platform: '🏛' };
 const TIER_ACADEMY_LEVEL = { bronze: 1, silver: 2, gold: 3, platinum: 3, diamond: 3 };
 
+// Tailwind's build-time scanner can't see a color name assembled inside a
+// template literal (`border-${color}-500/30`) — only complete class
+// strings that appear literally in the source make it into the compiled
+// CSS. The yellow/blue/purple/gray levels need every class spelled out
+// here, not interpolated, or every level past the first silently renders
+// with no color at all.
+const LEVEL_COLOR_CLASSES = {
+  yellow: { border: 'border-yellow-500/30', badgeBg: 'bg-yellow-500/20', badgeBorder: 'border-yellow-500/50', text: 'text-yellow-400', bar: 'bg-yellow-500' },
+  blue:   { border: 'border-blue-500/30',   badgeBg: 'bg-blue-500/20',   badgeBorder: 'border-blue-500/50',   text: 'text-blue-400',   bar: 'bg-blue-500' },
+  purple: { border: 'border-purple-500/30', badgeBg: 'bg-purple-500/20', badgeBorder: 'border-purple-500/50', text: 'text-purple-400', bar: 'bg-purple-500' },
+  gray:   { border: 'border-gray-500/30',   badgeBg: 'bg-gray-500/20',   badgeBorder: 'border-gray-500/50',   text: 'text-gray-400',   bar: 'bg-gray-500' },
+};
+
 export default function Academy() {
   const { api } = useAuth();
   const [videos, setVideos] = useState([]);
@@ -348,23 +361,24 @@ export default function Academy() {
         const videos = videosByLevel(level);
         const isLocked = accessLevel < requiredLevel;
         const completedInLevel = videos.filter(v => completedVideos.includes(v.id)).length;
+        const cc = LEVEL_COLOR_CLASSES[color] || LEVEL_COLOR_CLASSES.gray;
 
         return (
           <div key={level} className="mb-12">
             {/* En-tête niveau */}
-            <div className={`flex items-center justify-between mb-6 pb-3 border-b-2 border-${color}-500/30`}>
-              <div className="flex items-center gap-4">
-                <div className={`px-4 py-2 bg-${color}-500/20 border border-${color}-500/50 rounded-full`}>
-                  <span className={`text-${color}-400 font-black text-sm tracking-widest`}>{label.toUpperCase()}</span>
+            <div className={`flex flex-wrap items-center justify-between gap-3 mb-6 pb-3 border-b-2 ${cc.border}`}>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className={`px-4 py-2 ${cc.badgeBg} border ${cc.badgeBorder} rounded-full`}>
+                  <span className={`${cc.text} font-black text-xs sm:text-sm tracking-widest`}>{label.toUpperCase()}</span>
                 </div>
                 {isLocked && (
-                  <span className="text-gray-500 text-sm">🔒 Requiert pack {minPack}+</span>
+                  <span className="text-gray-500 text-xs sm:text-sm">🔒 Requiert pack {minPack}+</span>
                 )}
               </div>
               <div className="text-right">
-                <span className="text-sm text-gray-400">{completedInLevel}/{videos.length} complétées</span>
-                <div className="h-1 w-32 bg-gray-800 mt-1">
-                  <div className={`h-full bg-${color}-500`} style={{ width: `${(completedInLevel / videos.length) * 100}%` }} />
+                <span className="text-xs sm:text-sm text-gray-400">{completedInLevel}/{videos.length} complétées</span>
+                <div className="h-1 w-28 sm:w-32 bg-gray-800 mt-1">
+                  <div className={`h-full ${cc.bar}`} style={{ width: `${(completedInLevel / videos.length) * 100}%` }} />
                 </div>
               </div>
             </div>
