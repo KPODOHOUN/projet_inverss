@@ -13,6 +13,9 @@ import Referral from './Referral';
 import Academy from './Academy';
 import WeeklyPayment from './WeeklyPayment';
 import Trading from './Trading';
+import PhoneInput from '../components/PhoneInput';
+import CityAutocomplete from '../components/CityAutocomplete';
+import COUNTRIES from '../data/countries';
 
 const IC = {
   Overview: () => (
@@ -1214,25 +1217,28 @@ function ProfileTab({ user }) {
           </div>
           <div>
             <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Téléphone</label>
-            <input
-              type="tel"
-              value={form.phone}
-              onChange={e => setForm({ ...form, phone: e.target.value })}
-              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
-            />
+            <PhoneInput value={form.phone} onChange={v => setForm({ ...form, phone: v })} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[{ label: 'Pays', key: 'country' }, { label: 'Ville', key: 'city' }].map(({ label, key }) => (
-              <div key={key}>
-                <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">{label}</label>
-                <input
-                  type="text"
-                  value={form[key]}
-                  onChange={e => setForm({ ...form, [key]: e.target.value })}
-                  className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
-                />
-              </div>
-            ))}
+            <div>
+              <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Pays</label>
+              <select
+                value={form.country}
+                onChange={e => setForm({ ...form, country: e.target.value, city: '' })}
+                className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+              >
+                <option value="">Sélectionner…</option>
+                {COUNTRIES.map(c => <option key={c.iso2} value={c.name}>{c.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Ville</label>
+              <CityAutocomplete
+                value={form.city}
+                onChange={v => setForm({ ...form, city: v })}
+                countryIso2={COUNTRIES.find(c => c.name === form.country)?.iso2}
+              />
+            </div>
           </div>
           <div>
             <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Adresse</label>

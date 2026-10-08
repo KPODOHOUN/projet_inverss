@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getApiUrl } from '../../utils/apiUrl';
 import useForceDarkMode from '../../hooks/useForceDarkMode';
+import PhoneInput from '../PhoneInput';
 
 export default function Register() {
   useForceDarkMode();
@@ -162,8 +163,12 @@ export default function Register() {
                   </div>
                   <div className="group/input">
                     <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase transition-colors duration-300">Téléphone <span className="text-gray-600 font-normal normal-case">(optionnel)</span></label>
-                    <input name="phone" type="tel" value={formData.phone} onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded" placeholder="+31 6 XX XX XX XX" />
+                    <PhoneInput
+                      value={formData.phone}
+                      onChange={v => setFormData({ ...formData, phone: v })}
+                      selectClassName="w-24 shrink-0 px-2 py-3 bg-black/50 border border-yellow-900/30 text-white focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded"
+                      inputClassName="flex-1 min-w-0 px-4 py-3 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded"
+                    />
                   </div>
                   <div className="group/input">
                     <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase transition-colors duration-300">Code de parrainage <span className="text-gray-600 font-normal normal-case">(optionnel)</span></label>
