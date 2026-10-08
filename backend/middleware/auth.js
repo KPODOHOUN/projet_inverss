@@ -16,6 +16,9 @@ const auth = async (req, res, next) => {
     if (user.status === 'suspended') {
       return res.status(403).json({ success: false, message: 'Compte suspendu' });
     }
+    if (user.status === 'deleted') {
+      return res.status(401).json({ success: false, message: 'Session invalide' });
+    }
     req.user = user;
     next();
   } catch (error) {

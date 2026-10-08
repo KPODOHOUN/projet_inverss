@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, default: '' },
   password: { type: String, required: true, select: false },
   role: { type: String, enum: ['standard', 'vip', 'moderator', 'admin', 'superadmin', 'ambassador'], default: 'standard' },
-  status: { type: String, enum: ['active', 'suspended'], default: 'active' },
+  status: { type: String, enum: ['active', 'suspended', 'deleted'], default: 'active' },
   kycStatus: { type: String, enum: ['none', 'pending', 'verified', 'rejected'], default: 'none' },
   twoFactorEnabled: { type: Boolean, default: false },
   twoFactorSecret: { type: String, default: '', select: false },

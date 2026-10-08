@@ -42,6 +42,10 @@ router.post('/users/create', financial, ctrl.createUser);
 router.post('/users/:userId/adjust-balance', financial, ctrl.adjustBalance);
 router.put('/users/:userId/role', financial, ctrl.changeUserRole);
 router.post('/users/:userId/force-verify-kyc', financial, ctrl.forceVerifyKyc);
+router.post('/users/:userId/delete', financial, ctrl.deleteUserDirect);
+router.get('/account-deletions', financial, ctrl.listAccountDeletionRequests);
+router.post('/account-deletions/:id/approve', financial, ctrl.approveAccountDeletion);
+router.post('/account-deletions/:id/reject', financial, ctrl.rejectAccountDeletion);
 
 router.put('/referrals/commissions', financial, ctrl.updateCommissionRates);
 

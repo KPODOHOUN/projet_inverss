@@ -199,6 +199,7 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email: String(email).toLowerCase().trim() }).select('+password +twoFactorSecret');
     if (!user) return error(res, 'Identifiants invalides', 401);
     if (user.status === 'suspended') return error(res, 'Compte suspendu', 403);
+    if (user.status === 'deleted') return error(res, 'Identifiants invalides', 401);
 
     if (user.lockUntil && user.lockUntil > new Date()) {
       const minutes = Math.ceil((user.lockUntil - new Date()) / 60000);

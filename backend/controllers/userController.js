@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const EmailOTP = require('../models/EmailOTP');
+const AccountDeletionRequest = require('../models/AccountDeletionRequest');
 const { success, error } = require('../utils/response');
 const emailService = require('../services/emailService');
 const { generateOTP, verifyOTP } = require('../utils/tokens');
@@ -142,6 +143,53 @@ exports.confirmEmailChange = async (req, res) => {
     }
 
     success(res, { user: req.user, message: 'Email address updated successfully' });
+  } catch (err) {
+    error(res, err.message);
+  }
+};
+
+// A request, not an immediate deletion — an admin reviews and either
+// approves (account gets anonymized, see adminController.approveAccountDeletion)
+// or rejects it. Password-confirmed like change-password/email-change above,
+// since this is the most consequential action a user can take on their own
+// account.
+exports.requestAccountDeletion = async (req, res) => {
+  try {
+    const { password, reason } = req.body;
+    if (!password) return error(res, 'Mot de passe requis pour confirmer');
+
+    const user = await User.findById(req.user._id).select('+password');
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) return error(res, 'Mot de passe incorrect');
+
+    const existing = await AccountDeletionRequest.findOne({ userId: user._id, status: 'pending' });
+    if (existing) return error(res, 'Une demande de suppression est déjà en attente');
+
+    const request = await AccountDeletionRequest.create({ userId: user._id, reason: reason?.trim() || '' });
+    success(res, { request, message: 'Demande envoyée. Un administrateur va la traiter.' }, 201);
+  } catch (err) {
+    error(res, err.message);
+  }
+};
+
+exports.cancelAccountDeletionRequest = async (req, res) => {
+  try {
+    const request = await AccountDeletionRequest.findOneAndUpdate(
+      { userId: req.user._id, status: 'pending' },
+      { status: 'cancelled' },
+      { new: true }
+    );
+    if (!request) return error(res, 'Aucune demande en attente');
+    success(res, { message: 'Demande annulée' });
+  } catch (err) {
+    error(res, err.message);
+  }
+};
+
+exports.getAccountDeletionStatus = async (req, res) => {
+  try {
+    const request = await AccountDeletionRequest.findOne({ userId: req.user._id, status: 'pending' });
+    success(res, { pending: !!request, request });
   } catch (err) {
     error(res, err.message);
   }

@@ -34,5 +34,8 @@ router.post('/avatar', auth, uploadAvatar.single('avatar'), userController.uploa
 router.put('/change-password', auth, userController.changePassword);
 router.post('/request-email-change', auth, userController.requestEmailChange);
 router.post('/confirm-email-change', auth, userController.confirmEmailChange);
+router.post('/request-deletion', auth, userController.requestAccountDeletion);
+router.post('/cancel-deletion-request', auth, userController.cancelAccountDeletionRequest);
+router.get('/deletion-status', auth, userController.getAccountDeletionStatus);
 
 module.exports = router;

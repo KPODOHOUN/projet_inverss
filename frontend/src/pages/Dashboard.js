@@ -1045,7 +1045,141 @@ function SecurityTab() {
           </span>
         </div>
       </Card>
+      <DeleteAccountSection />
     </div>
+  );
+}
+
+function DeleteAccountSection() {
+  const { api } = useAuth();
+  const [pendingRequest, setPendingRequest] = useState(null);
+  const [checking, setChecking] = useState(true);
+  const [confirming, setConfirming] = useState(false);
+  const [password, setPassword] = useState('');
+  const [reason, setReason] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const fetchStatus = async () => {
+    try {
+      const res = await api.get('/user/deletion-status');
+      if (res.data.success) setPendingRequest(res.data.data.pending ? res.data.data.request : null);
+    } catch { /* keep last known state */ }
+    finally { setChecking(false); }
+  };
+  useEffect(() => { fetchStatus(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleRequest = async (e) => {
+    e.preventDefault();
+    setError(''); setSuccess('');
+    if (!password) { setError('Entrez votre mot de passe pour confirmer.'); return; }
+    setLoading(true);
+    try {
+      const res = await api.post('/user/request-deletion', { password, reason });
+      setPendingRequest(res.data.data.request);
+      setSuccess('Demande envoyée.');
+      setConfirming(false);
+      setPassword('');
+      setReason('');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Erreur lors de la demande');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await api.post('/user/cancel-deletion-request');
+      setPendingRequest(null);
+      setSuccess('Demande annulée.');
+    } catch (err) {
+      setError(err.response?.data?.message || "Erreur lors de l'annulation");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (checking) return null;
+
+  return (
+    <Card className="p-6">
+      <h3 className="font-bold text-sm tracking-widest uppercase text-red-500 mb-2">Supprimer mon compte</h3>
+
+      {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
+      {error && <div className="mb-4 p-3 bg-red-900/40 border border-red-500/50 rounded text-red-300 text-sm">{error}</div>}
+
+      {pendingRequest ? (
+        <div className="space-y-3">
+          <p className="text-sm text-gray-400">
+            Votre demande de suppression a été envoyée le {new Date(pendingRequest.requestedAt).toLocaleDateString('fr-FR')} et attend la validation d'un administrateur.
+          </p>
+          <button
+            onClick={handleCancel}
+            disabled={loading}
+            className="px-4 py-2 border border-yellow-900/30 text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
+          >
+            Annuler ma demande
+          </button>
+        </div>
+      ) : !confirming ? (
+        <div>
+          <p className="text-sm text-gray-500 mb-4">
+            Cette action est irréversible une fois validée par un administrateur : votre profil, vos données personnelles et votre accès au compte seront définitivement supprimés.
+          </p>
+          <button
+            onClick={() => setConfirming(true)}
+            className="px-4 py-2 border border-red-700/50 text-red-400 hover:bg-red-700 hover:text-white text-sm rounded bg-transparent cursor-pointer transition-colors"
+          >
+            Demander la suppression de mon compte
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={handleRequest} className="space-y-4">
+          <p className="text-sm text-red-300">
+            Confirmez votre mot de passe pour envoyer la demande de suppression. Un administrateur devra la valider avant que le compte ne soit effectivement supprimé.
+          </p>
+          <div>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Mot de passe</label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Motif <span className="text-gray-600 font-normal normal-case">(optionnel)</span></label>
+            <textarea
+              value={reason}
+              onChange={e => setReason(e.target.value)}
+              rows={2}
+              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+            />
+          </div>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => { setConfirming(false); setPassword(''); setError(''); }}
+              className="px-4 py-2 border border-yellow-900/30 text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 border border-red-700/50 text-red-400 hover:bg-red-700 hover:text-white text-sm rounded bg-transparent cursor-pointer transition-colors disabled:opacity-50"
+            >
+              {loading ? 'Envoi…' : 'CONFIRMER LA DEMANDE DE SUPPRESSION'}
+            </button>
+          </div>
+        </form>
+      )}
+    </Card>
   );
 }
 

@@ -39,6 +39,7 @@ export default function AdminDashboard() {
       items: [
         { id: 'users',         icon: '👥', label: 'Utilisateurs' },
         { id: 'kyc',           icon: '🆔', label: 'Vérification KYC' },
+        { id: 'account-deletions', icon: '🗑️', label: 'Suppressions de compte' },
         { id: 'referrals',     icon: '🔗', label: 'Parrainage' },
         { id: 'ambassadors',   icon: '🌟', label: 'Ambassadeurs' },
       ]
@@ -74,6 +75,7 @@ export default function AdminDashboard() {
       case 'analytics':     return <AnalyticsTab api={api} />;
       case 'users':         return <UsersTab api={api} />;
       case 'kyc':           return <KYCTab api={api} />;
+      case 'account-deletions': return <AccountDeletionsTab api={api} />;
       case 'referrals':     return <ReferralsTab api={api} />;
       case 'ambassadors':   return <AmbassadorsTab api={api} />;
       case 'investments':   return <InvestmentsTab api={api} />;
@@ -843,6 +845,8 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
   const [balanceNote, setBalanceNote] = useState('');
   const [newRole, setNewRole] = useState(user.role);
   const [kycReason, setKycReason] = useState('');
+  const [deleteReason, setDeleteReason] = useState('');
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('success');
@@ -892,6 +896,25 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
       onRefresh();
     } catch (e) {
       setMsg(e.response?.data?.message || 'Erreur lors de la validation manuelle');
+      setMsgType('error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteAccount = async () => {
+    if (!deleteReason.trim()) return;
+    setLoading(true);
+    try {
+      await api.post(`/admin/users/${user.id}/delete`, { reason: deleteReason.trim() });
+      setMsg('Compte supprimé !');
+      setMsgType('success');
+      setDeleteReason('');
+      setConfirmingDelete(false);
+      onRefresh();
+      onClose();
+    } catch (e) {
+      setMsg(e.response?.data?.message || 'Erreur lors de la suppression');
       setMsgType('error');
     } finally {
       setLoading(false);
@@ -950,6 +973,23 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
           ]} />
           <AdminBtn onClick={changeRole} disabled={loading}>SAUVER</AdminBtn>
         </div>
+      </SectionBox>
+
+      <SectionBox title="Zone de danger">
+        {!confirmingDelete ? (
+          <AdminBtn color="red" onClick={() => setConfirmingDelete(true)}>SUPPRIMER CE COMPTE</AdminBtn>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs text-red-400">
+              Action irréversible : les données personnelles sont anonymisées et l'accès au compte est bloqué. L'historique de transactions est conservé.
+            </p>
+            <Input label="Motif (obligatoire)" value={deleteReason} onChange={e => setDeleteReason(e.target.value)} placeholder="Ex: demande explicite de l'utilisateur" />
+            <div className="flex gap-2">
+              <AdminBtn color="gray" onClick={() => { setConfirmingDelete(false); setDeleteReason(''); }}>ANNULER</AdminBtn>
+              <AdminBtn color="red" onClick={deleteAccount} disabled={loading || !deleteReason.trim()}>CONFIRMER LA SUPPRESSION</AdminBtn>
+            </div>
+          </div>
+        )}
       </SectionBox>
     </div>
   );
@@ -1209,6 +1249,149 @@ function KYCTab({ api }) {
           ) : (
             <div className="border border-yellow-900/20 rounded-lg p-6 text-center">
               <p className="text-gray-600 text-sm">Sélectionnez une vérification KYC</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AccountDeletionsTab({ api }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
+  const [rejectReason, setRejectReason] = useState('');
+  const [filter, setFilter] = useState('pending');
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => { fetchRequests(); }, [filter]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchRequests = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await api.get(`/admin/account-deletions?status=${filter}`);
+      if (res.data.success) setItems(res.data.data.requests || []);
+      else { setItems([]); setError('Impossible de charger les demandes'); }
+    } catch {
+      setItems([]);
+      setError('Impossible de charger les demandes');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const userName = (item) => item ? `${item.userId?.firstName || ''} ${item.userId?.lastName || ''}`.trim() : '';
+
+  const handleApprove = async (id) => {
+    setProcessing(true);
+    try {
+      await api.post(`/admin/account-deletions/${id}/approve`);
+      fetchRequests();
+      setSelected(null);
+    } catch (e) { console.error(e); }
+    finally { setProcessing(false); }
+  };
+
+  const handleReject = async (id) => {
+    if (!rejectReason) return;
+    setProcessing(true);
+    try {
+      await api.post(`/admin/account-deletions/${id}/reject`, { reason: rejectReason });
+      fetchRequests();
+      setSelected(null);
+      setRejectReason('');
+    } catch (e) { console.error(e); }
+    finally { setProcessing(false); }
+  };
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div>
+      <PageHeader
+        title="SUPPRESSIONS DE COMPTE"
+        subtitle={`${items.filter(i => i.status === 'pending').length} en attente`}
+        actions={
+          <Select value={filter} onChange={e => setFilter(e.target.value)} options={[
+            { value: 'pending', label: 'En attente' },
+            { value: 'approved', label: 'Approuvées' },
+            { value: 'rejected', label: 'Rejetées' },
+            { value: 'cancelled', label: 'Annulées' },
+          ]} />
+        }
+      />
+
+      {error && <div className="mb-4"><Alert type="error">{error}</Alert></div>}
+
+      <div className="grid lg:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          {items.length === 0 && <Alert type="info">Aucune demande {filter === 'pending' ? 'en attente' : ''}</Alert>}
+          {items.map(item => (
+            <div
+              key={item.id}
+              onClick={() => setSelected(item)}
+              className={`border p-4 cursor-pointer transition-all ${
+                selected?.id === item.id ? 'border-yellow-500 bg-yellow-900/10' : 'border-yellow-900/30 hover:border-yellow-700'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-bold text-white text-sm">{userName(item)}</p>
+                  <p className="text-xs text-gray-500">{item.userId?.email}</p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Demandé le {new Date(item.requestedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                </div>
+                <Badge
+                  label={{ pending: 'EN ATTENTE', approved: 'APPROUVÉE', rejected: 'REJETÉE', cancelled: 'ANNULÉE' }[item.status]}
+                  color={{ pending: 'yellow', approved: 'green', rejected: 'red', cancelled: 'gray' }[item.status]}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          {selected ? (
+            <SectionBox title={`Demande — ${userName(selected)}`}>
+              <div className="space-y-4">
+                <div className="border border-yellow-900/30 rounded p-3">
+                  <p className="text-xs text-gray-600 mb-1">Motif donné par l'utilisateur</p>
+                  <p className="text-sm text-white">{selected.reason || <span className="text-gray-600">Aucun motif fourni</span>}</p>
+                </div>
+
+                {selected.status === 'pending' && (
+                  <>
+                    <Alert type="warning">
+                      Approuver anonymise les données personnelles et bloque l'accès au compte. L'historique de transactions est conservé pour l'audit. Action irréversible.
+                    </Alert>
+                    <AdminBtn color="green" size="md" onClick={() => handleApprove(selected.id)} disabled={processing}>
+                      ✓ APPROUVER ET SUPPRIMER
+                    </AdminBtn>
+                    <div className="border-t border-yellow-900/20 pt-4">
+                      <Textarea label="Motif de rejet" value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={3} placeholder="Ex: solde non nul, litige en cours..." />
+                      <div className="mt-2">
+                        <AdminBtn color="red" size="md" onClick={() => handleReject(selected.id)} disabled={processing || !rejectReason}>
+                          ✗ REJETER
+                        </AdminBtn>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {selected.status !== 'pending' && (
+                  <Alert type={selected.status === 'approved' ? 'success' : 'error'}>
+                    Demande {{ approved: 'approuvée', rejected: 'rejetée', cancelled: 'annulée' }[selected.status]} — aucune action disponible
+                  </Alert>
+                )}
+              </div>
+            </SectionBox>
+          ) : (
+            <div className="border border-yellow-900/20 rounded-lg p-6 text-center">
+              <p className="text-gray-600 text-sm">Sélectionnez une demande</p>
             </div>
           )}
         </div>

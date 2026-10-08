@@ -1,5 +1,7 @@
+const crypto = require('crypto');
 const User = require('../models/User');
 const KYC = require('../models/KYC');
+const AccountDeletionRequest = require('../models/AccountDeletionRequest');
 const Investment = require('../models/Investment');
 const InvestmentPack = require('../models/InvestmentPack');
 const Transaction = require('../models/Transaction');
@@ -419,6 +421,86 @@ exports.forceVerifyKyc = async (req, res) => {
 
     await ActivityLog.create({ admin: req.user._id, action: 'KYC validé manuellement (sans documents)', target: user.email, details: reason.trim(), level: 'warning', ip: req.ip });
     success(res, { kyc, message: 'KYC validé manuellement' });
+  } catch (err) { error(res, err.message); }
+};
+
+// Shared by both "approve a user's own deletion request" and "admin deletes
+// a user directly" — anonymizes personal data and blocks login, but keeps
+// the underlying Transaction/Investment/Referral rows intact (userId still
+// points at this now-anonymized record) so the platform's financial ledger
+// stays complete. Same reasoning as why transactions are only ever masked
+// (hiddenForUser) and never actually deleted — a real account wipe would
+// leave dangling references across the whole money trail.
+const anonymizeAndDeleteUser = async (userId, adminId, reason) => {
+  const user = await User.findById(userId);
+  if (!user) return null;
+
+  const suffix = String(user._id).slice(-8);
+  user.firstName = 'Compte';
+  user.lastName = 'supprimé';
+  user.email = `deleted-${suffix}@imccorporation.site`;
+  user.phone = '';
+  user.country = '';
+  user.city = '';
+  user.address = '';
+  user.avatarUrl = '';
+  user.password = crypto.randomBytes(32).toString('hex'); // unguessable; login is blocked by status anyway
+  user.status = 'deleted';
+  user.twoFactorEnabled = false;
+  user.twoFactorSecret = '';
+  await user.save();
+
+  await ActivityLog.create({ admin: adminId, action: 'Compte supprimé', target: String(user._id), details: reason || '', level: 'warning', ip: null });
+  return user;
+};
+
+exports.listAccountDeletionRequests = async (req, res) => {
+  try {
+    const filter = { status: req.query.status && req.query.status !== 'all' ? req.query.status : 'pending' };
+    const requests = await AccountDeletionRequest.find(filter).populate('userId', 'firstName lastName email userId').sort({ requestedAt: -1 });
+    success(res, { requests });
+  } catch (err) { error(res, err.message); }
+};
+
+exports.approveAccountDeletion = async (req, res) => {
+  try {
+    const request = await AccountDeletionRequest.findOneAndUpdate(
+      { _id: req.params.id, status: 'pending' },
+      { status: 'approved', reviewedAt: new Date(), reviewedBy: req.user._id },
+      { new: true }
+    );
+    if (!request) return error(res, 'Demande introuvable ou déjà traitée');
+
+    const user = await anonymizeAndDeleteUser(request.userId, req.user._id, request.reason);
+    if (!user) return error(res, 'Utilisateur introuvable', 404);
+    success(res, { message: 'Compte supprimé' });
+  } catch (err) { error(res, err.message); }
+};
+
+exports.rejectAccountDeletion = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const request = await AccountDeletionRequest.findOneAndUpdate(
+      { _id: req.params.id, status: 'pending' },
+      { status: 'rejected', rejectionReason: reason || '', reviewedAt: new Date(), reviewedBy: req.user._id },
+      { new: true }
+    );
+    if (!request) return error(res, 'Demande introuvable ou déjà traitée');
+    success(res, { message: 'Demande rejetée' });
+  } catch (err) { error(res, err.message); }
+};
+
+// Admin deletes a user directly, no prior request needed — the user asked
+// for either path to be possible, not just reviewing self-requests.
+exports.deleteUserDirect = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    if (!reason?.trim()) return error(res, 'Un motif est requis');
+    if (String(req.params.userId) === String(req.user._id)) return error(res, 'Impossible de supprimer votre propre compte ici');
+
+    const user = await anonymizeAndDeleteUser(req.params.userId, req.user._id, reason.trim());
+    if (!user) return error(res, 'Utilisateur introuvable', 404);
+    success(res, { message: 'Compte supprimé' });
   } catch (err) { error(res, err.message); }
 };
 
