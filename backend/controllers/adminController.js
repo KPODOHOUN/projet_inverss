@@ -392,6 +392,36 @@ exports.rejectKyc = async (req, res) => {
   } catch (err) { error(res, err.message); }
 };
 
+// Marks a user KYC-verified even when they never submitted any documents —
+// e.g. identity already confirmed another way (video call, known contact,
+// existing paperwork off-platform). Deliberately separate from
+// approveKyc/rejectKyc above, which both require a real submission to act
+// on; this creates/overwrites the KYC record instead, and is always logged
+// with the admin's stated reason since it bypasses the document trail
+// entirely — restricted to the financial tier (admin/superadmin), not
+// moderators, same as other high-trust overrides.
+exports.forceVerifyKyc = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    if (!reason?.trim()) return error(res, 'Un motif est requis pour une vérification manuelle');
+
+    const user = await User.findById(req.params.userId);
+    if (!user) return error(res, 'Utilisateur introuvable', 404);
+
+    user.kycStatus = 'verified';
+    await user.save();
+
+    const kyc = await KYC.findOneAndUpdate(
+      { userId: user._id },
+      { status: 'verified', reviewedAt: new Date(), reviewedBy: req.user._id, rejectionReason: '' },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    await ActivityLog.create({ admin: req.user._id, action: 'KYC validé manuellement (sans documents)', target: user.email, details: reason.trim(), level: 'warning', ip: req.ip });
+    success(res, { kyc, message: 'KYC validé manuellement' });
+  } catch (err) { error(res, err.message); }
+};
+
 exports.referralStats = async (req, res) => {
   try {
     const [totalReferrals, totalCommissions, config, topAffiliatesAgg] = await Promise.all([

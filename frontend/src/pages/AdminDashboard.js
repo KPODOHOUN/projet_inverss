@@ -842,6 +842,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
   const [balanceAdj, setBalanceAdj] = useState('');
   const [balanceNote, setBalanceNote] = useState('');
   const [newRole, setNewRole] = useState(user.role);
+  const [kycReason, setKycReason] = useState('');
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('success');
@@ -880,6 +881,23 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
     }
   };
 
+  const forceVerifyKyc = async () => {
+    if (!kycReason.trim()) return;
+    setLoading(true);
+    try {
+      await api.post(`/admin/users/${user.id}/force-verify-kyc`, { reason: kycReason.trim() });
+      setMsg('KYC validé manuellement !');
+      setMsgType('success');
+      setKycReason('');
+      onRefresh();
+    } catch (e) {
+      setMsg(e.response?.data?.message || 'Erreur lors de la validation manuelle');
+      setMsgType('error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {msg && <Alert type={msgType}>{msg}</Alert>}
@@ -909,6 +927,18 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
           <AdminBtn onClick={adjustBalance} disabled={loading || !balanceAdj || !balanceNote}>APPLIQUER</AdminBtn>
         </div>
       </SectionBox>
+
+      {user.kycStatus !== 'verified' && (
+        <SectionBox title="Valider le KYC manuellement">
+          <p className="text-xs text-gray-500 mb-2">
+            Marque ce compte comme vérifié même sans document déposé — à utiliser seulement si l'identité a été confirmée autrement (appel vidéo, pièce fournie hors plateforme, etc.). Action tracée dans les logs.
+          </p>
+          <div className="space-y-2">
+            <Input label="Motif (obligatoire)" value={kycReason} onChange={e => setKycReason(e.target.value)} placeholder="Ex: identité confirmée par appel vidéo le 08/10" />
+            <AdminBtn color="green" onClick={forceVerifyKyc} disabled={loading || !kycReason.trim()}>VALIDER SANS DOCUMENT</AdminBtn>
+          </div>
+        </SectionBox>
+      )}
 
       <SectionBox title="Changer le Rôle">
         <div className="flex gap-2">

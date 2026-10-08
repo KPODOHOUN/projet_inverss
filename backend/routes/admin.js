@@ -41,6 +41,7 @@ const financial = admin('admin', 'superadmin');
 router.post('/users/create', financial, ctrl.createUser);
 router.post('/users/:userId/adjust-balance', financial, ctrl.adjustBalance);
 router.put('/users/:userId/role', financial, ctrl.changeUserRole);
+router.post('/users/:userId/force-verify-kyc', financial, ctrl.forceVerifyKyc);
 
 router.put('/referrals/commissions', financial, ctrl.updateCommissionRates);
 
