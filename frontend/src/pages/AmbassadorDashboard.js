@@ -15,9 +15,9 @@ const withinPeriod = (dateStr, period) => {
   return Date.now() - new Date(dateStr).getTime() <= PERIOD_MS[period];
 };
 
-// Standalone page — the Ambassador role's ONLY view of the platform, per the
-// program's rules ("son rôle principal est uniquement de parrainer"). No
-// sidebar/tabs like Dashboard.js — a single focused screen.
+// An Ambassador's commission stats, separate from the standard dashboard —
+// they otherwise use the platform (invest, trade, withdraw...) exactly like
+// any standard account, this is just their dedicated referral view.
 export default function AmbassadorDashboard() {
   useForceDarkMode();
   const { user, logout, api } = useAuth();
@@ -69,6 +69,12 @@ export default function AmbassadorDashboard() {
               <p className="font-semibold text-sm text-white leading-tight">{user?.firstName} {user?.lastName}</p>
               <p className="text-xs text-gray-500">Ambassadeur</p>
             </div>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="px-3 sm:px-4 py-1.5 sm:py-2 border border-yellow-900/30 rounded text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-xs sm:text-sm bg-transparent cursor-pointer"
+            >
+              ← Mon compte
+            </button>
             <button
               onClick={handleLogout}
               className="px-3 sm:px-4 py-1.5 sm:py-2 border border-yellow-600/50 rounded text-yellow-400 hover:bg-yellow-600 hover:text-white text-xs sm:text-sm bg-transparent cursor-pointer"

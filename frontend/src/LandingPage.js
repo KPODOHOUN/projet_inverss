@@ -52,7 +52,6 @@ export default function LandingPage() {
       />
 
       <HeroSection scrollToSection={scrollToSection} />
-      <StatsBar />
       <HowItWorks />
       <SecuritySection />
       <FinalCTA />
@@ -70,35 +69,6 @@ const IconCheck = ({ className = '', size = 16, color = 'currentColor' }) => (
 const IconArrowRight = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
     <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const IconUsers = ({ size = 28 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5"/>
-    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>
-);
-
-const IconTrendUp = ({ size = 28 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <polyline points="17 6 23 6 23 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const IconShield = ({ size = 28 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const IconCoins = ({ size = 28 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/>
-    <path d="M18.09 10.37A6 6 0 1110.34 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    <path d="M7 6h1a2 2 0 010 4H7z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -321,45 +291,6 @@ function HeroSection({ scrollToSection }) {
               className="w-full max-w-sm object-contain animate-float-phone"
             />
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function StatsBar() {
-  const { isLight } = useTheme();
-  const { api } = useAuth();
-  const [audit, setAudit] = useState(null);
-
-  useEffect(() => {
-    api.get('/transparency/audit').then((res) => {
-      if (res.data.success) setAudit(res.data.data);
-    }).catch(() => {});
-  }, [api]);
-
-  const stats = [
-    { value: audit ? audit.totalUsers.toLocaleString('fr-FR') : '—', label: 'Investisseurs actifs', Icon: IconUsers },
-    { value: audit ? `$${(audit.totalFundsManaged / 1000).toFixed(0)}k+` : '—', label: 'Volume investi', Icon: IconCoins },
-    { value: audit ? `${audit.averageRoi} %` : '—', label: 'ROI moyen', Icon: IconTrendUp },
-    { value: '24/7', label: 'Support client', Icon: IconShield },
-  ];
-
-  return (
-    <section className={`relative z-10 py-12 px-6 border-y ${isLight ? 'border-gray-200 bg-white' : 'border-white/10 bg-gray-900/50'}`}>
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map(({ value, label, Icon }, i) => (
-            <ScrollReveal key={i} delay={i * 80}>
-              <div className="imc-stat-card text-center flex flex-col items-center gap-2">
-                <div className="text-yellow-500">
-                  <Icon size={22} />
-                </div>
-                <div className="text-xl font-bold text-yellow-500">{value}</div>
-                <div className={`text-xs ${isLight ? 'text-gray-500' : 'text-gray-400'}`}>{label}</div>
-              </div>
-            </ScrollReveal>
-          ))}
         </div>
       </div>
     </section>

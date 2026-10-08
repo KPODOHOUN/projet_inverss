@@ -33,11 +33,5 @@ export default function ProtectedRoute({ children, adminOnly = false, ambassador
     return <Navigate to="/dashboard" replace />;
   }
 
-  // An Ambassador has no business in the standard user dashboard or admin
-  // panel — bounce them back to their own space if they land anywhere else.
-  if (!adminOnly && !ambassadorOnly && user.role === 'ambassador') {
-    return <Navigate to="/ambassador" replace />;
-  }
-
   return children;
 }

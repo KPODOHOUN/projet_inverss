@@ -65,7 +65,6 @@ export default function Login() {
       } else {
         const role = result.data?.data?.user?.role;
         if (role === 'admin' || role === 'superadmin') navigate('/admin');
-        else if (role === 'ambassador') navigate('/ambassador');
         else navigate('/dashboard');
       }
     } else if (result.requires2FA) {

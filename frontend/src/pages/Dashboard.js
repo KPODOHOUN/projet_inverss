@@ -47,6 +47,11 @@ const IC = {
       <path d="M5 13.18v4L12 21l7-3.82v-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
+  Ambassador: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+    </svg>
+  ),
   Referral: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
       <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -233,6 +238,9 @@ export default function Dashboard() {
     { id: 'kyc',          Icon: IC.KYC,          label: 'KYC' },
     { id: 'security',     Icon: IC.Security,     label: 'Sécurité' },
     { id: 'profile',      Icon: IC.Profile,      label: 'Profil' },
+    // Ambassadors use the platform like any standard account now — this is
+    // just a shortcut to their commission stats page, not their only view.
+    ...(user.role === 'ambassador' ? [{ id: 'ambassador-space', Icon: IC.Ambassador, label: 'Espace Ambassadeur', external: '/ambassador' }] : []),
   ];
 
   return (
@@ -300,10 +308,10 @@ export default function Dashboard() {
 
               {}
               <nav className="bg-gray-900 border border-white/10 rounded-lg p-2">
-                {navItems.map(({ id, Icon, label }) => (
+                {navItems.map(({ id, Icon, label, external }) => (
                   <button
                     key={id}
-                    onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
+                    onClick={() => { if (external) navigate(external); else setActiveTab(id); setSidebarOpen(false); }}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm font-medium bg-transparent border-none cursor-pointer text-left ${
                       activeTab === id
                         ? 'bg-yellow-600 text-white'
