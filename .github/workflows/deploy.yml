@@ -4,6 +4,15 @@ on:
   push:
     branches: [main]
 
+# Two pushes close together previously triggered two overlapping deploy runs
+# on the same /var/www/app directory — one run's `git reset --hard` or
+# `npm run build` stepping on the other's mid-flight files, leaving the
+# frontend build silently stale even though the backend's git checkout
+# succeeded. Queuing deploys (never cancelling one mid-flight) fixes that.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
