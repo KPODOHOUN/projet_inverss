@@ -778,6 +778,7 @@ function UsersTab({ api }) {
           { value: 'all', label: 'Statut: Tous' },
           { value: 'active', label: 'Actif' },
           { value: 'suspended', label: 'Suspendu' },
+          { value: 'deleted', label: 'Supprimé' },
         ]} />
         <Select value={filterPeriod} onChange={e => { setFilterPeriod(e.target.value); setPage(1); }} options={[
           { value: 'all', label: 'Inscription: Toute période' },
@@ -800,14 +801,16 @@ function UsersTab({ api }) {
           { key: 'kycStatus', label: 'KYC', render: v => <Badge label={kycLabels[v] || v} color={kycColors[v] || 'gray'} /> },
           { key: 'role', label: 'Rôle', render: v => <Badge label={v?.toUpperCase()} color={(v === 'admin' || v === 'superadmin') ? 'red' : v === 'moderator' ? 'blue' : v === 'vip' ? 'purple' : 'gray'} /> },
           { key: 'balance', label: 'Solde $', render: (_, r) => <span className="text-yellow-400 font-bold">${r.balance?.toFixed(2)}</span> },
-          { key: 'status', label: 'Statut', render: v => <Badge label={v === 'active' ? 'ACTIF' : 'SUSPENDU'} color={v === 'active' ? 'green' : 'red'} /> },
+          { key: 'status', label: 'Statut', render: v => <Badge label={{ active: 'ACTIF', suspended: 'SUSPENDU', deleted: 'SUPPRIMÉ' }[v] || v?.toUpperCase()} color={{ active: 'green', suspended: 'red', deleted: 'gray' }[v] || 'gray'} /> },
           { key: 'actions', label: 'Actions', render: (_, r) => (
             <div className="flex gap-1 flex-wrap">
               <AdminBtn size="sm" onClick={() => { setSelectedUser(r); setShowUserModal(true); }}>VOIR</AdminBtn>
-              {r.status === 'active'
-                ? <AdminBtn size="sm" color="red" onClick={() => setConfirmAction({ action: 'suspend', userId: r.id, label: `Suspendre ${r.firstName}?` })}>SUSPENDRE</AdminBtn>
-                : <AdminBtn size="sm" color="green" onClick={() => handleAction('activate', r.id)}>ACTIVER</AdminBtn>
-              }
+              {r.status === 'active' && (
+                <AdminBtn size="sm" color="red" onClick={() => setConfirmAction({ action: 'suspend', userId: r.id, label: `Suspendre ${r.firstName}?` })}>SUSPENDRE</AdminBtn>
+              )}
+              {r.status === 'suspended' && (
+                <AdminBtn size="sm" color="green" onClick={() => handleAction('activate', r.id)}>ACTIVER</AdminBtn>
+              )}
             </div>
           )},
         ]}
@@ -951,7 +954,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
         </div>
       </SectionBox>
 
-      {user.kycStatus !== 'verified' && (
+      {user.status !== 'deleted' && user.kycStatus !== 'verified' && (
         <SectionBox title="Valider le KYC manuellement">
           <p className="text-xs text-gray-500 mb-2">
             Marque ce compte comme vérifié même sans document déposé — à utiliser seulement si l'identité a été confirmée autrement (appel vidéo, pièce fournie hors plateforme, etc.). Action tracée dans les logs.
@@ -975,22 +978,28 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
         </div>
       </SectionBox>
 
-      <SectionBox title="Zone de danger">
-        {!confirmingDelete ? (
-          <AdminBtn color="red" onClick={() => setConfirmingDelete(true)}>SUPPRIMER CE COMPTE</AdminBtn>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-xs text-red-400">
-              Action irréversible : les données personnelles sont anonymisées et l'accès au compte est bloqué. L'historique de transactions est conservé.
-            </p>
-            <Input label="Motif (obligatoire)" value={deleteReason} onChange={e => setDeleteReason(e.target.value)} placeholder="Ex: demande explicite de l'utilisateur" />
-            <div className="flex gap-2">
-              <AdminBtn color="gray" onClick={() => { setConfirmingDelete(false); setDeleteReason(''); }}>ANNULER</AdminBtn>
-              <AdminBtn color="red" onClick={deleteAccount} disabled={loading || !deleteReason.trim()}>CONFIRMER LA SUPPRESSION</AdminBtn>
+      {user.status === 'deleted' ? (
+        <SectionBox title="Zone de danger">
+          <p className="text-xs text-gray-500">Ce compte a déjà été supprimé.</p>
+        </SectionBox>
+      ) : (
+        <SectionBox title="Zone de danger">
+          {!confirmingDelete ? (
+            <AdminBtn color="red" onClick={() => setConfirmingDelete(true)}>SUPPRIMER CE COMPTE</AdminBtn>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-xs text-red-400">
+                Action irréversible : les données personnelles sont anonymisées et l'accès au compte est bloqué. L'historique de transactions est conservé.
+              </p>
+              <Input label="Motif (obligatoire)" value={deleteReason} onChange={e => setDeleteReason(e.target.value)} placeholder="Ex: demande explicite de l'utilisateur" />
+              <div className="flex gap-2">
+                <AdminBtn color="gray" onClick={() => { setConfirmingDelete(false); setDeleteReason(''); }}>ANNULER</AdminBtn>
+                <AdminBtn color="red" onClick={deleteAccount} disabled={loading || !deleteReason.trim()}>CONFIRMER LA SUPPRESSION</AdminBtn>
+              </div>
             </div>
-          </div>
-        )}
-      </SectionBox>
+          )}
+        </SectionBox>
+      )}
     </div>
   );
 }

@@ -56,7 +56,7 @@ exports.statsOverview = async (req, res) => {
       totalUsers, activeUsers, newUsersToday, totalInvestments, activeInvestments,
       pendingKyc, pendingTransactions, pendingWithdrawals, config
     ] = await Promise.all([
-      User.countDocuments(), User.countDocuments({ status: 'active' }),
+      User.countDocuments({ status: { $ne: 'deleted' } }), User.countDocuments({ status: 'active' }),
       User.countDocuments({ createdAt: { $gte: today } }),
       Investment.countDocuments(), Investment.countDocuments({ status: 'active' }),
       KYC.countDocuments({ status: 'pending' }), Transaction.countDocuments({ status: 'pending' }),
@@ -147,7 +147,11 @@ exports.listUsers = async (req, res) => {
   try {
     const filter = { ...periodFilter(req.query, 'createdAt') };
     if (req.query.role) filter.role = req.query.role;
+    // A deleted account is anonymized, not removed (see anonymizeAndDeleteUser)
+    // — it should never just sit in the default "all" list looking like a
+    // live user. Only shows up when explicitly filtered for.
     if (req.query.status && req.query.status !== 'all') filter.status = req.query.status;
+    else filter.status = { $ne: 'deleted' };
     if (req.query.kycStatus && req.query.kycStatus !== 'all') filter.kycStatus = req.query.kycStatus;
     if (req.query.search?.trim()) {
       const q = req.query.search.trim();

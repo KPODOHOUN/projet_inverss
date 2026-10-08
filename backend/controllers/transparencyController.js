@@ -8,7 +8,7 @@ const { success, error } = require('../utils/response');
 // actually be backed by the database.
 exports.getAudit = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
+    const totalUsers = await User.countDocuments({ status: { $ne: 'deleted' } });
     const totalInvestors = await Investment.distinct('userId').then(arr => arr.length);
     const totalFundsManaged = await Investment.aggregate([
       { $match: { status: { $in: ['active', 'completed'] } } },
