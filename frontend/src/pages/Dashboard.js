@@ -155,6 +155,7 @@ const IC = {
 };
 
 const TAB_IDS = ['overview', 'invest', 'investments', 'wallet', 'trading', 'academy', 'referral', 'transactions', 'faq', 'kyc', 'security', 'profile'];
+const ROLE_LABEL = { standard: 'Standard', vip: 'VIP', ambassador: 'Ambassadeur', moderator: 'Modérateur', admin: 'Admin', superadmin: 'Super admin' };
 const readTabFromHash = () => {
   const id = window.location.hash.replace('#', '');
   return TAB_IDS.includes(id) ? id : 'trading';
@@ -226,6 +227,12 @@ export default function Dashboard() {
     if (activeTab === 'overview') fetchDashboardData();
   }, [activeTab, fetchDashboardData]);
 
+  // Guards a stale #referral bookmark/hash for an Ambassador — that tab is
+  // intentionally gone from their nav (see navItems below).
+  useEffect(() => {
+    if (activeTab === 'referral' && user.role === 'ambassador') setActiveTab('overview');
+  }, [activeTab, user.role]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleLogout = async () => { await logout(); navigate('/login'); };
 
   const navItems = [
@@ -235,7 +242,10 @@ export default function Dashboard() {
     { id: 'wallet',       Icon: IC.Wallet,       label: 'Mes Gains' },
     { id: 'trading',      Icon: IC.TrendUp,      label: 'Trading' },
     { id: 'academy',      Icon: IC.Academy,      label: 'Académie' },
-    { id: 'referral',     Icon: IC.Referral,     label: 'Parrainage' },
+    // An Ambassador's referral tracking lives in their dedicated Espace
+    // Ambassadeur (boosted commission rate, own stats) — the standard
+    // Parrainage tab would just be a redundant, lower-rate duplicate.
+    ...(user.role === 'ambassador' ? [] : [{ id: 'referral', Icon: IC.Referral, label: 'Parrainage' }]),
     { id: 'transactions', Icon: IC.Transactions, label: 'Transactions' },
     { id: 'faq',          Icon: IC.Help,         label: "Centre d'aide" },
     { id: 'kyc',          Icon: IC.KYC,          label: 'KYC' },
@@ -337,7 +347,7 @@ export default function Dashboard() {
                 <div className="space-y-2.5 text-xs">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500">Type</span>
-                    <span className="font-semibold uppercase text-white">{user?.role}</span>
+                    <span className="font-semibold uppercase text-white">{ROLE_LABEL[user?.role] || user?.role}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500">KYC</span>
@@ -373,7 +383,7 @@ export default function Dashboard() {
             {activeTab === 'wallet'       && <WeeklyPayment onNavigate={setActiveTab} />}
             {activeTab === 'trading'      && <Trading onNavigate={setActiveTab} prefillCode={tradingPrefillCode} onPrefillConsumed={() => setTradingPrefillCode(null)} />}
             {activeTab === 'academy'      && <Academy />}
-            {activeTab === 'referral'     && <Referral onNavigate={setActiveTab} />}
+            {activeTab === 'referral' && user.role !== 'ambassador' && <Referral onNavigate={setActiveTab} />}
             {activeTab === 'transactions' && <TransactionsTab transactions={transactions} loading={loading} onRefresh={fetchDashboardData} />}
             {activeTab === 'faq'          && <FAQTab />}
             {activeTab === 'kyc'          && <KYC />}
