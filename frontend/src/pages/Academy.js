@@ -133,7 +133,7 @@ export default function Academy() {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
-          <p className="mt-4 text-[#f4efe2]/60 font-semibold">Chargement de l'Académie...</p>
+          <p className="mt-4 text-[#e7ebf2]/60 font-semibold">Chargement de l'Académie...</p>
         </div>
       </div>
     );
@@ -150,7 +150,7 @@ export default function Academy() {
             {passed ? 'Félicitations !' : 'Réessayez !'}
           </h2>
           <p className="text-3xl font-semibold text-white mb-4">{quizScore}%</p>
-          <p className="text-[#f4efe2]/60 mb-6">
+          <p className="text-[#e7ebf2]/60 mb-6">
             {passed
               ? `Vous avez validé "${activeVideo.title}" !`
               : `Score insuffisant (70% requis). Revoyez la vidéo et réessayez.`}
@@ -181,8 +181,8 @@ export default function Academy() {
     return (
       <div className="max-w-3xl mx-auto px-6 py-12">
         <div className="text-center mb-8">
-          <h2 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-2">QUIZ DE VALIDATION</h2>
-          <p className="text-[#f4efe2]/60">{activeVideo.title} — Score minimum requis : 70%</p>
+          <h2 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-2">QUIZ DE VALIDATION</h2>
+          <p className="text-[#e7ebf2]/60">{activeVideo.title} — Score minimum requis : 70%</p>
         </div>
 
         <div className="space-y-6">
@@ -199,7 +199,7 @@ export default function Academy() {
                     className={`w-full text-left px-5 py-3 border-2 rounded font-semibold transition-all ${
                       quizAnswers[qi] === oi
                         ? 'border-yellow-500 bg-yellow-900/30 text-yellow-400'
-                        : 'border-white/10 text-[#f4efe2]/80 hover:border-yellow-700 hover:bg-yellow-900/10'
+                        : 'border-white/10 text-[#e7ebf2]/80 hover:border-yellow-700 hover:bg-yellow-900/10'
                     }`}
                   >
                     <span className="text-yellow-600 font-semibold mr-3">{String.fromCharCode(65 + oi)}.</span>
@@ -219,12 +219,12 @@ export default function Academy() {
           >
             {submitting ? 'CORRECTION...' : 'VALIDER MES RÉPONSES'}
           </button>
-          <button onClick={stopVideo} className="px-6 py-4 rounded border-2 border-gray-600 text-[#f4efe2]/60 font-bold hover:border-gray-400 transition-all">
+          <button onClick={stopVideo} className="px-6 py-4 rounded border-2 border-gray-600 text-[#e7ebf2]/60 font-bold hover:border-gray-400 transition-all">
             ANNULER
           </button>
         </div>
 
-        <p className="text-center text-[#f4efe2]/50 text-sm mt-4">
+        <p className="text-center text-[#e7ebf2]/50 text-sm mt-4">
           {Object.keys(quizAnswers).length} / {activeVideo.quiz.length} questions répondues
         </p>
       </div>
@@ -238,10 +238,10 @@ export default function Academy() {
         <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-500 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="lux-serif text-3xl font-semibold text-[#f4efe2]">{activeVideo.title}</h2>
-              <p className="text-[#f4efe2]/60 text-sm">{activeVideo.description}</p>
+              <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2]">{activeVideo.title}</h2>
+              <p className="text-[#e7ebf2]/60 text-sm">{activeVideo.description}</p>
             </div>
-            <button onClick={stopVideo} className="text-[#f4efe2]/50 hover:text-white text-2xl transition-colors">✕</button>
+            <button onClick={stopVideo} className="text-[#e7ebf2]/50 hover:text-white text-2xl transition-colors">✕</button>
           </div>
 
           {/* Lecteur YouTube embarqué */}
@@ -257,7 +257,7 @@ export default function Academy() {
 
           {/* Barre de progression */}
           <div className="mb-4">
-            <div className="flex justify-between text-xs text-[#f4efe2]/60 mb-2">
+            <div className="flex justify-between text-xs text-[#e7ebf2]/60 mb-2">
               <span>Progression du visionnage (80% minimum requis)</span>
               <span className={watchProgress >= 100 ? 'text-green-400 font-bold' : 'text-yellow-500'}>{watchProgress}%</span>
             </div>
@@ -272,7 +272,7 @@ export default function Academy() {
           {/* Bouton quiz */}
           <div className="flex items-center justify-between bg-yellow-900/20 border border-yellow-500/30 rounded p-4">
             <div>
-              <p className="text-[#f4efe2]/80 text-sm">
+              <p className="text-[#e7ebf2]/80 text-sm">
                 {canTakeQuiz
                   ? '✓ Visionnage validé — Passez le quiz pour valider cette vidéo !'
                   : 'Regardez au moins 80% de la vidéo avant de passer le quiz'}
@@ -296,26 +296,26 @@ export default function Academy() {
     <div className="space-y-10">
       <div className="animate-cardIn">
         <p className="lux-label mb-2">Académie IMC</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none">
+        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">
           Apprendre à <span className="lux-gold-text italic">investir</span>
         </h1>
-        <p className="mt-2 text-sm text-[#f4efe2]/50">Formez-vous à l'investissement, niveau par niveau.</p>
+        <p className="mt-2 text-sm text-[#e7ebf2]/50">Formez-vous à l'investissement, niveau par niveau.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
         <div className="lux-card p-6">
           <p className="lux-label mb-3">Vidéos complétées</p>
-          <p className="lux-num text-3xl font-light text-[#f4efe2]">{completedCount} <span className="text-lg text-[#f4efe2]/40">/ {totalVideos}</span></p>
+          <p className="lux-num text-3xl font-light text-[#e7ebf2]">{completedCount} <span className="text-lg text-[#e7ebf2]/40">/ {totalVideos}</span></p>
           <div className="h-1.5 rounded-full bg-white/5 mt-4 overflow-hidden">
-            <div className="h-full rounded-full bg-[#d4af37]" style={{ width: `${totalVideos ? (completedCount / totalVideos) * 100 : 0}%` }} />
+            <div className="h-full rounded-full bg-[#f59e0b]" style={{ width: `${totalVideos ? (completedCount / totalVideos) * 100 : 0}%` }} />
           </div>
         </div>
         <div className="lux-card p-6">
           <p className="lux-label mb-3">Niveau d'accès</p>
-          <p className="lux-serif text-3xl font-semibold text-[#f4efe2] leading-none">
+          <p className="lux-serif text-3xl font-semibold text-[#e7ebf2] leading-none">
             {accessLevel === 0 ? 'Aucun pack' : accessLevel === 1 ? 'Débutant' : accessLevel === 2 ? 'Intermédiaire' : 'Avancé'}
           </p>
-          <p className="text-xs text-[#f4efe2]/40 mt-2">
+          <p className="text-xs text-[#e7ebf2]/40 mt-2">
             {accessLevel === 0 ? 'Achetez un pack pour accéder' : `Niveau ${accessLevel} débloqué`}
           </p>
         </div>
@@ -324,16 +324,16 @@ export default function Academy() {
           <p className="lux-num text-3xl font-light lux-gold-text">
             {totalVideos ? Math.round((completedCount / totalVideos) * 100) : 0}%
           </p>
-          <p className="text-xs text-[#f4efe2]/40 mt-2">du contenu disponible</p>
+          <p className="text-xs text-[#e7ebf2]/40 mt-2">du contenu disponible</p>
         </div>
       </div>
 
       {accessLevel === 0 && (
         <div className="lux-card-gold p-7 sm:p-8 flex flex-wrap items-center justify-between gap-5">
           <div className="relative">
-            <p className="lux-label !text-[#f3d58a]/70 mb-1">Contenu verrouillé</p>
-            <h2 className="lux-serif text-3xl font-semibold text-[#f4efe2] mb-1">Pack d'investissement requis</h2>
-            <p className="text-sm text-[#f4efe2]/55">Souscrivez au minimum le Pack Starter pour accéder aux vidéos de niveau 1.</p>
+            <p className="lux-label !text-[#fbbf24]/70 mb-1">Contenu verrouillé</p>
+            <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2] mb-1">Pack d'investissement requis</h2>
+            <p className="text-sm text-[#e7ebf2]/55">Souscrivez au minimum le Pack Starter pour accéder aux vidéos de niveau 1.</p>
           </div>
           <a href="/dashboard#invest" className="relative lux-btn-gold !px-7 !py-3">
             Voir les packs →
@@ -352,15 +352,15 @@ export default function Academy() {
             {/* En-tête niveau */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-white/5">
               <div className="flex flex-wrap items-center gap-3">
-                <h2 className="lux-serif text-2xl sm:text-3xl font-semibold text-[#f4efe2]">{label}</h2>
+                <h2 className="lux-serif text-2xl sm:text-3xl font-semibold text-[#e7ebf2]">{label}</h2>
                 {isLocked && (
-                  <span className="lux-pill bg-white/5 text-[#f4efe2]/50 ring-1 ring-inset ring-white/10">Requiert pack {minPack}+</span>
+                  <span className="lux-pill bg-white/5 text-[#e7ebf2]/50 ring-1 ring-inset ring-white/10">Requiert pack {minPack}+</span>
                 )}
               </div>
               <div className="text-right">
-                <span className="text-xs sm:text-sm text-[#f4efe2]/60">{completedInLevel}/{videos.length} complétées</span>
+                <span className="text-xs sm:text-sm text-[#e7ebf2]/60">{completedInLevel}/{videos.length} complétées</span>
                 <div className="h-1 w-28 sm:w-32 rounded-full bg-white/5 mt-1.5 overflow-hidden">
-                  <div className="h-full rounded-full bg-[#d4af37]" style={{ width: `${(completedInLevel / videos.length) * 100}%` }} />
+                  <div className="h-full rounded-full bg-[#f59e0b]" style={{ width: `${(completedInLevel / videos.length) * 100}%` }} />
                 </div>
               </div>
             </div>
@@ -392,17 +392,17 @@ export default function Academy() {
                     <div className="flex items-start gap-3 mb-3">
                       <span className="lux-icon-chip !w-9 !h-9 text-base">{CATEGORY_ICON[video.category] || '📚'}</span>
                       <div>
-                        <span className="lux-pill mt-1.5 bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/20 capitalize">
+                        <span className="lux-pill mt-1.5 bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/20 capitalize">
                           {video.category}
                         </span>
                       </div>
                     </div>
 
-                    <h3 className="lux-serif text-xl font-semibold text-[#f4efe2] mb-1.5 leading-snug">{video.title}</h3>
-                    <p className="text-[#f4efe2]/50 text-sm mb-4 leading-relaxed">{video.description}</p>
+                    <h3 className="lux-serif text-xl font-semibold text-[#e7ebf2] mb-1.5 leading-snug">{video.title}</h3>
+                    <p className="text-[#e7ebf2]/50 text-sm mb-4 leading-relaxed">{video.description}</p>
 
                     <div className="mb-5 mt-auto">
-                      <span className="text-[#f4efe2]/40 text-xs">{Math.floor(video.duration / 60)} min</span>
+                      <span className="text-[#e7ebf2]/40 text-xs">{Math.floor(video.duration / 60)} min</span>
                     </div>
 
                     <button

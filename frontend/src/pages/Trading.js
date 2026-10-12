@@ -14,7 +14,7 @@ function CandlestickChart({ series, source }) {
   const plotW = width - padL - padR, plotH = height - padT - padB;
 
   if (!series || series.length < 2) {
-    return <div className="h-[260px] flex items-center justify-center text-[#f4efe2]/35 text-sm">Pas assez de données</div>;
+    return <div className="h-[260px] flex items-center justify-center text-[#e7ebf2]/35 text-sm">Pas assez de données</div>;
   }
 
   const candles = series.map((p, i) => {
@@ -56,11 +56,11 @@ function CandlestickChart({ series, source }) {
   return (
     <div>
       <div className="flex items-baseline gap-3 mb-4 flex-wrap">
-        <span className="lux-num text-3xl sm:text-4xl font-light text-[#f4efe2]">${last.close.toLocaleString('fr-FR')}</span>
+        <span className="lux-num text-3xl sm:text-4xl font-light text-[#e7ebf2]">${last.close.toLocaleString('fr-FR')}</span>
         <span className={`lux-pill ${isUp ? 'bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20' : 'bg-rose-400/10 text-rose-300 ring-1 ring-inset ring-rose-400/20'}`}>
           {isUp ? '▲' : '▼'} {Math.abs(changePct).toFixed(2)}%
         </span>
-        <span className="text-xs text-[#f4efe2]/35">sur {n} jours</span>
+        <span className="text-xs text-[#e7ebf2]/35">sur {n} jours</span>
       </div>
       <div className="relative">
         <svg
@@ -73,14 +73,14 @@ function CandlestickChart({ series, source }) {
           {gridLines.map((g, i) => (
             <g key={i}>
               <line x1={padL} y1={g.y} x2={width - padR} y2={g.y} stroke="currentColor" className="text-gray-800" strokeWidth="1" />
-              <text x={padL - 8} y={g.y} textAnchor="end" dominantBaseline="middle" fontSize="10" fill="currentColor" className="text-[#f4efe2]/50">
+              <text x={padL - 8} y={g.y} textAnchor="end" dominantBaseline="middle" fontSize="10" fill="currentColor" className="text-[#e7ebf2]/50">
                 ${g.value >= 1000 ? Math.round(g.value).toLocaleString('fr-FR') : g.value.toFixed(g.value < 10 ? 3 : 1)}
               </text>
             </g>
           ))}
 
           {dateTickIdx.map((i, k) => (
-            <text key={k} x={xAt(i)} y={height - 8} textAnchor={k === 0 ? 'start' : k === dateTickIdx.length - 1 ? 'end' : 'middle'} fontSize="10" fill="currentColor" className="text-[#f4efe2]/50">
+            <text key={k} x={xAt(i)} y={height - 8} textAnchor={k === 0 ? 'start' : k === dateTickIdx.length - 1 ? 'end' : 'middle'} fontSize="10" fill="currentColor" className="text-[#e7ebf2]/50">
               {candles[i].date.slice(5)}
             </text>
           ))}
@@ -105,7 +105,7 @@ function CandlestickChart({ series, source }) {
           })}
 
           {hover !== null && (
-            <line x1={xAt(hover)} y1={padT} x2={xAt(hover)} y2={padT + plotH} stroke="currentColor" className="text-[#f4efe2]/35" strokeWidth="1" strokeDasharray="3,3" />
+            <line x1={xAt(hover)} y1={padT} x2={xAt(hover)} y2={padT + plotH} stroke="currentColor" className="text-[#e7ebf2]/35" strokeWidth="1" strokeDasharray="3,3" />
           )}
         </svg>
 
@@ -117,13 +117,13 @@ function CandlestickChart({ series, source }) {
               transform: tooltipRight ? 'translateX(calc(-100% - 10px))' : 'translateX(10px)'
             }}
           >
-            <p className="text-[10px] text-[#f4efe2]/50 whitespace-nowrap">{shown.date}</p>
+            <p className="text-[10px] text-[#e7ebf2]/50 whitespace-nowrap">{shown.date}</p>
             <p className="text-sm font-bold text-yellow-400 whitespace-nowrap">${shown.close.toLocaleString('fr-FR')}</p>
           </div>
         )}
       </div>
       {source !== 'live' && (
-        <p className="text-[10px] text-[#f4efe2]/35 mt-2 italic">
+        <p className="text-[10px] text-[#e7ebf2]/35 mt-2 italic">
           Simulation interne — ne reflète pas un marché externe réel.
         </p>
       )}
@@ -160,18 +160,18 @@ function PositionRow({ p }) {
           </span>
           <span className="text-white font-bold text-sm">{p.asset}</span>
         </div>
-        <span className={`text-xs font-bold whitespace-nowrap ${running ? 'text-yellow-500' : 'text-[#f4efe2]/50'}`}>
+        <span className={`text-xs font-bold whitespace-nowrap ${running ? 'text-yellow-500' : 'text-[#e7ebf2]/50'}`}>
           {running ? 'En cours' : p.outcome === 'win' ? 'Gagnée' : p.outcome === 'loss' ? 'Perdue' : 'Neutre'}
         </span>
       </div>
-      <div className="flex justify-between text-xs text-[#f4efe2]/50">
+      <div className="flex justify-between text-xs text-[#e7ebf2]/50">
         <span>${p.amount.toFixed(2)} engagés</span>
         {amountShown !== null && amountShown !== undefined ? (
           <span className={`font-bold ${amountShown >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             {amountShown >= 0 ? '+' : ''}${amountShown.toFixed(2)}{running ? ' (estimé)' : ''}
           </span>
         ) : running ? (
-          <span className="text-[#f4efe2]/35 italic">Résultat à la clôture</span>
+          <span className="text-[#e7ebf2]/35 italic">Résultat à la clôture</span>
         ) : null}
       </div>
       {running && remaining > 0 && (
@@ -344,14 +344,14 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
     <div className="space-y-6">
       <div className="animate-cardIn mb-2">
         <p className="lux-label mb-2">Marchés</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none">Trading</h1>
-        <p className="mt-2 text-sm text-[#f4efe2]/50">Prenez position sur les grands actifs mondiaux.</p>
+        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">Trading</h1>
+        <p className="mt-2 text-sm text-[#e7ebf2]/50">Prenez position sur les grands actifs mondiaux.</p>
       </div>
 
       {user.kycStatus !== 'verified' && (
         <div className="lux-card-gold p-6">
-          <h3 className="relative lux-serif text-2xl font-semibold text-[#f3d58a] mb-1">Vérification KYC requise</h3>
-          <p className="relative text-sm text-[#f4efe2]/60 mb-4">Vous devez compléter votre vérification d'identité avant de trader.</p>
+          <h3 className="relative lux-serif text-2xl font-semibold text-[#fbbf24] mb-1">Vérification KYC requise</h3>
+          <p className="relative text-sm text-[#e7ebf2]/60 mb-4">Vous devez compléter votre vérification d'identité avant de trader.</p>
           <button onClick={() => onNavigate?.('kyc')} className="relative lux-btn-gold !px-6">
             Compléter mon KYC →
           </button>
@@ -367,10 +367,10 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
             className={`lux-card p-4 text-left transition-all ${selectedAsset === a.key ? '!border-yellow-500/50' : 'lux-card-hover'}`}
           >
             <div className="flex items-center gap-1.5">
-              <p className="font-medium text-[#f4efe2] text-sm">{a.name}</p>
+              <p className="font-medium text-[#e7ebf2] text-sm">{a.name}</p>
               {a.source === 'live' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Données réelles" />}
             </div>
-            <p className="text-xs text-[#f4efe2]/45 mt-0.5 lux-num">{a.symbol} · ${a.price.toLocaleString('fr-FR')}</p>
+            <p className="text-xs text-[#e7ebf2]/45 mt-0.5 lux-num">{a.symbol} · ${a.price.toLocaleString('fr-FR')}</p>
           </button>
         ))}
       </div>
@@ -379,8 +379,8 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
       {currentAsset && (
         <div className="p-6 sm:p-7 lux-card">
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <h2 className="lux-serif text-2xl font-semibold text-[#f4efe2]">{currentAsset.name}</h2>
-            <span className="lux-pill bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/25">
+            <h2 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">{currentAsset.name}</h2>
+            <span className="lux-pill bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25">
               {settings.payoutPercent}%
             </span>
           </div>
@@ -432,9 +432,9 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
       {/* ── Scenario codes: fully independent from the chart above ────────── */}
       <div className="lux-card p-6">
         <div className="flex items-center gap-2 mb-1">
-          <h2 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Code de scénario</h2>
+          <h2 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">Code de scénario</h2>
         </div>
-        <p className="text-xs text-[#f4efe2]/50 mb-4">
+        <p className="text-xs text-[#e7ebf2]/50 mb-4">
           Vous avez reçu un code de l'administrateur ? Entrez-le avec un montant : le résultat appliqué sera exactement le pourcentage défini sur ce code, quel que soit le marché.
         </p>
 
@@ -468,13 +468,13 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
             {codeSubmitting ? 'Traitement…' : 'Utiliser le code'}
           </button>
         </form>
-        <p className="text-[10px] text-[#f4efe2]/35 mt-2">Disponible : ${balance.toFixed(2)}</p>
+        <p className="text-[10px] text-[#e7ebf2]/35 mt-2">Disponible : ${balance.toFixed(2)}</p>
       </div>
 
       {/* ── History, shared by both mechanisms ─────────────────────────────── */}
       <div className="lux-card p-6">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
-          <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Mes positions</h3>
+          <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">Mes positions</h3>
           <div className="flex flex-wrap gap-2">
             {POSITION_PERIODS.map(({ value, label }) => (
               <button
@@ -488,7 +488,7 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
           </div>
         </div>
         {filteredPositions.length === 0 ? (
-          <p className="text-center py-8 text-[#f4efe2]/50 text-sm">
+          <p className="text-center py-8 text-[#e7ebf2]/50 text-sm">
             {positions.length === 0 ? "Aucune position pour l'instant" : 'Aucune position sur cette période'}
           </p>
         ) : (

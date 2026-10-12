@@ -146,6 +146,27 @@ const IC = {
       <path d="M4 4l8 8M12 4l-8 8" stroke={color} strokeWidth="2" strokeLinecap="round"/>
     </svg>
   ),
+  ArrowDownLeft: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 7L7 17M7 17h8M7 17V9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+  ),
+  ArrowUpRight: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+  ),
+  Chart: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M7 15l4-4 3 3 5-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+  ),
+  Layers: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l10 5-10 5L2 7l10-5z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/><path d="M2 12l10 5 10-5M2 17l10 5 10-5" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/></svg>
+  ),
+  Percent: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 5L5 19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><circle cx="7" cy="7" r="2.5" stroke="currentColor" strokeWidth="1.8"/><circle cx="17" cy="17" r="2.5" stroke="currentColor" strokeWidth="1.8"/></svg>
+  ),
+  More: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+  ),
+  Verified: () => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 1.8 3-.2.9 2.9 2.5 1.7-1 2.8 1 2.8-2.5 1.7-.9 2.9-3-.2L12 22l-2.4-1.8-3 .2-.9-2.9-2.5-1.7 1-2.8-1-2.8 2.5-1.7.9-2.9 3 .2L12 2z" fill="#f59e0b" fillOpacity="0.18" stroke="#f59e0b" strokeWidth="1.4" strokeLinejoin="round"/><path d="M8.5 12.2l2.3 2.3 4.7-4.8" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+  ),
   Clock: () => (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
       <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
@@ -256,66 +277,63 @@ export default function Dashboard() {
     ...(user.role === 'ambassador' ? [{ id: 'ambassador-space', Icon: IC.Ambassador, label: 'Espace Ambassadeur', external: '/ambassador' }] : []),
   ];
 
+  const currentLabel = navItems.find(n => n.id === activeTab)?.label || "Vue d'ensemble";
+  const bottomNav = [
+    { id: 'overview', Icon: IC.Overview, label: 'Aperçu' },
+    { id: 'invest', Icon: IC.Invest, label: 'Investir' },
+    { id: 'wallet', Icon: IC.Wallet, label: 'Fonds' },
+    { id: 'transactions', Icon: IC.Transactions, label: 'Historique' },
+  ];
+
   return (
     <div className="dash-scope lux-page min-h-screen relative">
-      <div className="relative z-10">
-
       <header className="lux-header sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-[68px] flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-8 w-auto object-contain shrink-0" />
+            <div className="pl-3 border-l border-white/10 min-w-0 leading-tight">
+              <p className="text-sm font-semibold text-[#e7ebf2]">IMC Corp</p>
+              <p className="text-xs text-[#9aa6b8] truncate">{currentLabel}</p>
+            </div>
+          </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 rounded-lg text-yellow-300 hover:bg-yellow-500/10 transition-colors bg-transparent border-none cursor-pointer"
-              aria-label="Menu"
-            >
-              {sidebarOpen ? <IC.Close /> : <IC.Menu />}
-            </button>
-            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-8 w-auto object-contain hidden sm:block" />
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-4">
             <NotificationBell onNavigate={handleNotificationNavigate} />
-            <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-white/10">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-[#17130a] bg-white overflow-hidden shrink-0">
-                {user?.avatarUrl
-                  ? <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
-                  : `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase()}
-              </div>
-              <div className="leading-tight">
-                <p className="font-medium text-sm text-[#f4efe2]">{user?.firstName} {user?.lastName}</p>
-                <p className="text-xs text-[#f4efe2]/40">{user?.email}</p>
-              </div>
-            </div>
-            <button onClick={handleLogout} className="lux-btn-ghost !px-3 sm:!px-4 !py-2" aria-label="Déconnexion">
-              <IC.Logout />
-              <span className="hidden sm:inline">Déconnexion</span>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-white bg-[#2563eb] overflow-hidden shrink-0 border-2 border-[#253043] cursor-pointer"
+              aria-label="Profil"
+            >
+              {user?.avatarUrl
+                ? <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                : `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase()}
             </button>
+            <span className="hidden lg:block">
+              <button onClick={handleLogout} className="lux-btn-ghost !px-3 !py-2" aria-label="Déconnexion">
+                <IC.Logout />
+                <span className="hidden xl:inline">Déconnexion</span>
+              </button>
+            </span>
           </div>
         </div>
+        <TickerStrip />
       </header>
 
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div className="fixed inset-0 bg-black/60 z-[60] lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-28 lg:pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-6 lg:gap-8">
 
           <aside className={`
-            lg:col-span-1
-            fixed lg:static top-0 left-0 h-full lg:h-auto w-72 lg:w-auto
-            z-50 lg:z-auto
-            transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
-            transition-transform duration-300 ease-in-out
-            pt-14 sm:pt-[68px] lg:pt-0
-            overflow-y-auto lg:overflow-visible
+            fixed lg:static bottom-0 lg:bottom-auto left-0 right-0 lg:right-auto z-[70] lg:z-auto
+            max-h-[80vh] lg:max-h-none overflow-y-auto lg:overflow-visible
+            transform ${sidebarOpen ? 'translate-y-0' : 'translate-y-full'} lg:translate-y-0
+            transition-transform duration-300 ease-out
           `}>
-            <div className="bg-[#07070a] lg:bg-transparent h-full lg:h-auto p-3 lg:p-0 lg:sticky lg:top-24">
-
+            <div className="bg-[#141b26] lg:bg-transparent rounded-t-2xl lg:rounded-none border-t border-white/10 lg:border-0 p-4 lg:p-0 lg:sticky lg:top-[120px]">
+              <div className="lg:hidden w-10 h-1 rounded-full bg-white/20 mx-auto mb-4" />
               <nav className="lux-card p-2 space-y-0.5">
                 {navItems.map(({ id, Icon, label, external }) => (
                   <button
@@ -323,49 +341,46 @@ export default function Dashboard() {
                     onClick={() => { if (external) navigate(external); else setActiveTab(id); setSidebarOpen(false); }}
                     className={`lux-nav-item ${activeTab === id ? 'is-active' : ''}`}
                   >
-                    <span className={activeTab === id ? 'text-[#f3d58a]' : 'text-current opacity-80'}>
-                      <Icon />
-                    </span>
+                    <span className="opacity-80"><Icon /></span>
                     {label}
                   </button>
                 ))}
+                <button onClick={handleLogout} className="lux-nav-item lg:hidden !text-rose-300">
+                  <span><IC.Logout /></span>
+                  Déconnexion
+                </button>
               </nav>
 
-              <div className="mt-4 lux-card p-5">
-                <p className="lux-label mb-4">Statut du compte</p>
-                <div className="space-y-3 text-xs">
+              <div className="mt-4 lux-card p-4 hidden lg:block">
+                <p className="text-xs font-semibold text-[#9aa6b8] mb-3">Statut du compte</p>
+                <div className="space-y-2.5 text-xs">
                   <div className="flex justify-between items-center">
-                    <span className="text-[#f4efe2]/50">Type</span>
-                    <span className="font-semibold lux-gold-text uppercase tracking-wider">{ROLE_LABEL[user?.role] || user?.role}</span>
+                    <span className="text-[#6f7c90]">Type</span>
+                    <span className="font-semibold text-[#e7ebf2]">{ROLE_LABEL[user?.role] || user?.role}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#f4efe2]/50">KYC</span>
+                    <span className="text-[#6f7c90]">KYC</span>
                     <span className={`flex items-center gap-1 font-semibold ${
-                      user?.kycStatus === 'verified' ? 'text-green-400' :
-                      user?.kycStatus === 'rejected' ? 'text-red-400' : 'text-yellow-400'
+                      user?.kycStatus === 'verified' ? 'text-emerald-400' :
+                      user?.kycStatus === 'rejected' ? 'text-rose-400' : 'text-amber-400'
                     }`}>
-                      {user?.kycStatus === 'verified'  && <><IC.Check color="#4ade80" /> Vérifié</>}
-                      {user?.kycStatus === 'rejected'  && <><IC.X color="#f87171" /> Rejeté</>}
+                      {user?.kycStatus === 'verified'  && <><IC.Check /> Vérifié</>}
+                      {user?.kycStatus === 'rejected'  && <><IC.X /> Rejeté</>}
                       {user?.kycStatus !== 'verified' && user?.kycStatus !== 'rejected' && <><IC.Clock /> En attente</>}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#f4efe2]/50">2FA</span>
-                    <span className={`flex items-center gap-1 font-semibold ${user?.twoFactorEnabled ? 'text-green-400' : 'text-[#f4efe2]/50'}`}>
-                      {user?.twoFactorEnabled
-                        ? <><IC.Check color="#4ade80" /> Activé</>
-                        : <><IC.X color="#6b7280" /> Désactivé</>
-                      }
+                    <span className="text-[#6f7c90]">2FA</span>
+                    <span className={`flex items-center gap-1 font-semibold ${user?.twoFactorEnabled ? 'text-emerald-400' : 'text-[#6f7c90]'}`}>
+                      {user?.twoFactorEnabled ? <><IC.Check /> Activé</> : <><IC.X /> Désactivé</>}
                     </span>
                   </div>
                 </div>
               </div>
-
             </div>
           </aside>
 
-          {}
-          <main className="lg:col-span-3 min-w-0">
+          <main className="min-w-0">
             {activeTab === 'overview'     && <OverviewTab user={user} balance={balance} summary={summary} investments={investments} transactions={transactions} stats={stats} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
             {activeTab === 'invest'       && <Invest onNavigate={setActiveTab} />}
             {activeTab === 'investments'  && <InvestmentsTab investments={investments} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
@@ -381,6 +396,54 @@ export default function Dashboard() {
           </main>
         </div>
       </div>
+
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0f151f]/95 backdrop-blur border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
+        <div className="grid grid-cols-5">
+          {bottomNav.map(({ id, Icon, label }) => (
+            <button
+              key={id}
+              onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
+              className={`flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium bg-transparent border-none cursor-pointer ${activeTab === id ? 'text-[#5b8cff]' : 'text-[#9aa6b8]'}`}
+            >
+              <span className="scale-125"><Icon /></span>
+              {label}
+            </button>
+          ))}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className={`flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium bg-transparent border-none cursor-pointer ${sidebarOpen || !['overview','invest','wallet','transactions'].includes(activeTab) ? 'text-[#5b8cff]' : 'text-[#9aa6b8]'}`}
+          >
+            <IC.More />
+            Plus
+          </button>
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+// Live prices of the platform's tradable assets, scrolling under the header
+// — the same /trading/assets feed the Trading tab uses, not decorative data.
+function TickerStrip() {
+  const { api } = useAuth();
+  const [assets, setAssets] = useState([]);
+  useEffect(() => {
+    api.get('/trading/assets').then(res => {
+      if (res.data.success) setAssets(res.data.data.assets || []);
+    }).catch(() => {});
+  }, [api]);
+  if (assets.length === 0) return null;
+  const items = [...assets, ...assets];
+  return (
+    <div className="border-t border-white/5 overflow-hidden">
+      <div className="lux-marquee flex w-max">
+        {items.map((a, i) => (
+          <span key={i} className="flex items-center gap-2 px-5 py-2 text-xs whitespace-nowrap">
+            <span className={`w-1.5 h-1.5 rounded-full ${a.source === 'live' ? 'bg-emerald-400' : 'bg-[#6f7c90]'}`} />
+            <span className="font-semibold text-[#e7ebf2]">{a.name}</span>
+            <span className="lux-num text-[#9aa6b8]">${Number(a.price).toLocaleString('fr-FR', { maximumFractionDigits: 2 })}</span>
+          </span>
+        ))}
       </div>
     </div>
   );
@@ -392,7 +455,7 @@ function Spinner() {
       <div className="flex flex-col items-center gap-4">
         <div className="relative w-11 h-11">
           <div className="absolute inset-0 rounded-full border border-white/10" />
-          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#d4af37] animate-spin" />
+          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#f59e0b] animate-spin" />
         </div>
         <p className="lux-label">Chargement</p>
       </div>
@@ -404,8 +467,8 @@ function PageHeader({ title, subtitle, children }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
       <div>
-        <h2 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#f4efe2] leading-none">{title}</h2>
-        {subtitle && <p className="mt-2 text-sm text-[#f4efe2]/50">{subtitle}</p>}
+        <h2 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#e7ebf2] leading-none">{title}</h2>
+        {subtitle && <p className="mt-2 text-sm text-[#e7ebf2]/50">{subtitle}</p>}
       </div>
       {children}
     </div>
@@ -423,10 +486,10 @@ function Card({ children, className = '' }) {
 const TONE = {
   green:  'bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20',
   red:    'bg-rose-400/10 text-rose-300 ring-1 ring-inset ring-rose-400/20',
-  gold:   'bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/25',
+  gold:   'bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25',
   blue:   'bg-sky-400/10 text-sky-300 ring-1 ring-inset ring-sky-400/20',
   violet: 'bg-violet-400/10 text-violet-300 ring-1 ring-inset ring-violet-400/20',
-  gray:   'bg-white/5 text-[#f4efe2]/60 ring-1 ring-inset ring-white/10',
+  gray:   'bg-white/5 text-[#e7ebf2]/60 ring-1 ring-inset ring-white/10',
 };
 
 function Badge({ status }) {
@@ -452,196 +515,215 @@ function Badge({ status }) {
   return <span className={`lux-pill ${TONE[tone]}`}>{label}</span>;
 }
 
-function OverviewTab({ user, balance, summary, investments, transactions, stats, loading, onRefresh, onNavigate }) {
+const fmtUsd = (n, d = 2) => Number(n || 0).toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+const OP_META = {
+  deposit:      { label: 'Dépôt USDT',        cls: 'bg-emerald-500/15 text-emerald-300', Icon: IC.ArrowDownLeft },
+  withdrawal:   { label: 'Retrait USDT',      cls: 'bg-slate-500/20 text-slate-300',     Icon: IC.ArrowUpRight },
+  investment:   { label: 'Investissement',    cls: 'bg-amber-500/15 text-amber-300',     Icon: IC.Layers },
+  earning:      { label: 'Gain crédité',      cls: 'bg-blue-500/15 text-blue-300',       Icon: IC.Coin },
+  reinvestment: { label: 'Réinvestissement',  cls: 'bg-amber-500/15 text-amber-300',     Icon: IC.Layers },
+  commission:   { label: 'Commission',        cls: 'bg-violet-500/15 text-violet-300',   Icon: IC.Referral },
+  refund:       { label: 'Remboursement',     cls: 'bg-slate-500/20 text-slate-300',     Icon: IC.Refresh },
+  trading:      { label: 'Trading',           cls: 'bg-blue-500/15 text-blue-300',       Icon: IC.Chart },
+};
+const OP_STATUS = { pending: ['En attente', 'text-amber-400'], approved: ['Approuvé', 'text-blue-300'], processing: ['En traitement', 'text-blue-300'], completed: ['Réussi', 'text-emerald-400'], rejected: ['Refusé', 'text-rose-400'], cancelled: ['Annulé', 'text-[#6f7c90]'], failed: ['Échoué', 'text-rose-400'] };
+
+function SectionTitle({ title, action, onAction }) {
+  return (
+    <div className="flex items-center justify-between gap-3 mb-3">
+      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-[#e7ebf2]">{title}</h2>
+      {action && (
+        <button onClick={onAction} className="text-sm font-medium text-[#7aa2ff] hover:text-[#a5c0ff] bg-transparent border-none cursor-pointer flex items-center gap-1">
+          {action} <span aria-hidden="true">›</span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+function OverviewTab({ user, balance, summary, investments, transactions, stats, loading, onNavigate }) {
   if (loading) return <Spinner />;
 
-  const quickLinks = [
-    { id: 'academy',  Icon: IC.Academy,  title: 'Académie',   desc: 'Formez-vous à l\'investissement' },
-    { id: 'trading',  Icon: IC.TrendUp,  title: 'Trading',    desc: 'Suivez les marchés en direct' },
-    user?.role === 'ambassador'
-      ? { id: 'faq',      Icon: IC.Help,     title: "Centre d'aide", desc: 'Questions fréquentes' }
-      : { id: 'referral', Icon: IC.Referral, title: 'Parrainage',    desc: 'Invitez vos contacts' },
+  const kycOk = user?.kycStatus === 'verified';
+  const activeInvs = (investments || []).filter(i => i.status === 'active');
+  const recent = [...(transactions || [])].sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt)).slice(0, 5);
+  const earned = stats?.totalEarnings ?? 0;
+
+  const actions = [
+    { id: 'wallet', label: 'Déposer', Icon: IC.ArrowDownLeft, cls: 'bg-[#2563eb] hover:bg-[#1d4ed8] text-white', chip: 'bg-white/15' },
+    { id: 'wallet', label: 'Retirer', Icon: IC.ArrowUpRight, cls: 'bg-[#2a3446] hover:bg-[#334058] text-[#e7ebf2]', chip: 'bg-white/10' },
+    { id: 'invest', label: 'Investir', Icon: IC.Chart, cls: 'bg-[#f59e0b] hover:bg-[#fbb024] text-[#1a1204]', chip: 'bg-black/10' },
   ];
-
-  const recentActivity = [...(transactions || [])]
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 5);
-
-  const hour = new Date().getHours();
-  const greeting = hour < 18 ? 'Bonjour' : 'Bonsoir';
-  const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
 
   return (
     <div className="space-y-6 sm:space-y-8">
-
-      <div className="animate-cardIn">
-        <p className="lux-label mb-2 capitalize">{today}</p>
-        <h2 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-[1.05]">
-          {greeting}, <span className="lux-gold-text italic">{user?.firstName}</span>
-        </h2>
-        <p className="mt-2 text-sm text-[#f4efe2]/50">Voici l'état de votre patrimoine aujourd'hui.</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#e7ebf2] flex items-center gap-2">
+            Bonjour, {user?.firstName} {kycOk && <IC.Verified />}
+          </h1>
+          <p className="text-sm text-[#9aa6b8] mt-1">Voici l'état de votre portefeuille aujourd'hui.</p>
+        </div>
+        <button
+          onClick={() => !kycOk && onNavigate('kyc')}
+          className={`lux-pill !py-1.5 !px-3 border-none ${kycOk ? 'bg-emerald-500/10 text-emerald-300 cursor-default' : 'bg-amber-500/10 text-amber-300 cursor-pointer'}`}
+        >
+          {kycOk ? 'KYC vérifié' : 'KYC à compléter'}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-5">
-        <div className="lux-card-gold lg:col-span-3 p-6 sm:p-8 animate-cardIn overflow-hidden">
-          <svg aria-hidden="true" viewBox="0 0 400 140" preserveAspectRatio="none" className="absolute right-0 top-[22%] w-[55%] h-[48%] pointer-events-none opacity-60 hidden sm:block">
-            <defs>
-              <linearGradient id="luxArea" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#d4af37" stopOpacity="0.22" />
-                <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="luxLine" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#d4af37" stopOpacity="0" />
-                <stop offset="60%" stopColor="#f3d58a" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#f3d58a" stopOpacity="1" />
-              </linearGradient>
-            </defs>
-            <path d="M0,120 C40,115 70,95 110,100 C150,105 170,80 210,70 C250,60 270,78 310,50 C340,30 370,32 400,12 L400,140 L0,140 Z" fill="url(#luxArea)" />
-            <path d="M0,120 C40,115 70,95 110,100 C150,105 170,80 210,70 C250,60 270,78 310,50 C340,30 370,32 400,12" fill="none" stroke="url(#luxLine)" strokeWidth="1.5" />
-          </svg>
-          <div className="relative flex flex-col h-full">
-            <div className="flex items-center justify-between mb-6">
-              <p className="lux-label !text-[#f3d58a]/70">Solde disponible</p>
-              <span className="lux-pill bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">USDT</span>
-            </div>
-            <p className="lux-num text-4xl sm:text-5xl font-light text-[#f4efe2] mb-1">
-              <span className="text-[#f3d58a]/70 text-2xl sm:text-3xl align-top mr-1">$</span><AnimatedNumber value={balance} />
-            </p>
-            <p className="text-xs text-[#f4efe2]/40 mb-8">Disponible pour investir ou retirer</p>
-            <div className="mt-auto flex flex-wrap gap-2.5">
-              <button onClick={() => onNavigate('wallet')} className="lux-btn-gold">
-                Déposer <IC.ArrowRight />
-              </button>
-              <button onClick={() => onNavigate('invest')} className="lux-btn-ghost">Investir</button>
-              <button onClick={() => onNavigate('wallet')} className="lux-btn-ghost">Retirer</button>
-            </div>
-          </div>
+      <div className="lux-card-gold p-5 sm:p-7">
+        <div className="flex items-center justify-between gap-3">
+          <p className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-[#9aa6b8]">
+            <span className="text-amber-400"><IC.Wallet /></span> Solde disponible
+          </p>
+          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[#2563eb] text-white">USDT</span>
+        </div>
+        <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
+          <span className="lux-num text-4xl sm:text-5xl font-bold text-white"><AnimatedNumber value={balance} /></span>
+          <span className="text-lg font-semibold text-[#7aa2ff]">USDT</span>
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 font-semibold lux-num">
+            <IC.ArrowUpRight /> +{fmtUsd(earned)} USDT
+          </span>
+          <span className="text-[#9aa6b8]">de gains cumulés</span>
         </div>
 
-        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-5">
-          <button
-            onClick={() => onNavigate('investments')}
-            style={{ animationDelay: '80ms' }}
-            className="lux-card lux-card-hover animate-cardIn text-left p-6 cursor-pointer group"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <p className="lux-label">Capital investi</p>
-              <span className="lux-icon-chip !w-8 !h-8"><IC.Briefcase /></span>
-            </div>
-            <p className="lux-num text-2xl sm:text-3xl font-light text-[#f4efe2]">
-              <span className="text-[#f4efe2]/40 text-lg mr-1">$</span><AnimatedNumber value={summary?.invested ?? 0} />
-            </p>
-            <span className="mt-3 text-xs text-[#d4af37] font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-              Mes investissements <IC.ArrowRight />
-            </span>
-          </button>
-
-          <div style={{ animationDelay: '160ms' }} className="lux-card animate-cardIn p-6">
-            <div className="flex items-center justify-between mb-4">
-              <p className="lux-label">Valeur du portefeuille</p>
-              <span className="lux-icon-chip !w-8 !h-8"><IC.TrendUp /></span>
-            </div>
-            <p className="lux-num text-2xl sm:text-3xl font-light text-[#f4efe2]">
-              <span className="text-[#f4efe2]/40 text-lg mr-1">$</span><AnimatedNumber value={summary?.currentValue ?? 0} />
-            </p>
-            <p className="mt-3 text-xs text-[#f4efe2]/40">Capital + gains accumulés</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        <StatCard Icon={IC.Wallet}    title="Déposé total"           value={<>$ <AnimatedNumber value={summary?.deposited ?? 0} /></>} delay={0} />
-        <StatCard Icon={IC.Coin}      title="Gains totaux"           value={<>$ <AnimatedNumber value={stats?.totalEarnings ?? 0} /></>} delay={60} positive />
-        <StatCard Icon={IC.Briefcase} title="Investissements actifs" value={<AnimatedNumber value={stats?.activeInvestments ?? 0} decimals={0} />} delay={120} />
-        <StatCard Icon={IC.TrendUp}   title="ROI total"              value={<><AnimatedNumber value={stats?.totalROI ?? 0} /> %</>} delay={180} positive />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-5">
-        <Card className="lg:col-span-3 p-6 sm:p-7">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <p className="lux-label mb-1">6 derniers mois</p>
-              <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Flux de trésorerie</h3>
-            </div>
-          </div>
-          <CashFlowChart transactions={transactions || []} />
-        </Card>
-
-        <div className="lg:col-span-2 grid grid-cols-1 gap-3">
-          {quickLinks.map(({ id, Icon, title, desc }, i) => (
+        <div className="mt-6 grid grid-cols-3 gap-2.5 sm:gap-3">
+          {actions.map(({ id, label, Icon, cls, chip }) => (
             <button
-              key={id}
+              key={label}
               onClick={() => onNavigate(id)}
-              style={{ animationDelay: `${i * 80}ms` }}
-              className="lux-card lux-card-hover animate-cardIn w-full text-left p-4 sm:p-5 flex items-center gap-4 group cursor-pointer"
+              className={`flex flex-col items-center justify-center gap-2 py-4 sm:py-5 rounded-2xl font-semibold text-sm transition-colors border-none cursor-pointer active:scale-[0.98] ${cls}`}
             >
-              <span className="lux-icon-chip shrink-0"><Icon /></span>
-              <span className="flex-1 min-w-0">
-                <span className="block font-medium text-[#f4efe2] text-sm group-hover:text-[#f3d58a] transition-colors">{title}</span>
-                <span className="block text-xs text-[#f4efe2]/45 mt-0.5">{desc}</span>
-              </span>
-              <span className="text-[#f4efe2]/30 group-hover:text-[#d4af37] group-hover:translate-x-0.5 transition-all"><IC.ArrowRight /></span>
+              <span className={`w-9 h-9 rounded-full flex items-center justify-center ${chip}`}><Icon /></span>
+              {label}
             </button>
           ))}
         </div>
       </div>
 
-      <Card className="overflow-hidden">
-        <div className="flex items-center justify-between flex-wrap gap-3 px-6 sm:px-7 pt-6 sm:pt-7">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <StatCard Icon={IC.Layers}    tone="blue"   title="Capital engagé"   value={fmtUsd(summary?.invested, 0)} unit="USDT" sub={`Valeur : ${fmtUsd(summary?.currentValue, 0)} USDT`} />
+        <StatCard Icon={IC.Coin}      tone="green"  title="Gains réalisés"   value={`+${fmtUsd(earned)}`} unit="USDT" sub="Cumulés depuis l'ouverture" valueCls="text-emerald-400" />
+        <StatCard Icon={IC.Briefcase} tone="violet" title="Investissements"  value={stats?.activeInvestments ?? 0} unit={(stats?.activeInvestments ?? 0) > 1 ? 'packs' : 'pack'} sub="Actifs en ce moment" />
+        <StatCard Icon={IC.Percent}   tone="amber"  title="Rendement moyen"  value={fmtUsd(stats?.totalROI)} unit="%" sub="Sur le capital investi" />
+      </div>
+
+      <Card className="p-5 sm:p-6">
+        <div className="flex items-center justify-between mb-5">
           <div>
-            <p className="lux-label mb-1">Historique</p>
-            <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Activités récentes</h3>
+            <h2 className="text-lg font-bold tracking-tight text-[#e7ebf2]">Flux de trésorerie</h2>
+            <p className="text-xs text-[#6f7c90] mt-0.5">Dépôts moins retraits, 6 derniers mois</p>
           </div>
-          <button onClick={() => onNavigate('transactions')} className="lux-btn-ghost !py-1.5 !px-3 !text-xs">
-            Voir tout <IC.ArrowRight />
-          </button>
         </div>
-        {recentActivity.length > 0 ? (
-          <div className="overflow-x-auto mt-5">
-            <table className="w-full lux-table">
-              <thead>
-                <tr>
-                  {['Activité', 'Référence', 'Date', 'Montant', 'Statut'].map(col => <th key={col}>{col}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {recentActivity.map((tx, i) => (
-                  <tr key={i}>
-                    <td><Badge status={tx.type} /></td>
-                    <td className="text-xs text-[#f4efe2]/40 font-mono">#{String(tx._id).slice(-6).toUpperCase()}</td>
-                    <td className="text-sm text-[#f4efe2]/60">{new Date(tx.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                    <td className={`text-sm font-medium lux-num ${tx.amount < 0 ? 'text-rose-300' : 'text-[#f4efe2]'}`}>
-                      {tx.amount < 0 ? '−' : ''}$ {Math.abs(tx.amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </td>
-                    <td><Badge status={tx.status} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <CashFlowChart transactions={transactions || []} />
+      </Card>
+
+      <div>
+        <SectionTitle title="Investissements actifs" action="Tout voir" onAction={() => onNavigate('investments')} />
+        {activeInvs.length === 0 ? (
+          <Card className="p-6 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="font-semibold text-[#e7ebf2]">Aucun investissement en cours</p>
+              <p className="text-sm text-[#9aa6b8] mt-0.5">Choisissez un pack pour faire travailler votre solde.</p>
+            </div>
+            <button onClick={() => onNavigate('invest')} className="lux-btn-amber">Voir les packs</button>
+          </Card>
         ) : (
-          <div className="text-center py-14 px-6">
-            <span className="lux-icon-chip !w-12 !h-12 mb-4"><IC.Transactions /></span>
-            <p className="text-[#f4efe2]/50 text-sm mb-5">Aucune activité pour l'instant</p>
-            <button onClick={() => onNavigate('invest')} className="lux-btn-gold">
-              Commencer à investir <IC.ArrowRight />
-            </button>
+          <div className="grid lg:grid-cols-2 gap-3 sm:gap-4">
+            {activeInvs.slice(0, 4).map(inv => {
+              const start = new Date(inv.startDate || inv.createdAt).getTime();
+              const end = inv.endDate ? new Date(inv.endDate).getTime() : start;
+              const pct = end > start ? Math.min(100, Math.max(0, ((Date.now() - start) / (end - start)) * 100)) : 100;
+              const daysLeft = Math.max(0, Math.ceil((end - Date.now()) / 86400000));
+              return (
+                <Card key={inv._id} className="p-5">
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="w-11 h-11 rounded-xl flex items-center justify-center bg-blue-500/15 text-blue-300 shrink-0"><IC.TrendUp /></span>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-[#e7ebf2] truncate">{packDisplayName(inv.pack)}</p>
+                        <p className="text-xs text-[#6f7c90]">Démarré le {new Date(inv.startDate || inv.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</p>
+                      </div>
+                    </div>
+                    <span className="lux-pill bg-emerald-500/10 text-emerald-300 shrink-0">Actif</span>
+                  </div>
+                  <div className="flex justify-between gap-4 mb-4">
+                    <div>
+                      <p className="text-xs text-[#6f7c90]">Montant alloué</p>
+                      <p className="lux-num font-semibold text-[#e7ebf2]">{fmtUsd(inv.amount)} USDT</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-[#6f7c90]">Échéance</p>
+                      <p className="font-semibold text-[#e7ebf2]">{daysLeft === 0 ? "Aujourd'hui" : `Dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''}`}</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-between text-xs mb-1.5">
+                    <span className="text-[#9aa6b8]">Maturité</span>
+                    <span className="text-emerald-400 font-medium">{Math.round(pct)} %</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#2563eb] to-[#34d399]" style={{ width: `${pct}%` }} />
+                  </div>
+                  <p className="mt-3 text-xs text-[#9aa6b8]">Gains à date : <span className="lux-num text-emerald-400 font-medium">+{fmtUsd(inv.earnings)} USDT</span></p>
+                </Card>
+              );
+            })}
           </div>
         )}
-      </Card>
+      </div>
+
+      <div>
+        <SectionTitle title="Opérations récentes" action="Historique" onAction={() => onNavigate('transactions')} />
+        <Card className="divide-y divide-white/5">
+          {recent.length === 0 ? (
+            <div className="p-8 text-center">
+              <p className="text-sm text-[#9aa6b8] mb-4">Aucune opération pour l'instant</p>
+              <button onClick={() => onNavigate('wallet')} className="lux-btn-gold">Faire un premier dépôt</button>
+            </div>
+          ) : recent.map(tx => {
+            const meta = OP_META[tx.type] || { label: tx.type, cls: 'bg-slate-500/20 text-slate-300', Icon: IC.Transactions };
+            const [statusLabel, statusCls] = OP_STATUS[tx.status] || [tx.status, 'text-[#6f7c90]'];
+            const network = tx.method?.startsWith('usdt-') ? ` (${tx.method.slice(5).toUpperCase()})` : '';
+            const isOut = tx.amount < 0 || tx.type === 'investment' || tx.type === 'withdrawal';
+            return (
+              <div key={tx._id} className="flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5">
+                <span className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${meta.cls}`}><meta.Icon /></span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-[#e7ebf2] truncate">{meta.label}{network}</p>
+                  <p className="text-xs text-[#6f7c90]">{new Date(tx.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} · {new Date(tx.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className={`lux-num font-semibold text-sm ${isOut ? 'text-[#e7ebf2]' : 'text-emerald-400'}`}>
+                    {isOut ? '−' : '+'}{fmtUsd(Math.abs(tx.amount))} USDT
+                  </p>
+                  <p className={`text-xs font-medium ${statusCls}`}>{statusLabel}</p>
+                </div>
+              </div>
+            );
+          })}
+        </Card>
+      </div>
     </div>
   );
 }
 
-function StatCard({ Icon, title, value, delay = 0, positive = false }) {
+function StatCard({ Icon, title, value, unit, sub, tone = 'blue', valueCls = 'text-[#e7ebf2]' }) {
+  const chip = { blue: 'bg-blue-500/15 text-blue-300', green: 'bg-emerald-500/15 text-emerald-300', violet: 'bg-violet-500/15 text-violet-300', amber: 'bg-amber-500/15 text-amber-300' };
   return (
-    <div style={{ animationDelay: `${delay}ms` }} className="lux-card lux-card-hover animate-cardIn p-5">
-      <div className="flex items-center justify-between mb-4">
-        <span className="lux-icon-chip !w-8 !h-8"><Icon /></span>
-        {positive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
+    <div className="lux-card p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <p className="text-xs sm:text-sm font-medium text-[#9aa6b8]">{title}</p>
+        <span className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${chip[tone]}`}><Icon /></span>
       </div>
-      <p className="text-[11px] text-[#f4efe2]/45 mb-1.5 font-medium">{title}</p>
-      <p className="lux-num text-lg sm:text-xl font-medium text-[#f4efe2]">{value}</p>
+      <p className="flex items-baseline gap-1.5 flex-wrap">
+        <span className={`lux-num text-xl sm:text-2xl font-bold ${valueCls}`}>{value}</span>
+        <span className="text-xs font-semibold text-[#9aa6b8]">{unit}</span>
+      </p>
+      {sub && <p className="text-xs text-[#6f7c90] mt-1.5">{sub}</p>}
     </div>
   );
 }
@@ -670,8 +752,8 @@ function CashFlowChart({ transactions }) {
   if (!hasData) {
     return (
       <div className="h-[180px] flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/10">
-        <p className="text-[#f4efe2]/45 text-sm">Pas encore de mouvements à afficher</p>
-        <p className="text-[#f4efe2]/25 text-xs">Vos dépôts et retraits apparaîtront ici</p>
+        <p className="text-[#e7ebf2]/45 text-sm">Pas encore de mouvements à afficher</p>
+        <p className="text-[#e7ebf2]/25 text-xs">Vos dépôts et retraits apparaîtront ici</p>
       </div>
     );
   }
@@ -686,11 +768,11 @@ function CashFlowChart({ transactions }) {
           const isUp = m.net >= 0;
           return (
             <div key={m.key} className="relative flex-1 flex flex-col items-center justify-end h-full">
-              <span className={`lux-num text-[10px] font-semibold mb-1.5 whitespace-nowrap ${m.net === 0 ? 'text-transparent' : isUp ? 'text-[#f3d58a]' : 'text-rose-300'}`}>
+              <span className={`lux-num text-[10px] font-semibold mb-1.5 whitespace-nowrap ${m.net === 0 ? 'text-transparent' : isUp ? 'text-[#7aa2ff]' : 'text-rose-300'}`}>
                 {m.net !== 0 ? `${isUp ? '+' : '−'}$${Math.abs(m.net) >= 1000 ? (Math.abs(m.net) / 1000).toFixed(1) + 'k' : Math.abs(m.net).toFixed(0)}` : '·'}
               </span>
               <div
-                className={`animate-drawCandle w-full max-w-[42px] rounded-t-lg ${m.net === 0 ? 'bg-white/5' : isUp ? 'bg-[#d4af37]' : 'bg-gradient-to-t from-rose-900/60 to-rose-400'}`}
+                className={`animate-drawCandle w-full max-w-[42px] rounded-t-lg ${m.net === 0 ? 'bg-white/5' : isUp ? 'bg-gradient-to-t from-[#1d4ed8] to-[#60a5fa]' : 'bg-gradient-to-t from-rose-900/60 to-rose-400'}`}
                 style={{ height: `${h}px`, animationDelay: `${i * 70}ms` }}
               />
             </div>
@@ -699,7 +781,7 @@ function CashFlowChart({ transactions }) {
       </div>
       <div className="flex justify-between gap-3 border-t border-white/5 pt-3">
         {months.map(m => (
-          <span key={m.key} className="flex-1 text-center text-[11px] text-[#f4efe2]/40 capitalize">{m.label.replace('.', '')}</span>
+          <span key={m.key} className="flex-1 text-center text-[11px] text-[#e7ebf2]/40 capitalize">{m.label.replace('.', '')}</span>
         ))}
       </div>
     </div>
@@ -767,7 +849,7 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
               <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
                 <div>
                   <h3 className="lux-serif text-2xl font-semibold lux-gold-text">{packDisplayName(inv.pack)}</h3>
-                  <p className="text-xs text-[#f4efe2]/50 mt-0.5">
+                  <p className="text-xs text-[#e7ebf2]/50 mt-0.5">
                     Créé le {new Date(inv.createdAt).toLocaleDateString('fr-FR')}
                   </p>
                 </div>
@@ -775,10 +857,10 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { label: 'Montant',    value: `$ ${inv.amount}`,     cls: 'text-[#f4efe2]' },
+                  { label: 'Montant',    value: `$ ${inv.amount}`,     cls: 'text-[#e7ebf2]' },
                   { label: 'ROI actuel', value: `+${inv.roi} %`, cls: 'text-emerald-300' },
-                  { label: 'Gains',      value: `$ ${inv.earnings}`,   cls: 'text-[#f3d58a]' },
-                  { label: 'Échéance',   value: inv.endDate ? new Date(inv.endDate).toLocaleDateString('fr-FR') : '—', cls: 'text-[#f4efe2]' },
+                  { label: 'Gains',      value: `$ ${inv.earnings}`,   cls: 'text-[#fbbf24]' },
+                  { label: 'Échéance',   value: inv.endDate ? new Date(inv.endDate).toLocaleDateString('fr-FR') : '—', cls: 'text-[#e7ebf2]' },
                 ].map(({ label, value, cls }) => (
                   <div key={label} className="rounded-xl bg-white/[0.02] border border-white/5 px-3.5 py-3">
                     <p className="lux-label !text-[10px] mb-1.5">{label}</p>
@@ -791,11 +873,11 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
                 <div className="mt-5 pt-5 border-t border-white/10">
                   {confirmingId === inv._id ? (
                     <div className="bg-yellow-900/10 border border-yellow-700/30 rounded p-4">
-                      <p className="text-sm text-[#f4efe2]/80 mb-1">
+                      <p className="text-sm text-[#e7ebf2]/80 mb-1">
                         Clôturer maintenant vous rendra <span className="text-yellow-500 font-bold">$ {(Number(inv.amount) + Number(inv.earnings)).toFixed(2)}</span> sur
                         votre solde (capital $ {inv.amount} + gains accumulés à ce jour $ {inv.earnings}).
                       </p>
-                      <p className="text-xs text-[#f4efe2]/50 mb-4">
+                      <p className="text-xs text-[#e7ebf2]/50 mb-4">
                         Vous ne recevrez pas le reste du rendement prévu jusqu'à l'échéance. Cette action est définitive.
                       </p>
                       {closeError && <p className="text-xs text-red-400 mb-3">{closeError}</p>}
@@ -819,7 +901,7 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
                   ) : (
                     <button
                       onClick={() => { setConfirmingId(inv._id); setCloseError(''); }}
-                      className="text-xs text-[#f4efe2]/50 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer underline"
+                      className="text-xs text-[#e7ebf2]/50 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer underline"
                     >
                       Couper cet investissement et récupérer mon capital + gains
                     </button>
@@ -831,11 +913,11 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
         </div>
       ) : investments.length > 0 ? (
         <Card className="p-6 text-center">
-          <p className="text-[#f4efe2]/50">Aucun investissement sur cette période</p>
+          <p className="text-[#e7ebf2]/50">Aucun investissement sur cette période</p>
         </Card>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-[#f4efe2]/50 mb-5">Aucun investissement pour le moment</p>
+          <p className="text-[#e7ebf2]/50 mb-5">Aucun investissement pour le moment</p>
           <button
             onClick={() => onNavigate('invest')}
             className="lux-btn-gold !px-6 !py-3"
@@ -897,7 +979,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
   return (
     <div className="space-y-6">
       <PageHeader title="Historique des transactions">
-        <label className="flex items-center gap-2 text-xs text-[#f4efe2]/60 cursor-pointer select-none">
+        <label className="flex items-center gap-2 text-xs text-[#e7ebf2]/60 cursor-pointer select-none">
           <input type="checkbox" checked={showHidden} onChange={e => setShowHidden(e.target.checked)} className="accent-yellow-500" />
           Afficher les transactions masquées
         </label>
@@ -939,11 +1021,11 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
               <tbody>
                 {filtered.map((tx, i) => (
                   <tr key={i} className={tx.hiddenForUser ? 'opacity-50' : ''}>
-                    <td className="text-sm text-[#f4efe2]/60">
+                    <td className="text-sm text-[#e7ebf2]/60">
                       {new Date(tx.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td><Badge status={tx.type} /></td>
-                    <td className={`text-sm font-medium lux-num ${tx.amount < 0 ? 'text-rose-300' : 'text-[#f4efe2]'}`}>
+                    <td className={`text-sm font-medium lux-num ${tx.amount < 0 ? 'text-rose-300' : 'text-[#e7ebf2]'}`}>
                       {tx.amount < 0 ? '−' : ''}$ {Math.abs(tx.amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                     <td><Badge status={tx.status} /></td>
@@ -951,7 +1033,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
                       <button
                         onClick={() => toggleHide(tx)}
                         disabled={busyId === tx._id}
-                        className="text-xs text-[#f4efe2]/50 hover:text-yellow-500 bg-transparent border-none cursor-pointer disabled:opacity-40"
+                        className="text-xs text-[#e7ebf2]/50 hover:text-yellow-500 bg-transparent border-none cursor-pointer disabled:opacity-40"
                       >
                         {tx.hiddenForUser ? 'Réafficher' : 'Masquer'}
                       </button>
@@ -964,7 +1046,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
         </Card>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-[#f4efe2]/50 text-sm">
+          <p className="text-[#e7ebf2]/50 text-sm">
             {transactions.length === 0 ? 'Aucune transaction pour le moment' : 'Aucune transaction ne correspond à ces filtres'}
           </p>
         </Card>
@@ -1032,18 +1114,18 @@ function FAQTab() {
                 onClick={() => setOpenId(openId === f._id ? null : f._id)}
                 className="w-full flex items-center justify-between gap-3 p-5 text-left bg-transparent border-none cursor-pointer group"
               >
-                <span className="font-medium text-[#f4efe2] text-sm group-hover:text-[#f3d58a] transition-colors">{f.question}</span>
+                <span className="font-medium text-[#e7ebf2] text-sm group-hover:text-[#fbbf24] transition-colors">{f.question}</span>
                 <span className={`lux-icon-chip !w-7 !h-7 shrink-0 transition-transform duration-300 ${openId === f._id ? 'rotate-45' : ''}`}>+</span>
               </button>
               {openId === f._id && (
-                <div className="px-5 pb-5 text-sm leading-relaxed text-[#f4efe2]/60 whitespace-pre-wrap border-t border-white/5 pt-4">{f.answer}</div>
+                <div className="px-5 pb-5 text-sm leading-relaxed text-[#e7ebf2]/60 whitespace-pre-wrap border-t border-white/5 pt-4">{f.answer}</div>
               )}
             </Card>
           ))}
         </div>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-[#f4efe2]/50 text-sm">
+          <p className="text-[#e7ebf2]/50 text-sm">
             {faqs.length === 0 ? "Aucune question pour l'instant" : 'Aucun résultat pour cette recherche'}
           </p>
         </Card>
@@ -1059,11 +1141,11 @@ function SecurityTab() {
       <TwoFactorAuth />
       <PasswordChange />
       <Card className="p-6">
-        <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-4">Sessions actives</h3>
+        <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-4">Sessions actives</h3>
         <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl">
           <div>
             <p className="font-semibold text-white text-sm">Session actuelle</p>
-            <p className="text-xs text-[#f4efe2]/50 mt-0.5">Dernière activité : maintenant</p>
+            <p className="text-xs text-[#e7ebf2]/50 mt-0.5">Dernière activité : maintenant</p>
           </div>
           <span className="lux-pill bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">Active</span>
         </div>
@@ -1137,20 +1219,20 @@ function DeleteAccountSection() {
 
       {pendingRequest ? (
         <div className="space-y-3">
-          <p className="text-sm text-[#f4efe2]/60">
+          <p className="text-sm text-[#e7ebf2]/60">
             Votre demande de suppression a été envoyée le {new Date(pendingRequest.requestedAt).toLocaleDateString('fr-FR')} et attend la validation d'un administrateur.
           </p>
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="px-4 py-2 border border-white/10 text-[#f4efe2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
+            className="px-4 py-2 border border-white/10 text-[#e7ebf2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
           >
             Annuler ma demande
           </button>
         </div>
       ) : !confirming ? (
         <div>
-          <p className="text-sm text-[#f4efe2]/50 mb-4">
+          <p className="text-sm text-[#e7ebf2]/50 mb-4">
             Cette action est irréversible une fois validée par un administrateur : votre profil, vos données personnelles et votre accès au compte seront définitivement supprimés.
           </p>
           <button
@@ -1176,7 +1258,7 @@ function DeleteAccountSection() {
             />
           </div>
           <div>
-            <label className="block lux-label mb-2">Motif <span className="text-[#f4efe2]/35 font-normal normal-case">(optionnel)</span></label>
+            <label className="block lux-label mb-2">Motif <span className="text-[#e7ebf2]/35 font-normal normal-case">(optionnel)</span></label>
             <textarea
               value={reason}
               onChange={e => setReason(e.target.value)}
@@ -1188,7 +1270,7 @@ function DeleteAccountSection() {
             <button
               type="button"
               onClick={() => { setConfirming(false); setPassword(''); setError(''); }}
-              className="px-4 py-2 border border-white/10 text-[#f4efe2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
+              className="px-4 py-2 border border-white/10 text-[#e7ebf2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
             >
               Annuler
             </button>
@@ -1237,7 +1319,7 @@ function PasswordChange() {
 
   return (
     <Card className="p-6">
-      <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-5">
+      <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-5">
         Changer le mot de passe
       </h3>
       {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
@@ -1316,14 +1398,14 @@ function ProfileTab({ user }) {
       <Card className="p-6">
         <div className="flex flex-wrap items-center gap-6">
           <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-full p-[2px] bg-white"><div className="w-full h-full rounded-full bg-[#0b0a08] overflow-hidden flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full p-[2px] bg-white"><div className="w-full h-full rounded-full bg-[#141b26] overflow-hidden flex items-center justify-center">
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
                 <span className="lux-serif text-3xl font-semibold lux-gold-text">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
               )}
             </div></div>
-            <label className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer bg-[#f3d58a] hover:brightness-110 ring-2 ring-[#07070a] transition">
+            <label className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer bg-[#fbbf24] hover:brightness-110 ring-2 ring-[#0b1018] transition">
               <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleAvatarChange} className="hidden" disabled={avatarUploading} />
               <span className="text-black text-xs font-black">{avatarUploading ? '…' : '✎'}</span>
             </label>
@@ -1343,12 +1425,12 @@ function ProfileTab({ user }) {
             <div className="flex items-center gap-2 mt-1">
               <code className="text-yellow-400 font-bold text-sm">{user?.userId || '—'}</code>
               {user?.userId && (
-                <button type="button" onClick={copyUserId} className="text-xs text-[#f4efe2]/50 hover:text-yellow-500 bg-transparent border-none cursor-pointer">
+                <button type="button" onClick={copyUserId} className="text-xs text-[#e7ebf2]/50 hover:text-yellow-500 bg-transparent border-none cursor-pointer">
                   {copied ? '✓ Copié' : 'Copier'}
                 </button>
               )}
             </div>
-            <p className="text-xs text-[#f4efe2]/35 mt-1">
+            <p className="text-xs text-[#e7ebf2]/35 mt-1">
               Membre depuis {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '—'}
             </p>
           </div>
@@ -1380,7 +1462,7 @@ function ProfileTab({ user }) {
               disabled
               className="lux-input opacity-60 cursor-not-allowed"
             />
-            <p className="mt-1.5 text-xs text-[#f4efe2]/35">L'adresse email ne peut pas être modifiée</p>
+            <p className="mt-1.5 text-xs text-[#e7ebf2]/35">L'adresse email ne peut pas être modifiée</p>
           </div>
           <div>
             <label className="block lux-label mb-2">Téléphone</label>

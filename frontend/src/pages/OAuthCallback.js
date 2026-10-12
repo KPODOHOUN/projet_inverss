@@ -33,7 +33,7 @@ export default function OAuthCallback() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0b1018] px-4">
       <div className="text-center">
         {error ? (
           <p className="text-red-400 text-sm">{error}</p>

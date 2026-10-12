@@ -68,7 +68,7 @@ export default function TwoFactorAuth() {
   };
 
   return (
-    <div className="relative bg-[#0a0a0a] border border-white/10 rounded-lg p-6">
+    <div className="relative bg-[#0b1018] border border-white/10 rounded-lg p-6">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
       <h3 className="text-lg font-semibold text-white tracking-wide mb-5">
         Authentification à deux facteurs (2FA)
@@ -133,7 +133,7 @@ export default function TwoFactorAuth() {
                 </p>
               </div>
 
-              <ul className="space-y-1.5 text-sm text-[#f4efe2]/60 list-disc list-inside ml-1">
+              <ul className="space-y-1.5 text-sm text-[#e7ebf2]/60 list-disc list-inside ml-1">
                 <li>Protection supplémentaire contre les accès non autorisés</li>
                 <li>Code unique généré toutes les 30 secondes</li>
                 <li>Compatible avec Google Authenticator, Authy, etc.</li>
@@ -154,8 +154,8 @@ export default function TwoFactorAuth() {
       {step === 'setup' && (
         <div className="space-y-6">
           <div>
-            <h4 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-3">Étape 1 : Scannez le QR Code</h4>
-            <p className="text-sm text-[#f4efe2]/50 mb-4">
+            <h4 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-3">Étape 1 : Scannez le QR Code</h4>
+            <p className="text-sm text-[#e7ebf2]/50 mb-4">
               Utilisez une application d'authentification (Google Authenticator, Authy, etc.)
               pour scanner ce QR code :
             </p>
@@ -169,13 +169,13 @@ export default function TwoFactorAuth() {
 
           <div>
             <h4 className="font-bold text-yellow-500 text-sm tracking-wide mb-2">Ou entrez ce code manuellement :</h4>
-            <div className="p-3 bg-black/50 font-mono text-sm text-[#f4efe2]/80 break-all border border-white/10 rounded">
+            <div className="p-3 bg-black/50 font-mono text-sm text-[#e7ebf2]/80 break-all border border-white/10 rounded">
               {secret}
             </div>
           </div>
 
           <div>
-            <h4 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-3">Étape 2 : Vérifiez le code</h4>
+            <h4 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-3">Étape 2 : Vérifiez le code</h4>
             <form onSubmit={handleVerify} className="space-y-4">
               <div>
                 <label className="block lux-label mb-2">
@@ -190,7 +190,7 @@ export default function TwoFactorAuth() {
                   maxLength={6}
                   required
                 />
-                <p className="mt-2 text-xs text-[#f4efe2]/35">
+                <p className="mt-2 text-xs text-[#e7ebf2]/35">
                   Entrez le code à 6 chiffres affiché dans votre application
                 </p>
               </div>
@@ -211,7 +211,7 @@ export default function TwoFactorAuth() {
                     setVerificationCode('');
                     setError('');
                   }}
-                  className="px-6 py-3 border border-white/10 text-[#f4efe2]/60 font-bold text-xs tracking-widest uppercase hover:border-yellow-600 hover:text-yellow-500 transition-all rounded"
+                  className="px-6 py-3 border border-white/10 text-[#e7ebf2]/60 font-bold text-xs tracking-widest uppercase hover:border-yellow-600 hover:text-yellow-500 transition-all rounded"
                 >
                   ANNULER
                 </button>

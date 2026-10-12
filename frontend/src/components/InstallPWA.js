@@ -56,14 +56,14 @@ export default function InstallPWA() {
 
   return (
     <div
-      className="fixed inset-x-0 z-[100] px-4 sm:px-6"
+      className="fixed inset-x-0 z-[100] px-4 sm:px-6 -translate-y-16 lg:translate-y-0"
       style={{ bottom: 'max(16px, env(safe-area-inset-bottom, 0px))' }}
     >
-      <div className="max-w-md mx-auto lux-card !bg-[#141414] p-4 flex items-start gap-3 shadow-2xl">
+      <div className="max-w-md mx-auto lux-card !bg-[#141b26] p-4 flex items-start gap-3 shadow-2xl">
         <img src="/logo192.png" alt="" className="relative w-10 h-10 rounded-xl shrink-0" />
 
         <div className="relative flex-1 min-w-0">
-          <p className="text-[#f4efe2] font-semibold text-sm">Installer l'application IMC</p>
+          <p className="text-[#e7ebf2] font-semibold text-sm">Installer l'application IMC</p>
           {isIOS && !installEvent ? (
             <p className="text-gray-400 text-xs mt-1 leading-relaxed">
               Appuyez sur <span className="text-yellow-500 font-semibold">Partager</span> puis
@@ -86,7 +86,7 @@ export default function InstallPWA() {
         <button
           onClick={dismiss}
           aria-label="Fermer"
-          className="relative text-[#f4efe2]/40 hover:text-[#f4efe2] transition-colors bg-transparent border-none cursor-pointer p-1 shrink-0"
+          className="relative text-[#e7ebf2]/40 hover:text-[#e7ebf2] transition-colors bg-transparent border-none cursor-pointer p-1 shrink-0"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

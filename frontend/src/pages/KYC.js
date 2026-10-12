@@ -122,8 +122,8 @@ export default function KYC() {
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="text-center space-y-6">
           <div className="text-4xl">✅</div>
-          <h2 className="lux-serif text-3xl font-semibold text-[#f4efe2]">KYC Vérifié !</h2>
-          <p className="text-[#f4efe2]/60">
+          <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2]">KYC Vérifié !</h2>
+          <p className="text-[#e7ebf2]/60">
             Votre identité a été vérifiée avec succès. Vous pouvez maintenant accéder à toutes les fonctionnalités.
           </p>
           {getStatusBadge('verified')}
@@ -136,20 +136,20 @@ export default function KYC() {
     <div className="max-w-4xl mx-auto px-6 py-12">
       <div className="space-y-8">
         <div>
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none mb-3">Vérification d'Identité (KYC)</h1>
-          <p className="text-[#f4efe2]/50 text-lg">
+          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">Vérification d'Identité (KYC)</h1>
+          <p className="text-[#e7ebf2]/50 text-lg">
             Pour des raisons de sécurité et de conformité, nous devons vérifier votre identité avant que vous puissiez investir ou retirer des fonds.
           </p>
         </div>
 
         {kycStatus && (
-          <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-lg">
-            <h3 className="lux-serif text-2xl font-semibold mb-4 text-[#f4efe2]">Statut Actuel</h3>
+          <div className="bg-[#0b1018] border border-white/10 p-6 rounded-lg">
+            <h3 className="lux-serif text-2xl font-semibold mb-4 text-[#e7ebf2]">Statut Actuel</h3>
             <div className="space-y-4">
               {getStatusBadge(kycStatus.kycStatus)}
 
               {kycStatus.kycStatus === 'pending' && (
-                <p className="text-[#f4efe2]/60">
+                <p className="text-[#e7ebf2]/60">
                   Vos documents sont en cours de vérification. Cela peut prendre jusqu'à 24 heures.
                 </p>
               )}
@@ -165,7 +165,7 @@ export default function KYC() {
               )}
 
               {kycStatus.kyc?.submittedAt && (
-                <div className="text-sm text-[#f4efe2]/35">
+                <div className="text-sm text-[#e7ebf2]/35">
                   Documents soumis le : {new Date(kycStatus.kyc.submittedAt).toLocaleDateString('fr-FR', {
                     day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
                   })}
@@ -176,7 +176,7 @@ export default function KYC() {
         )}
 
         {(!kycStatus?.kycStatus || kycStatus.kycStatus === 'none' || kycStatus.kycStatus === 'rejected') && (
-          <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-lg">
+          <div className="bg-[#0b1018] border border-white/10 p-6 rounded-lg">
             <h3 className="text-2xl font-bold mb-6 text-white">Télécharger vos Documents</h3>
 
             {error && (
@@ -196,7 +196,7 @@ export default function KYC() {
                 <label className="block text-sm font-bold text-yellow-600 tracking-wide mb-3">
                   1. Pièce d'Identité *
                 </label>
-                <p className="text-[#f4efe2]/50 mb-4 text-sm">
+                <p className="text-[#e7ebf2]/50 mb-4 text-sm">
                   Carte d'identité nationale, passeport ou permis de conduire (recto-verso)
                 </p>
 
@@ -222,8 +222,8 @@ export default function KYC() {
                     ) : (
                       <div>
                         <p className="text-2xl mb-2">📁</p>
-                        <p className="font-semibold mb-2 text-[#f4efe2]/80">Cliquez pour sélectionner un fichier</p>
-                        <p className="text-sm text-[#f4efe2]/35">JPEG, PNG ou PDF - Max 5MB</p>
+                        <p className="font-semibold mb-2 text-[#e7ebf2]/80">Cliquez pour sélectionner un fichier</p>
+                        <p className="text-sm text-[#e7ebf2]/35">JPEG, PNG ou PDF - Max 5MB</p>
                       </div>
                     )}
                   </label>
@@ -234,7 +234,7 @@ export default function KYC() {
                 <label className="block text-sm font-bold text-yellow-600 tracking-wide mb-3">
                   2. Selfie avec votre Pièce d'Identité *
                 </label>
-                <p className="text-[#f4efe2]/50 mb-4 text-sm">
+                <p className="text-[#e7ebf2]/50 mb-4 text-sm">
                   Photo de vous tenant votre pièce d'identité à côté de votre visage
                 </p>
 
@@ -255,8 +255,8 @@ export default function KYC() {
                     ) : (
                       <div>
                         <p className="text-2xl mb-2">🤳</p>
-                        <p className="font-semibold mb-2 text-[#f4efe2]/80">Cliquez pour sélectionner un fichier</p>
-                        <p className="text-sm text-[#f4efe2]/35">JPEG ou PNG - Max 5MB</p>
+                        <p className="font-semibold mb-2 text-[#e7ebf2]/80">Cliquez pour sélectionner un fichier</p>
+                        <p className="text-sm text-[#e7ebf2]/35">JPEG ou PNG - Max 5MB</p>
                       </div>
                     )}
                   </label>
@@ -285,20 +285,20 @@ export default function KYC() {
           </div>
         )}
 
-        <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-lg">
-          <h3 className="lux-serif text-2xl font-semibold mb-4 text-[#f4efe2]">Pourquoi le KYC est-il nécessaire ?</h3>
-          <ul className="space-y-3 text-[#f4efe2]/60">
+        <div className="bg-[#0b1018] border border-white/10 p-6 rounded-lg">
+          <h3 className="lux-serif text-2xl font-semibold mb-4 text-[#e7ebf2]">Pourquoi le KYC est-il nécessaire ?</h3>
+          <ul className="space-y-3 text-[#e7ebf2]/60">
             <li className="flex items-start gap-3">
               <span className="text-green-500 font-bold">✓</span>
-              <span><strong className="text-[#f4efe2]/80">Sécurité :</strong> Protège votre compte contre la fraude et le vol d'identité</span>
+              <span><strong className="text-[#e7ebf2]/80">Sécurité :</strong> Protège votre compte contre la fraude et le vol d'identité</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-500 font-bold">✓</span>
-              <span><strong className="text-[#f4efe2]/80">Conformité :</strong> Respect des réglementations anti-blanchiment (AML/KYC)</span>
+              <span><strong className="text-[#e7ebf2]/80">Conformité :</strong> Respect des réglementations anti-blanchiment (AML/KYC)</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-green-500 font-bold">✓</span>
-              <span><strong className="text-[#f4efe2]/80">Confiance :</strong> Crée un écosystème transparent et sécurisé pour tous</span>
+              <span><strong className="text-[#e7ebf2]/80">Confiance :</strong> Crée un écosystème transparent et sécurisé pour tous</span>
             </li>
           </ul>
         </div>

@@ -91,7 +91,7 @@ export default function NotificationBell({ onNavigate }) {
           </div>
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="text-center py-8 text-[#f4efe2]/50 text-sm">Aucune notification</p>
+              <p className="text-center py-8 text-[#e7ebf2]/50 text-sm">Aucune notification</p>
             ) : (
               notifications.map(notif => (
                 <button
@@ -103,8 +103,8 @@ export default function NotificationBell({ onNavigate }) {
                     {!notif.read && <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-yellow-500 shrink-0" />}
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-white truncate">{notif.title}</p>
-                      <p className="text-xs text-[#f4efe2]/60 mt-0.5">{notif.message}</p>
-                      <p className="text-[10px] text-[#f4efe2]/35 mt-1">{timeAgo(notif.createdAt)}</p>
+                      <p className="text-xs text-[#e7ebf2]/60 mt-0.5">{notif.message}</p>
+                      <p className="text-[10px] text-[#e7ebf2]/35 mt-1">{timeAgo(notif.createdAt)}</p>
                     </div>
                   </div>
                 </button>

@@ -38,7 +38,7 @@ const SECTIONS = [
 
 export default function KycPolicy() {
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
+    <div className="min-h-screen bg-[#0b1018] text-white">
       <div className="max-w-3xl mx-auto px-6 py-16">
         <Link to="/" className="inline-flex items-center gap-2 mb-8 text-yellow-600 hover:text-yellow-400 font-semibold text-sm tracking-widest uppercase transition-colors group">
           <span className="inline-block group-hover:-translate-x-1 transition-transform">←</span>

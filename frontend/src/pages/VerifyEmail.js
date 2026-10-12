@@ -103,16 +103,16 @@ export default function VerifyEmail() {
     <AuthShell>
 
       <div className={`w-full max-w-md relative z-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <Link to="/login" className="inline-flex items-center gap-2 mb-8 text-[#f4efe2]/50 hover:text-[#f3d58a] text-sm transition-colors group">
+        <Link to="/login" className="inline-flex items-center gap-2 mb-8 text-[#e7ebf2]/50 hover:text-[#fbbf24] text-sm transition-colors group">
           <span className="inline-block group-hover:-translate-x-1 transition-transform">←</span>
           Retour
         </Link>
 
         <div className="mb-8">
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none mb-3">
+          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">
             {success ? 'Email vérifié !' : 'Vérifiez votre email'}
           </h1>
-          <p className="text-[#f4efe2]/50 text-sm">
+          <p className="text-[#e7ebf2]/50 text-sm">
             {success
               ? 'Redirection vers votre tableau de bord...'
               : `Un code à 6 chiffres a été envoyé à ${user?.email || 'votre email'}`
@@ -142,7 +142,7 @@ export default function VerifyEmail() {
             {success ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-6 animate-bounce">✓</div>
-                <p className="text-[#f4efe2]/60 text-sm">Votre email a été vérifié avec succès !</p>
+                <p className="text-[#e7ebf2]/60 text-sm">Votre email a été vérifié avec succès !</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
@@ -180,7 +180,7 @@ export default function VerifyEmail() {
 
                 <div className="text-center">
                   {countdown > 0 ? (
-                    <p className="text-xs text-[#f4efe2]/50">
+                    <p className="text-xs text-[#e7ebf2]/50">
                       Renvoyer dans <span className="text-yellow-500 font-bold">{countdown}s</span>
                     </p>
                   ) : (
@@ -198,7 +198,7 @@ export default function VerifyEmail() {
             )}
 
             <div className="mt-6 pt-4 border-t border-white/10">
-              <button onClick={logout} className="w-full text-center text-xs text-[#f4efe2]/40 hover:text-red-400 transition-colors">
+              <button onClick={logout} className="w-full text-center text-xs text-[#e7ebf2]/40 hover:text-red-400 transition-colors">
                 Utiliser un autre compte
               </button>
             </div>

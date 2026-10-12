@@ -157,7 +157,7 @@ function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, 
               type="button"
               onClick={() => scrollToSection(item.id)}
               className={`px-4 py-1.5 rounded-full text-sm transition-all bg-transparent border-none cursor-pointer ${
-                activeSection === item.id ? 'text-[#17130a] !bg-white font-medium' : 'text-[#f4efe2]/60 hover:text-[#f4efe2]'
+                activeSection === item.id ? 'text-[#1a1204] !bg-white font-medium' : 'text-[#e7ebf2]/60 hover:text-[#e7ebf2]'
               }`}
             >
               {item.label}
@@ -173,7 +173,7 @@ function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, 
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg text-[#f3d58a] bg-transparent border-none cursor-pointer"
+          className="md:hidden p-2 rounded-lg text-[#fbbf24] bg-transparent border-none cursor-pointer"
           aria-label="Menu"
         >
           {mobileMenuOpen ? <IconClose /> : <IconMenu />}
@@ -209,19 +209,19 @@ function HeroSection({ scrollToSection }) {
     <section id="home" className="relative min-h-[100svh] flex items-center pt-24 pb-16 px-5 sm:px-6 overflow-hidden">
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <img src="/images/Gemini_Generated_Image_dm8veudm8veudm8v.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.10]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#07070a]/40 via-[#07070a]/70 to-[#07070a]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0b1018]/40 via-[#0b1018]/70 to-[#0b1018]" />
         <div className="absolute left-1/2 top-[-20%] -translate-x-1/2 w-[900px] h-[600px] rounded-full blur-2xl" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-14 items-center">
         <div className="animate-hero-in">
-          <span className="lux-pill bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/25 mb-7">Hub financier dédié aux décideurs</span>
+          <span className="lux-pill bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25 mb-7">Hub financier dédié aux décideurs</span>
 
-          <h1 className="lux-serif text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#f4efe2] leading-[0.98] tracking-tight mb-6">
+          <h1 className="lux-serif text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#e7ebf2] leading-[0.98] tracking-tight mb-6">
             Faites fructifier<br />votre patrimoine<br /><span className="lux-gold-text italic">avec élégance.</span>
           </h1>
 
-          <p className="text-base sm:text-lg text-[#f4efe2]/60 max-w-xl leading-relaxed mb-9">
+          <p className="text-base sm:text-lg text-[#e7ebf2]/60 max-w-xl leading-relaxed mb-9">
             Stratégies ETF signées IMC, packs d&apos;investissement, trading et formation — réunis dans un espace sécurisé, en USDT.
           </p>
 
@@ -234,10 +234,10 @@ function HeroSection({ scrollToSection }) {
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-[#f4efe2]/50">
+          <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-[#e7ebf2]/50">
             {['Identité vérifiée (KYC)', 'Double authentification', 'Assistance 24/7'].map((item) => (
               <span key={item} className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full flex items-center justify-center bg-yellow-500/10 text-[#d4af37]"><IconCheck size={12} /></span>
+                <span className="w-5 h-5 rounded-full flex items-center justify-center bg-yellow-500/10 text-[#f59e0b]"><IconCheck size={12} /></span>
                 {item}
               </span>
             ))}
@@ -253,46 +253,46 @@ function HeroSection({ scrollToSection }) {
               <svg aria-hidden="true" viewBox="0 0 400 140" preserveAspectRatio="none" className="absolute inset-x-0 bottom-[26%] w-full h-[30%] pointer-events-none">
                 <defs>
                   <linearGradient id="heroArea" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#d4af37" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 <path d="M0,118 C40,112 70,96 110,100 C150,104 170,78 210,70 C250,62 270,80 310,50 C340,30 370,30 400,10 L400,140 L0,140 Z" fill="url(#heroArea)" />
-                <path d="M0,118 C40,112 70,96 110,100 C150,104 170,78 210,70 C250,62 270,80 310,50 C340,30 370,30 400,10" fill="none" stroke="#f3d58a" strokeWidth="1.6" />
+                <path d="M0,118 C40,112 70,96 110,100 C150,104 170,78 210,70 C250,62 270,80 310,50 C340,30 370,30 400,10" fill="none" stroke="#fbbf24" strokeWidth="1.6" />
               </svg>
               <div className="relative">
                 <div className="flex items-center justify-between mb-6">
                   <img src="/logo-on-light.png" alt="" className="h-7 w-auto" />
                   <span className="lux-pill bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">USDT</span>
                 </div>
-                <p className="lux-label !text-[#f3d58a]/70 mb-2">Solde disponible</p>
-                <p className="lux-num text-4xl font-light text-[#f4efe2] mb-24">
-                  <span className="text-[#f3d58a]/70 text-2xl align-top mr-1">$</span>12 480.00
+                <p className="lux-label !text-[#fbbf24]/70 mb-2">Solde disponible</p>
+                <p className="lux-num text-4xl font-light text-[#e7ebf2] mb-24">
+                  <span className="text-[#fbbf24]/70 text-2xl align-top mr-1">$</span>12 480.00
                 </p>
                 <div className="grid grid-cols-3 gap-2">
                   {[['S&P 500', '25 j'], ['Nasdaq 100', '21 j'], ['Turbo 48H', '2 j']].map(([n, d]) => (
                     <div key={n} className="rounded-xl bg-black/[0.04] border border-black/5 px-3 py-2.5">
-                      <p className="text-[11px] text-[#f4efe2]/80 truncate">{n}</p>
-                      <p className="text-[10px] text-[#f4efe2]/40">{d}</p>
+                      <p className="text-[11px] text-[#e7ebf2]/80 truncate">{n}</p>
+                      <p className="text-[10px] text-[#e7ebf2]/40">{d}</p>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
-            <p className="text-center text-[10px] tracking-[0.25em] uppercase text-[#f4efe2]/25 mt-4">Aperçu de l&apos;interface</p>
+            <p className="text-center text-[10px] tracking-[0.25em] uppercase text-[#e7ebf2]/25 mt-4">Aperçu de l&apos;interface</p>
           </div>
 
-          <div className="!absolute -left-10 top-[50%] lux-card !bg-[#0d0c0a]/90 px-4 py-3 flex items-center gap-3 animate-float-slow" style={{ animationDelay: '0.8s' }}>
+          <div className="!absolute -left-10 top-[50%] lux-card !bg-[#141b26]/90 px-4 py-3 flex items-center gap-3 animate-float-slow" style={{ animationDelay: '0.8s' }}>
             <span className="lux-icon-chip !w-9 !h-9"><IconLock size={18} /></span>
             <span>
-              <span className="block text-xs text-[#f4efe2]/45">Dépôts & retraits</span>
-              <span className="block text-sm font-medium text-[#f4efe2]">100 % en USDT</span>
+              <span className="block text-xs text-[#e7ebf2]/45">Dépôts & retraits</span>
+              <span className="block text-sm font-medium text-[#e7ebf2]">100 % en USDT</span>
             </span>
           </div>
-          <div className="!absolute -right-8 top-[18%] lux-card !bg-[#0d0c0a]/90 px-4 py-3 flex items-center gap-3 animate-float-slow" style={{ animationDelay: '1.6s' }}>
+          <div className="!absolute -right-8 top-[18%] lux-card !bg-[#141b26]/90 px-4 py-3 flex items-center gap-3 animate-float-slow" style={{ animationDelay: '1.6s' }}>
             <span className="lux-icon-chip !w-9 !h-9"><IconAudit size={18} /></span>
             <span>
-              <span className="block text-xs text-[#f4efe2]/45">Packs dès</span>
+              <span className="block text-xs text-[#e7ebf2]/45">Packs dès</span>
               <span className="block text-sm font-medium lux-gold-text">25 $ · 2 à 60 jours</span>
             </span>
           </div>
@@ -302,10 +302,10 @@ function HeroSection({ scrollToSection }) {
       <button
         type="button"
         onClick={() => scrollToSection('how-it-works')}
-        className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#f4efe2]/30 hover:text-[#f3d58a] bg-transparent border-none cursor-pointer transition-colors"
+        className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#e7ebf2]/30 hover:text-[#fbbf24] bg-transparent border-none cursor-pointer transition-colors"
       >
         Défiler
-        <span className="w-px h-8 bg-gradient-to-b from-[#d4af37] to-transparent" />
+        <span className="w-px h-8 bg-gradient-to-b from-[#f59e0b] to-transparent" />
       </button>
     </section>
   );
@@ -315,12 +315,12 @@ function MarketStrip() {
   const items = [...MARKETS, ...MARKETS];
   return (
     <div className="relative z-10 border-y border-white/10 bg-white/[0.015] py-5 overflow-hidden">
-      <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#07070a] to-transparent z-10 pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#07070a] to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0b1018] to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0b1018] to-transparent z-10 pointer-events-none" />
       <div className="lux-marquee flex gap-12 w-max">
         {items.map((m, i) => (
-          <span key={i} className="flex items-center gap-12 whitespace-nowrap lux-serif text-xl text-[#f4efe2]/45">
-            {m}<span className="w-1 h-1 rounded-full bg-[#d4af37]/60" />
+          <span key={i} className="flex items-center gap-12 whitespace-nowrap lux-serif text-xl text-[#e7ebf2]/45">
+            {m}<span className="w-1 h-1 rounded-full bg-[#f59e0b]/60" />
           </span>
         ))}
       </div>
@@ -331,11 +331,11 @@ function MarketStrip() {
 function SectionTitle({ eyebrow, title, accent, subtitle }) {
   return (
     <ScrollReveal className="max-w-2xl mb-14">
-      <p className="lux-label !text-[#d4af37]/80 mb-3">{eyebrow}</p>
-      <h2 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-[1.05] mb-4">
+      <p className="lux-label !text-[#f59e0b]/80 mb-3">{eyebrow}</p>
+      <h2 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-[1.05] mb-4">
         {title} {accent && <span className="lux-gold-text italic">{accent}</span>}
       </h2>
-      {subtitle && <p className="text-[#f4efe2]/55 leading-relaxed">{subtitle}</p>}
+      {subtitle && <p className="text-[#e7ebf2]/55 leading-relaxed">{subtitle}</p>}
     </ScrollReveal>
   );
 }
@@ -358,11 +358,11 @@ function HowItWorks() {
           {steps.map((step, i) => (
             <ScrollReveal key={step.title} delay={i * 110}>
               <div className="relative lux-card lux-card-hover p-7 h-full">
-                <span className="relative z-10 inline-flex w-[52px] h-[52px] mb-6 rounded-full items-center justify-center lux-serif text-xl font-semibold text-white bg-[#0a0a0a]">
+                <span className="relative z-10 inline-flex w-[52px] h-[52px] mb-6 rounded-full items-center justify-center lux-serif text-xl font-semibold text-white bg-[#0b1018]">
                   {i + 1}
                 </span>
-                <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-2">{step.title}</h3>
-                <p className="text-sm text-[#f4efe2]/55 leading-relaxed">{step.description}</p>
+                <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-2">{step.title}</h3>
+                <p className="text-sm text-[#e7ebf2]/55 leading-relaxed">{step.description}</p>
               </div>
             </ScrollReveal>
           ))}
@@ -393,8 +393,8 @@ function SecuritySection() {
               <ScrollReveal key={title} delay={i * 100}>
                 <div className="lux-card lux-card-hover p-7 h-full">
                   <span className="lux-icon-chip !w-12 !h-12 mb-6"><Icon size={22} /></span>
-                  <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-2">{title}</h3>
-                  <p className="text-sm text-[#f4efe2]/55 leading-relaxed">{description}</p>
+                  <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-2">{title}</h3>
+                  <p className="text-sm text-[#e7ebf2]/55 leading-relaxed">{description}</p>
                 </div>
               </ScrollReveal>
             ))}
@@ -411,11 +411,11 @@ function FinalCTA() {
       <ScrollReveal direction="scale" className="max-w-5xl mx-auto">
         <div className="lux-card-gold px-7 py-14 sm:px-16 sm:py-20 text-center overflow-hidden">
           <div className="relative">
-            <p className="lux-label !text-[#f3d58a]/70 mb-4">Rejoignez IMC</p>
-            <h2 className="lux-serif text-4xl sm:text-6xl font-semibold text-[#f4efe2] leading-[1.02] mb-5">
+            <p className="lux-label !text-[#fbbf24]/70 mb-4">Rejoignez IMC</p>
+            <h2 className="lux-serif text-4xl sm:text-6xl font-semibold text-[#e7ebf2] leading-[1.02] mb-5">
               Prêt à faire travailler<br /><span className="lux-gold-text italic">votre argent ?</span>
             </h2>
-            <p className="text-[#f4efe2]/55 max-w-lg mx-auto mb-9">Créez votre compte en quelques minutes. Aucun frais d&apos;ouverture.</p>
+            <p className="text-[#e7ebf2]/55 max-w-lg mx-auto mb-9">Créez votre compte en quelques minutes. Aucun frais d&apos;ouverture.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link to="/register" className="lux-btn-gold !px-8 !py-3.5 !text-sm">Créer mon compte <IconArrowRight size={16} /></Link>
               <Link to="/login" className="lux-btn-ghost !px-8 !py-3.5 !text-sm">Se connecter</Link>
@@ -435,7 +435,7 @@ function Footer({ scrollToSection }) {
     { Icon: IconPin, text: "Afrique de l'Ouest" },
     { Icon: IconClock, text: 'Lun–Dim : 24/7' },
   ];
-  const linkCls = 'text-sm text-[#f4efe2]/50 hover:text-[#f3d58a] transition-colors bg-transparent border-none cursor-pointer p-0';
+  const linkCls = 'text-sm text-[#e7ebf2]/50 hover:text-[#fbbf24] transition-colors bg-transparent border-none cursor-pointer p-0';
 
   return (
     <footer className="relative z-10 pt-20 pb-10 px-5 sm:px-6 border-t border-white/10">
@@ -443,13 +443,13 @@ function Footer({ scrollToSection }) {
         <div className="grid sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-12 mb-16">
           <div>
             <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-10 w-auto object-contain mb-6" />
-            <p className="lux-serif text-2xl text-[#f4efe2]/80 leading-snug max-w-xs">
+            <p className="lux-serif text-2xl text-[#e7ebf2]/80 leading-snug max-w-xs">
               La plateforme d&apos;investissement intelligente et sociale en Afrique.
             </p>
           </div>
 
           <div>
-            <p className="lux-label !text-[#d4af37]/80 mb-5">Navigation</p>
+            <p className="lux-label !text-[#f59e0b]/80 mb-5">Navigation</p>
             <ul className="space-y-3">
               {[{ label: 'Accueil', id: 'home' }, { label: 'Comment ça marche', id: 'how-it-works' }, { label: 'Sécurité', id: 'security' }].map((l) => (
                 <li key={l.id}><button type="button" onClick={() => scrollToSection(l.id)} className={linkCls}>{l.label}</button></li>
@@ -458,7 +458,7 @@ function Footer({ scrollToSection }) {
           </div>
 
           <div>
-            <p className="lux-label !text-[#d4af37]/80 mb-5">Légal</p>
+            <p className="lux-label !text-[#f59e0b]/80 mb-5">Légal</p>
             <ul className="space-y-3">
               {[
                 { label: "Conditions d'utilisation", to: '/terms' },
@@ -472,21 +472,21 @@ function Footer({ scrollToSection }) {
           </div>
 
           <div>
-            <p className="lux-label !text-[#d4af37]/80 mb-5">Contact</p>
+            <p className="lux-label !text-[#f59e0b]/80 mb-5">Contact</p>
             <ul className="space-y-3">
               {contactItems.map(({ Icon, text }) => (
-                <li key={text} className="flex items-center gap-3 text-sm text-[#f4efe2]/50">
-                  <span className="text-[#d4af37]/70"><Icon size={14} /></span>{text}
+                <li key={text} className="flex items-center gap-3 text-sm text-[#e7ebf2]/50">
+                  <span className="text-[#f59e0b]/70"><Icon size={14} /></span>{text}
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs text-[#f4efe2]/35">
+        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs text-[#e7ebf2]/35">
           <p>© {currentYear} IMC Corporation. Tous droits réservés.</p>
           <p className="max-w-xl leading-relaxed md:text-right">
-            <span className="text-[#f3d58a]/80">Avertissement :</span> les investissements comportent des risques. Les performances passées ne garantissent pas les résultats futurs.
+            <span className="text-[#fbbf24]/80">Avertissement :</span> les investissements comportent des risques. Les performances passées ne garantissent pas les résultats futurs.
           </p>
         </div>
       </div>

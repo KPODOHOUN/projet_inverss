@@ -38,14 +38,14 @@ export default function ForgotPassword() {
     <AuthShell>
 
       <div className={`w-full max-w-md relative z-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <Link to="/login" className="inline-flex items-center gap-2 mb-8 text-[#f4efe2]/50 hover:text-[#f3d58a] text-sm transition-colors group">
+        <Link to="/login" className="inline-flex items-center gap-2 mb-8 text-[#e7ebf2]/50 hover:text-[#fbbf24] text-sm transition-colors group">
           <span className="inline-block group-hover:-translate-x-1 transition-transform">←</span>
           Retour
         </Link>
 
         <div className="mb-8">
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none mb-3">Mot de passe</h1>
-          <p className="text-[#f4efe2]/50 text-sm">Recevez un code à 6 chiffres par email</p>
+          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">Mot de passe</h1>
+          <p className="text-[#e7ebf2]/50 text-sm">Recevez un code à 6 chiffres par email</p>
         </div>
 
         <div className="relative">

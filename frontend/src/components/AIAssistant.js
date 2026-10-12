@@ -55,7 +55,7 @@ export default function AIAssistant() {
       <button
         onClick={() => setOpen(o => !o)}
         aria-label="Assistant"
-        className="fixed bottom-5 right-5 z-[90] w-14 h-14 rounded-full bg-white text-[#17130a] flex items-center justify-center hover:scale-105 transition-transform border-none cursor-pointer"
+        className="fixed bottom-24 lg:bottom-5 right-4 lg:right-5 z-[90] w-14 h-14 rounded-full bg-[#2563eb] text-white shadow-lg flex items-center justify-center hover:scale-105 transition-transform border-none cursor-pointer"
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -65,7 +65,7 @@ export default function AIAssistant() {
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-[90] w-[92vw] max-w-sm h-[70vh] max-h-[520px] bg-[#0b0a08]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-44 lg:bottom-24 right-4 lg:right-5 z-[90] w-[92vw] max-w-sm h-[70vh] max-h-[520px] bg-[#141b26]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
           <div className="px-4 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 flex items-center justify-between">
             <p className="font-black text-black text-sm">Assistant IMC</p>
           </div>
@@ -74,7 +74,7 @@ export default function AIAssistant() {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] px-3 py-2 rounded-lg text-sm whitespace-pre-wrap ${
-                  m.role === 'user' ? 'bg-white text-[#17130a] font-medium' : 'bg-white/[0.04] text-[#f4efe2]/85 border border-white/5'
+                  m.role === 'user' ? 'bg-white text-[#1a1204] font-medium' : 'bg-white/[0.04] text-[#e7ebf2]/85 border border-white/5'
                 }`}>
                   {m.content}
                 </div>
@@ -82,7 +82,7 @@ export default function AIAssistant() {
             ))}
             {sending && (
               <div className="flex justify-start">
-                <div className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/5 text-[#f4efe2]/50 text-sm">…</div>
+                <div className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/5 text-[#e7ebf2]/50 text-sm">…</div>
               </div>
             )}
             {escalation && (

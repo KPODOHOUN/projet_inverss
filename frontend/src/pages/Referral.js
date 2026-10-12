@@ -62,7 +62,7 @@ export default function Referral({ onNavigate }) {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
-          <p className="mt-4 text-[#f4efe2]/60 font-semibold">Chargement...</p>
+          <p className="mt-4 text-[#e7ebf2]/60 font-semibold">Chargement...</p>
         </div>
       </div>
     );
@@ -80,30 +80,30 @@ export default function Referral({ onNavigate }) {
     <div className="space-y-8">
       <div className="animate-cardIn">
         <p className="lux-label mb-2">Programme de parrainage</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none">
+        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">
           Invitez, <span className="lux-gold-text italic">gagnez</span>
         </h1>
-        <p className="mt-2 text-sm text-[#f4efe2]/50">Gagnez {rate}% sur chaque investissement de vos filleuls.</p>
+        <p className="mt-2 text-sm text-[#e7ebf2]/50">Gagnez {rate}% sur chaque investissement de vos filleuls.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
         {[
-          ['Total filleuls', referralData?.totalReferrals || 0, 'Utilisateurs parrainés', 'text-[#f4efe2]'],
-          ['Filleuls actifs', referralData?.activeReferrals || 0, 'Avec un investissement actif', 'text-[#f4efe2]'],
+          ['Total filleuls', referralData?.totalReferrals || 0, 'Utilisateurs parrainés', 'text-[#e7ebf2]'],
+          ['Filleuls actifs', referralData?.activeReferrals || 0, 'Avec un investissement actif', 'text-[#e7ebf2]'],
           ['Commissions', `$${referralData?.totalCommissionsUSD?.toFixed(2) || '0.00'}`, 'Revenus passifs cumulés', 'lux-gold-text'],
         ].map(([label, value, hint, cls], i) => (
           <div key={label} style={{ animationDelay: `${i * 70}ms` }} className={`lux-card lux-card-hover animate-cardIn p-6 ${i === 2 ? '!border-yellow-500/30' : ''}`}>
             <p className="lux-label mb-3">{label}</p>
             <p className={`lux-num text-3xl font-light ${cls}`}>{value}</p>
-            <p className="text-xs text-[#f4efe2]/40 mt-2">{hint}</p>
+            <p className="text-xs text-[#e7ebf2]/40 mt-2">{hint}</p>
           </div>
         ))}
       </div>
 
       <div className="lux-card-gold p-6 sm:p-8">
         <div className="relative">
-          <p className="lux-label !text-[#f3d58a]/70 mb-1">À partager</p>
-          <h2 className="lux-serif text-3xl font-semibold text-[#f4efe2] mb-6">Votre lien de parrainage</h2>
+          <p className="lux-label !text-[#fbbf24]/70 mb-1">À partager</p>
+          <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2] mb-6">Votre lien de parrainage</h2>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-5">
             <input type="text" value={referralLink} readOnly className="lux-input flex-1 min-w-0 font-mono !text-xs" />
@@ -128,8 +128,8 @@ export default function Referral({ onNavigate }) {
           <span className="lux-num text-3xl font-light lux-gold-text">{rate}%</span>
         </div>
         <div className="flex-1 min-w-[220px]">
-          <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-1">Comment sont calculées vos commissions</h3>
-          <p className="text-sm text-[#f4efe2]/55 leading-relaxed">
+          <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-1">Comment sont calculées vos commissions</h3>
+          <p className="text-sm text-[#e7ebf2]/55 leading-relaxed">
             Dès qu'un investissement de votre filleul direct est validé, vous recevez {rate}% du montant investi, crédité directement sur votre solde.
           </p>
         </div>
@@ -139,7 +139,7 @@ export default function Referral({ onNavigate }) {
         <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
           <div>
             <p className="lux-label mb-1">Votre réseau</p>
-            <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Vos filleuls</h3>
+            <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">Vos filleuls</h3>
           </div>
           {referralData?.referrals?.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -158,11 +158,11 @@ export default function Referral({ onNavigate }) {
             return (
               <div className="text-center py-12 rounded-xl border border-dashed border-white/10">
                 {referralData?.referrals?.length > 0 ? (
-                  <p className="text-sm text-[#f4efe2]/50">Aucun filleul sur cette période</p>
+                  <p className="text-sm text-[#e7ebf2]/50">Aucun filleul sur cette période</p>
                 ) : (
                   <>
-                    <p className="text-sm text-[#f4efe2]/60 mb-1">Vous n'avez pas encore de filleuls</p>
-                    <p className="text-xs text-[#f4efe2]/35">Partagez votre lien pour commencer à gagner.</p>
+                    <p className="text-sm text-[#e7ebf2]/60 mb-1">Vous n'avez pas encore de filleuls</p>
+                    <p className="text-xs text-[#e7ebf2]/35">Partagez votre lien pour commencer à gagner.</p>
                   </>
                 )}
               </div>
@@ -177,14 +177,14 @@ export default function Referral({ onNavigate }) {
               <tbody>
                 {filteredReferrals.map((referral, index) => (
                   <tr key={index}>
-                    <td className="text-sm text-[#f4efe2]">{referral.name}</td>
-                    <td className="text-sm text-[#f4efe2]/55">{new Date(referral.joinedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td className="text-sm text-[#e7ebf2]">{referral.name}</td>
+                    <td className="text-sm text-[#e7ebf2]/55">{new Date(referral.joinedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                     <td>
-                      <span className={`lux-pill ${referral.isActive ? 'bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20' : 'bg-white/5 text-[#f4efe2]/50 ring-1 ring-inset ring-white/10'}`}>
+                      <span className={`lux-pill ${referral.isActive ? 'bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20' : 'bg-white/5 text-[#e7ebf2]/50 ring-1 ring-inset ring-white/10'}`}>
                         {referral.isActive ? 'Actif' : 'Inactif'}
                       </span>
                     </td>
-                    <td className="lux-num text-sm font-medium text-[#f3d58a]">${referral.commissionsEarned?.toFixed(2) || '0.00'}</td>
+                    <td className="lux-num text-sm font-medium text-[#fbbf24]">${referral.commissionsEarned?.toFixed(2) || '0.00'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -196,10 +196,10 @@ export default function Referral({ onNavigate }) {
 
       <button type="button" onClick={() => onNavigate?.('faq')} className="w-full text-left p-5 lux-card lux-card-hover flex items-center justify-between gap-4 group">
         <span>
-          <span className="block font-medium text-[#f4efe2] text-sm">Comment fonctionne le parrainage ?</span>
-          <span className="block text-xs text-[#f4efe2]/45 mt-1">Réponses détaillées dans le Centre d'aide</span>
+          <span className="block font-medium text-[#e7ebf2] text-sm">Comment fonctionne le parrainage ?</span>
+          <span className="block text-xs text-[#e7ebf2]/45 mt-1">Réponses détaillées dans le Centre d'aide</span>
         </span>
-        <span className="text-[#f4efe2]/30 group-hover:text-[#d4af37] transition-colors">→</span>
+        <span className="text-[#e7ebf2]/30 group-hover:text-[#f59e0b] transition-colors">→</span>
       </button>
     </div>
   );

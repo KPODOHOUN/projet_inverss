@@ -132,11 +132,11 @@ export default function WeeklyPayment({ onNavigate }) {
 
   const TYPE_LABEL = { deposit: 'Dépôt', investment: 'Investissement', withdrawal: 'Retrait', earning: 'Gain', reinvestment: 'Réinvestissement', commission: 'Commission', refund: 'Remboursement' };
   const STATUS_LABEL = { pending: 'En attente', approved: 'Approuvé', processing: 'En traitement', completed: 'Terminé', rejected: 'Refusé', cancelled: 'Annulé', failed: 'Échoué' };
-  const STATUS_COLOR = { pending: 'text-[#f3d58a]', approved: 'text-sky-300', processing: 'text-violet-300', completed: 'text-emerald-300', rejected: 'text-rose-300', cancelled: 'text-[#f4efe2]/40', failed: 'text-rose-300' };
+  const STATUS_COLOR = { pending: 'text-[#fbbf24]', approved: 'text-sky-300', processing: 'text-violet-300', completed: 'text-emerald-300', rejected: 'text-rose-300', cancelled: 'text-[#e7ebf2]/40', failed: 'text-rose-300' };
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">
-      <div className="w-11 h-11 rounded-full border-2 border-transparent border-t-[#d4af37] animate-spin" />
+      <div className="w-11 h-11 rounded-full border-2 border-transparent border-t-[#f59e0b] animate-spin" />
     </div>
   );
 
@@ -147,8 +147,8 @@ export default function WeeklyPayment({ onNavigate }) {
     <div className="space-y-8">
       <div className="animate-cardIn">
         <p className="lux-label mb-2">Portefeuille USDT</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none">Mes gains</h1>
-        <p className="mt-2 text-sm text-[#f4efe2]/50">Votre argent, en un coup d'œil.</p>
+        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">Mes gains</h1>
+        <p className="mt-2 text-sm text-[#e7ebf2]/50">Votre argent, en un coup d'œil.</p>
       </div>
 
       {loadError && (
@@ -159,11 +159,11 @@ export default function WeeklyPayment({ onNavigate }) {
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
         {[
-          ['Déposé', summary.deposited, 'text-[#f4efe2]'],
-          ['Investi', summary.invested, 'text-[#f4efe2]'],
+          ['Déposé', summary.deposited, 'text-[#e7ebf2]'],
+          ['Investi', summary.invested, 'text-[#e7ebf2]'],
           ['Valeur actuelle', summary.currentValue, 'lux-gold-text'],
           ['Gagné', summary.earned, 'text-emerald-300'],
-          ['Disponible', summary.available, 'text-[#f4efe2]'],
+          ['Disponible', summary.available, 'text-[#e7ebf2]'],
         ].map(([label, value, color], i) => (
           <div key={label} style={{ animationDelay: `${i * 60}ms` }} className={`lux-card animate-cardIn p-4 sm:p-5 ${label === 'Disponible' ? 'col-span-2 md:col-span-1 !border-yellow-500/30' : ''}`}>
             <p className="lux-label !text-[10px] mb-2">{label}</p>
@@ -179,13 +179,13 @@ export default function WeeklyPayment({ onNavigate }) {
           <div className="flex items-center gap-3 mb-6">
             <span className="lux-icon-chip">↓</span>
             <div>
-              <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] leading-none">Déposer</h3>
-              <p className="text-xs text-[#f4efe2]/45 mt-1">Paiement sécurisé par NOWPayments</p>
+              <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Déposer</h3>
+              <p className="text-xs text-[#e7ebf2]/45 mt-1">Paiement sécurisé par NOWPayments</p>
             </div>
           </div>
 
           {user?.kycStatus !== 'verified' ? (
-            <div className="p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20 text-[#f3d58a] text-sm">
+            <div className="p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20 text-[#fbbf24] text-sm">
               Vérification KYC requise avant tout dépôt.{' '}
               <button onClick={() => onNavigate?.('kyc')} className="underline font-semibold">Compléter mon KYC →</button>
             </div>
@@ -210,7 +210,7 @@ export default function WeeklyPayment({ onNavigate }) {
                     <option value="BEP20">USDT — BEP20 (BNB Chain)</option>
                     <option value="POLYGON">USDT — Polygon</option>
                   </select>
-                  <p className="text-xs text-[#f4efe2]/40 mt-2">Seul l'USDT est accepté sur la plateforme.</p>
+                  <p className="text-xs text-[#e7ebf2]/40 mt-2">Seul l'USDT est accepté sur la plateforme.</p>
                 </div>
                 <button type="submit" disabled={depositing} className="lux-btn-gold w-full !py-3.5 !text-sm">
                   {depositing ? 'Redirection…' : 'Payer en USDT →'}
@@ -224,8 +224,8 @@ export default function WeeklyPayment({ onNavigate }) {
           <div className="flex items-center gap-3 mb-6">
             <span className="lux-icon-chip">↑</span>
             <div>
-              <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] leading-none">Retirer</h3>
-              <p className="text-xs text-[#f4efe2]/45 mt-1">Vers votre portefeuille USDT</p>
+              <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Retirer</h3>
+              <p className="text-xs text-[#e7ebf2]/45 mt-1">Vers votre portefeuille USDT</p>
             </div>
           </div>
 
@@ -254,12 +254,12 @@ export default function WeeklyPayment({ onNavigate }) {
                 <button
                   type="button"
                   onClick={() => setWithdrawAmount(summary.available.toFixed(2))}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md text-[11px] font-semibold text-[#f3d58a] bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md text-[11px] font-semibold text-[#fbbf24] bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors"
                 >
                   MAX
                 </button>
               </div>
-              <p className="text-xs text-[#f4efe2]/40 mt-2">Disponible : <span className="lux-num text-[#f4efe2]/70">${summary.available.toFixed(2)}</span></p>
+              <p className="text-xs text-[#e7ebf2]/40 mt-2">Disponible : <span className="lux-num text-[#e7ebf2]/70">${summary.available.toFixed(2)}</span></p>
             </div>
 
             <div>
@@ -310,7 +310,7 @@ export default function WeeklyPayment({ onNavigate }) {
         <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
           <div>
             <p className="lux-label mb-1">Mouvements</p>
-            <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] leading-none">Historique récent</h3>
+            <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Historique récent</h3>
           </div>
           {transactions.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -326,7 +326,7 @@ export default function WeeklyPayment({ onNavigate }) {
           const filteredTx = transactions.filter(t => withinPeriod(t.createdAt, periodFilter));
           if (filteredTx.length === 0) {
             return (
-              <p className="text-center py-10 text-sm text-[#f4efe2]/45">
+              <p className="text-center py-10 text-sm text-[#e7ebf2]/45">
                 {transactions.length > 0 ? 'Aucune opération sur cette période' : 'Aucune opération encore effectuée'}
               </p>
             );
@@ -340,15 +340,15 @@ export default function WeeklyPayment({ onNavigate }) {
                     {t.amount < 0 ? '↑' : '↓'}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-[#f4efe2] font-medium text-sm">{TYPE_LABEL[t.type] || t.type}</p>
-                    <p className="text-xs text-[#f4efe2]/40">{new Date(t.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                    <p className="text-[#e7ebf2] font-medium text-sm">{TYPE_LABEL[t.type] || t.type}</p>
+                    <p className="text-xs text-[#e7ebf2]/40">{new Date(t.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className={`lux-num font-medium text-sm ${t.amount < 0 ? 'text-rose-300' : 'text-emerald-300'}`}>
                     {t.amount < 0 ? '−' : '+'}${Math.abs(t.amount).toFixed(2)}
                   </p>
-                  <p className={`text-[11px] font-medium ${STATUS_COLOR[t.status] || 'text-[#f4efe2]/45'}`}>{STATUS_LABEL[t.status] || t.status}</p>
+                  <p className={`text-[11px] font-medium ${STATUS_COLOR[t.status] || 'text-[#e7ebf2]/45'}`}>{STATUS_LABEL[t.status] || t.status}</p>
                 </div>
               </div>
             ))}

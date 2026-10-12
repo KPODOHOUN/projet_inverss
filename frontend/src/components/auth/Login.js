@@ -79,16 +79,16 @@ export default function Login() {
   return (
     <AuthShell>
       <div className="w-full max-w-md">
-        <Link to="/" className="inline-flex items-center gap-2 mb-8 text-sm text-[#f4efe2]/50 hover:text-[#f3d58a] transition-colors">
+        <Link to="/" className="inline-flex items-center gap-2 mb-8 text-sm text-[#e7ebf2]/50 hover:text-[#fbbf24] transition-colors">
           ← Accueil
         </Link>
 
         <div className="mb-6">
           <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-11 w-auto mb-8 lg:hidden" />
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none mb-3">
+          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">
             {requires2FA ? 'Vérification 2FA' : 'Connexion'}
           </h1>
-          <p className="text-[#f4efe2]/60 text-sm">
+          <p className="text-[#e7ebf2]/60 text-sm">
             {requires2FA
               ? 'Code de votre application d\'authentification'
               : 'Accédez à votre espace investisseur'}
@@ -119,7 +119,7 @@ export default function Login() {
             {!requires2FA ? (
               <>
                 <div className="space-y-3 mb-6">
-                  <p className="text-xs text-[#f4efe2]/40 text-center tracking-widest uppercase mb-4">Connexion rapide</p>
+                  <p className="text-xs text-[#e7ebf2]/40 text-center tracking-widest uppercase mb-4">Connexion rapide</p>
                   <button
                     type="button"
                     onClick={() => handleSocialLogin('google')}
@@ -142,7 +142,7 @@ export default function Login() {
 
                 <div className="flex items-center gap-4 mb-6">
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-yellow-900/30 to-transparent" />
-                  <span className="text-xs text-[#f4efe2]/40 font-medium uppercase tracking-widest">ou</span>
+                  <span className="text-xs text-[#e7ebf2]/40 font-medium uppercase tracking-widest">ou</span>
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-yellow-900/30 to-transparent" />
                 </div>
 
@@ -163,7 +163,7 @@ export default function Login() {
                   <div className="group/input">
                     <div className="flex justify-between items-center mb-2">
                       <label className="lux-label">Mot de passe</label>
-                      <Link to="/forgot-password" className="text-xs text-[#f4efe2]/40 hover:text-yellow-500 transition-colors duration-300">Oublié ?</Link>
+                      <Link to="/forgot-password" className="text-xs text-[#e7ebf2]/40 hover:text-yellow-500 transition-colors duration-300">Oublié ?</Link>
                     </div>
                     <div className="relative">
                       <input
@@ -178,7 +178,7 @@ export default function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f4efe2]/40 hover:text-yellow-500 transition-all duration-300 p-1"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#e7ebf2]/40 hover:text-yellow-500 transition-all duration-300 p-1"
                       >
                         {showPassword ? (
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
@@ -202,7 +202,7 @@ export default function Login() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="p-4 bg-yellow-900/[0.08] border border-white/10 rounded text-center">
-                  <p className="text-sm text-[#f4efe2]/60">
+                  <p className="text-sm text-[#e7ebf2]/60">
                     Code à 6 chiffres de votre application d&apos;authentification
                   </p>
                 </div>
@@ -237,7 +237,7 @@ export default function Login() {
               </form>
             )}
 
-            <p className="mt-5 text-center text-xs text-[#f4efe2]/50">
+            <p className="mt-5 text-center text-xs text-[#e7ebf2]/50">
               Pas encore de compte ?{' '}
               <Link to="/register" className="text-yellow-400 hover:text-yellow-300">Créer un compte</Link>
             </p>

@@ -101,20 +101,20 @@ export default function Register() {
   return (
     <AuthShell>
       <div className="w-full max-w-lg">
-        <Link to="/" className="inline-flex items-center gap-2 mb-8 text-sm text-[#f4efe2]/50 hover:text-[#f3d58a] transition-colors">
+        <Link to="/" className="inline-flex items-center gap-2 mb-8 text-sm text-[#e7ebf2]/50 hover:text-[#fbbf24] transition-colors">
           ← Accueil
         </Link>
 
         <div className="mb-6">
           <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-11 w-auto mb-8 lg:hidden" />
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none mb-3">Inscription</h1>
-          <p className="text-[#f4efe2]/60 text-sm">Créez votre compte investisseur</p>
+          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">Inscription</h1>
+          <p className="text-[#e7ebf2]/60 text-sm">Créez votre compte investisseur</p>
         </div>
 
         <div className="flex items-center gap-2 mb-6 text-sm">
-          <span className={step >= 1 ? 'text-yellow-400' : 'text-[#f4efe2]/50'}>1. Identité</span>
-          <span className="text-[#f4efe2]/40">→</span>
-          <span className={step >= 2 ? 'text-yellow-400' : 'text-[#f4efe2]/50'}>2. Sécurité</span>
+          <span className={step >= 1 ? 'text-yellow-400' : 'text-[#e7ebf2]/50'}>1. Identité</span>
+          <span className="text-[#e7ebf2]/40">→</span>
+          <span className={step >= 2 ? 'text-yellow-400' : 'text-[#e7ebf2]/50'}>2. Sécurité</span>
         </div>
 
         <div className="lux-card !p-6 sm:!p-8 p-5">
@@ -129,7 +129,7 @@ export default function Register() {
             {step === 1 ? (
               <>
                 <div className="space-y-3 mb-6">
-                  <p className="text-xs text-[#f4efe2]/40 text-center tracking-widest uppercase mb-4">Inscription rapide</p>
+                  <p className="text-xs text-[#e7ebf2]/40 text-center tracking-widest uppercase mb-4">Inscription rapide</p>
                   <button type="button" onClick={() => handleSocialLogin('google')} disabled={!!socialLoading}
                     className="lux-btn-ghost w-full !py-3 !gap-3">
                     {socialLoading === 'google' ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (
@@ -140,7 +140,7 @@ export default function Register() {
 
                 <div className="flex items-center gap-4 mb-6">
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-yellow-900/30 to-transparent" />
-                  <span className="text-xs text-[#f4efe2]/40 font-medium uppercase tracking-widest">ou manuellement</span>
+                  <span className="text-xs text-[#e7ebf2]/40 font-medium uppercase tracking-widest">ou manuellement</span>
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-yellow-900/30 to-transparent" />
                 </div>
 
@@ -163,14 +163,14 @@ export default function Register() {
                       className="lux-input" placeholder="jean.dupont@email.com" />
                   </div>
                   <div className="group/input">
-                    <label className="block lux-label mb-2">Téléphone <span className="text-[#f4efe2]/40 font-normal normal-case">(optionnel)</span></label>
+                    <label className="block lux-label mb-2">Téléphone <span className="text-[#e7ebf2]/40 font-normal normal-case">(optionnel)</span></label>
                     <PhoneInput
                       value={formData.phone}
                       onChange={v => setFormData({ ...formData, phone: v })}
                     />
                   </div>
                   <div className="group/input">
-                    <label className="block lux-label mb-2">Code de parrainage <span className="text-[#f4efe2]/40 font-normal normal-case">(optionnel)</span></label>
+                    <label className="block lux-label mb-2">Code de parrainage <span className="text-[#e7ebf2]/40 font-normal normal-case">(optionnel)</span></label>
                     <input name="referralCode" type="text" value={referralCode} onChange={e => setReferralCode(e.target.value.toUpperCase())}
                       className="lux-input uppercase" placeholder="Ex: IMCJG6W4Q" />
                   </div>
@@ -188,7 +188,7 @@ export default function Register() {
                   <div className="relative">
                     <input name="password" type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={handleChange}
                       className="lux-input !pr-12" placeholder="••••••••" />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f4efe2]/40 hover:text-yellow-500 transition-all duration-300 p-1">
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#e7ebf2]/40 hover:text-yellow-500 transition-all duration-300 p-1">
                       {showPassword ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                       ) : (
@@ -204,7 +204,7 @@ export default function Register() {
                         </div>
                         <span className="text-xs font-bold" style={{ color: strength.color }}>{strength.label}</span>
                       </div>
-                      <p className="text-xs text-[#f4efe2]/40">Min. 8 caractères, majuscule, chiffre recommandés</p>
+                      <p className="text-xs text-[#e7ebf2]/40">Min. 8 caractères, majuscule, chiffre recommandés</p>
                     </div>
                   )}
                 </div>
@@ -232,7 +232,7 @@ export default function Register() {
                       {acceptedTerms && <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
                     </button>
                   </div>
-                  <label className="text-xs text-[#f4efe2]/60 leading-relaxed cursor-pointer">
+                  <label className="text-xs text-[#e7ebf2]/60 leading-relaxed cursor-pointer">
                     J'accepte les{' '}
                     <span className="text-yellow-500 hover:text-yellow-400 font-semibold transition-colors">conditions d'utilisation</span>
                     {' '}et la{' '}
@@ -260,7 +260,7 @@ export default function Register() {
               </form>
             )}
 
-            <p className="mt-5 text-center text-xs text-[#f4efe2]/50">
+            <p className="mt-5 text-center text-xs text-[#e7ebf2]/50">
               Déjà un compte ?{' '}
               <Link to="/login" className="text-yellow-400 hover:text-yellow-300">Se connecter</Link>
             </p>

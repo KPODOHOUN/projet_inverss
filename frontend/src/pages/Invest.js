@@ -91,7 +91,7 @@ export default function Invest({ onNavigate }) {
   if (!packs) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-11 h-11 rounded-full border-2 border-transparent border-t-[#d4af37] animate-spin" />
+        <div className="w-11 h-11 rounded-full border-2 border-transparent border-t-[#f59e0b] animate-spin" />
       </div>
     );
   }
@@ -101,8 +101,8 @@ export default function Invest({ onNavigate }) {
       <div className="flex flex-wrap items-end justify-between gap-4 animate-cardIn">
         <div>
           <p className="lux-label mb-2">Catalogue</p>
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none">Investir</h1>
-          <p className="mt-2 text-sm text-[#f4efe2]/50">Choisissez un pack adapté à vos objectifs.</p>
+          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">Investir</h1>
+          <p className="mt-2 text-sm text-[#e7ebf2]/50">Choisissez un pack adapté à vos objectifs.</p>
         </div>
         <div className="lux-card px-5 py-3.5">
           <p className="lux-label !text-[10px] mb-1">Solde disponible</p>
@@ -113,8 +113,8 @@ export default function Invest({ onNavigate }) {
       {user.kycStatus !== 'verified' && (
         <div className="lux-card-gold p-6 flex flex-wrap items-center justify-between gap-4">
           <div className="relative">
-            <h3 className="lux-serif text-2xl font-semibold text-[#f3d58a] mb-1">Vérification KYC requise</h3>
-            <p className="text-sm text-[#f4efe2]/60">Complétez votre vérification d'identité pour pouvoir investir.</p>
+            <h3 className="lux-serif text-2xl font-semibold text-[#fbbf24] mb-1">Vérification KYC requise</h3>
+            <p className="text-sm text-[#e7ebf2]/60">Complétez votre vérification d'identité pour pouvoir investir.</p>
           </div>
           <button type="button" onClick={() => onNavigate?.('kyc')} className="relative lux-btn-gold">
             Compléter mon KYC →
@@ -153,10 +153,10 @@ export default function Invest({ onNavigate }) {
             >
               <div className="flex items-start justify-between gap-3 mb-6">
                 <div className="min-w-0">
-                  <p title={pack.name} className="lux-serif text-xl sm:text-2xl font-semibold text-[#f4efe2] leading-tight line-clamp-2 group-hover:text-[#f3d58a] transition-colors">{pack.name}</p>
-                  <p className="text-xs text-[#f4efe2]/45 mt-1">À partir de <span className="lux-num text-[#f4efe2]/70">${pack.minAmount}</span></p>
+                  <p title={pack.name} className="lux-serif text-xl sm:text-2xl font-semibold text-[#e7ebf2] leading-tight line-clamp-2 group-hover:text-[#fbbf24] transition-colors">{pack.name}</p>
+                  <p className="text-xs text-[#e7ebf2]/45 mt-1">À partir de <span className="lux-num text-[#e7ebf2]/70">${pack.minAmount}</span></p>
                 </div>
-                <span className="shrink-0 lux-pill bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/25">
+                <span className="shrink-0 lux-pill bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25">
                   {pack.termDays} jours
                 </span>
               </div>
@@ -172,7 +172,7 @@ export default function Invest({ onNavigate }) {
 
               {totalText && (
                 <div className="flex items-center justify-between py-3 border-t border-white/5 mb-5">
-                  <span className="text-xs text-[#f4efe2]/50">Rendement total</span>
+                  <span className="text-xs text-[#e7ebf2]/50">Rendement total</span>
                   <span className="lux-num text-sm font-medium text-emerald-300">{totalText}</span>
                 </div>
               )}
@@ -195,9 +195,9 @@ export default function Invest({ onNavigate }) {
             <div className="relative flex justify-between items-start mb-6">
               <div>
                 <p className="lux-label mb-1">Nouvel investissement</p>
-                <h2 className="lux-serif text-3xl font-semibold text-[#f4efe2] leading-none">{packs[selectedPack].name}</h2>
+                <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2] leading-none">{packs[selectedPack].name}</h2>
               </div>
-              <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-full flex items-center justify-center text-[#f4efe2]/50 hover:text-[#f4efe2] hover:bg-white/5 transition-colors text-xl leading-none" aria-label="Fermer">×</button>
+              <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-full flex items-center justify-center text-[#e7ebf2]/50 hover:text-[#e7ebf2] hover:bg-white/5 transition-colors text-xl leading-none" aria-label="Fermer">×</button>
             </div>
 
             {error && (
@@ -219,7 +219,7 @@ export default function Invest({ onNavigate }) {
                   className="lux-input lux-num !text-2xl !font-light !py-4"
                   placeholder={packs[selectedPack].minAmount.toString()}
                 />
-                <p className="text-xs text-[#f4efe2]/45 mt-2">
+                <p className="text-xs text-[#e7ebf2]/45 mt-2">
                   Minimum ${packs[selectedPack].minAmount}
                   {packs[selectedPack].maxAmount && ` · Maximum $${packs[selectedPack].maxAmount}`}
                   {' · '}Disponible ${balance.toFixed(2)}

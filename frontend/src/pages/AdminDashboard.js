@@ -94,25 +94,25 @@ export default function AdminDashboard() {
     <div className="dash-scope lux-page min-h-screen">
       <header className="lux-header fixed top-0 left-0 right-0 z-50 h-14 sm:h-16 flex items-center px-3 sm:px-6 justify-between">
         <div className="flex items-center gap-2 sm:gap-3">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 rounded-lg text-[#f3d58a] hover:bg-yellow-500/10 transition-colors" aria-label="Menu">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 rounded-lg text-[#fbbf24] hover:bg-yellow-500/10 transition-colors" aria-label="Menu">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
           <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-7 sm:h-8 w-auto object-contain" />
-          <span className="lux-pill bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/25">Administration</span>
+          <span className="lux-pill bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25">Administration</span>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
-          <div className="hidden md:flex items-center gap-2 text-xs text-[#f4efe2]/50">
+          <div className="hidden md:flex items-center gap-2 text-xs text-[#e7ebf2]/50">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Système opérationnel
           </div>
           <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-white/10">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-[#17130a] bg-white">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-[#1a1204] bg-white">
               {`${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase()}
             </div>
             <div className="leading-tight">
-              <p className="text-sm font-medium text-[#f4efe2]">{user?.firstName} {user?.lastName}</p>
+              <p className="text-sm font-medium text-[#e7ebf2]">{user?.firstName} {user?.lastName}</p>
               <p className="text-[11px] lux-gold-text capitalize">{user?.role || 'admin'}</p>
             </div>
           </div>
@@ -168,8 +168,8 @@ function PageHeader({ title, subtitle, actions }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
       <div>
-        <h1 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#f4efe2] leading-none">{pretty}</h1>
-        {subtitle && <p className="text-sm text-[#f4efe2]/50 mt-2">{subtitle}</p>}
+        <h1 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#e7ebf2] leading-none">{pretty}</h1>
+        {subtitle && <p className="text-sm text-[#e7ebf2]/50 mt-2">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -189,7 +189,7 @@ function KPICard({ label, value, sub, color = 'yellow', icon, trend }) {
       <span className="absolute top-4 right-4 lux-icon-chip !w-8 !h-8 text-sm">{icon}</span>
       <p className="lux-label !text-[10px] mb-3 pr-10">{label}</p>
       <p className={`lux-num text-2xl font-light ${text[color] || text.yellow}`}>{value}</p>
-      {sub && <p className="text-xs text-[#f4efe2]/40 mt-1.5">{sub}</p>}
+      {sub && <p className="text-xs text-[#e7ebf2]/40 mt-1.5">{sub}</p>}
       {trend !== undefined && (
         <p className={`text-xs font-medium mt-2 ${trend >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
           {trend >= 0 ? '▲' : '▼'} {Math.abs(trend)}% vs mois dernier
@@ -203,7 +203,7 @@ function AdminTable({ columns, data, onAction, emptyMsg = 'Aucune donnée' }) {
   if (!data || data.length === 0) {
     return (
       <div className="lux-card p-8 text-center">
-        <p className="text-[#f4efe2]/45 text-sm">{emptyMsg}</p>
+        <p className="text-[#e7ebf2]/45 text-sm">{emptyMsg}</p>
       </div>
     );
   }
@@ -219,7 +219,7 @@ function AdminTable({ columns, data, onAction, emptyMsg = 'Aucune donnée' }) {
           {data.map((row, i) => (
             <tr key={i}>
               {columns.map(col => (
-                <td key={col.key} className="!py-3 !px-4 text-[#f4efe2]/80">
+                <td key={col.key} className="!py-3 !px-4 text-[#e7ebf2]/80">
                   {col.render ? col.render(row[col.key], row) : row[col.key]}
                 </td>
               ))}
@@ -233,11 +233,11 @@ function AdminTable({ columns, data, onAction, emptyMsg = 'Aucune donnée' }) {
 
 function Badge({ label, color = 'yellow' }) {
   const c = {
-    yellow: 'bg-yellow-400/10 text-[#f3d58a] ring-yellow-400/25',
+    yellow: 'bg-yellow-400/10 text-[#fbbf24] ring-yellow-400/25',
     green:  'bg-emerald-400/10 text-emerald-300 ring-emerald-400/20',
     red:    'bg-rose-400/10 text-rose-300 ring-rose-400/20',
     blue:   'bg-sky-400/10 text-sky-300 ring-sky-400/20',
-    gray:   'bg-white/5 text-[#f4efe2]/55 ring-white/10',
+    gray:   'bg-white/5 text-[#e7ebf2]/55 ring-white/10',
     purple: 'bg-violet-400/10 text-violet-300 ring-violet-400/20',
   };
   const text = typeof label === 'string' && label === label.toUpperCase() ? label.charAt(0) + label.slice(1).toLowerCase() : label;
@@ -246,10 +246,10 @@ function Badge({ label, color = 'yellow' }) {
 
 function AdminBtn({ children, onClick, color = 'yellow', size = 'sm', disabled }) {
   const c = {
-    yellow: 'text-[#17130a] bg-white hover:brightness-110',
+    yellow: 'text-[#1a1204] bg-white hover:brightness-110',
     green:  'text-emerald-200 bg-emerald-400/10 ring-1 ring-inset ring-emerald-400/30 hover:bg-emerald-400/20',
     red:    'text-rose-200 bg-rose-400/10 ring-1 ring-inset ring-rose-400/30 hover:bg-rose-400/20',
-    gray:   'text-[#f4efe2]/70 bg-white/[0.03] ring-1 ring-inset ring-white/10 hover:ring-yellow-500/30 hover:text-[#f3d58a]',
+    gray:   'text-[#e7ebf2]/70 bg-white/[0.03] ring-1 ring-inset ring-white/10 hover:ring-yellow-500/30 hover:text-[#fbbf24]',
     blue:   'text-sky-200 bg-sky-400/10 ring-1 ring-inset ring-sky-400/30 hover:bg-sky-400/20',
   };
   const s = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-[13px]', lg: 'px-6 py-3 text-sm' };
@@ -275,8 +275,8 @@ function Modal({ open, onClose, title, children }) {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="lux-serif text-2xl font-semibold text-[#f4efe2]">{pretty}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#f4efe2]/50 hover:text-[#f4efe2] hover:bg-white/5 text-xl" aria-label="Fermer">×</button>
+          <h2 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">{pretty}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#e7ebf2]/50 hover:text-[#e7ebf2] hover:bg-white/5 text-xl" aria-label="Fermer">×</button>
         </div>
         {children}
       </div>
@@ -287,7 +287,7 @@ function Modal({ open, onClose, title, children }) {
 function ConfirmModal({ open, onClose, onConfirm, title, message, danger }) {
   return (
     <Modal open={open} onClose={onClose} title={title}>
-      <p className="text-[#f4efe2]/60 text-sm mb-6">{message}</p>
+      <p className="text-[#e7ebf2]/60 text-sm mb-6">{message}</p>
       <div className="flex gap-3">
         <AdminBtn color={danger ? 'red' : 'yellow'} size="md" onClick={onConfirm}>Confirmer</AdminBtn>
         <AdminBtn color="gray" size="md" onClick={onClose}>Annuler</AdminBtn>
@@ -308,7 +308,7 @@ function Input({ label, value, onChange, type = 'text', placeholder, disabled, h
         disabled={disabled}
         className="lux-input !py-2.5 disabled:opacity-40 disabled:cursor-not-allowed"
       />
-      {hint && <p className="text-xs text-[#f4efe2]/40 mt-1.5">{hint}</p>}
+      {hint && <p className="text-xs text-[#e7ebf2]/40 mt-1.5">{hint}</p>}
     </div>
   );
 }
@@ -337,7 +337,7 @@ function Alert({ type = 'info', children }) {
   const c = {
     info:    'border-sky-400/20 bg-sky-400/5 text-sky-200',
     success: 'border-emerald-400/20 bg-emerald-400/5 text-emerald-200',
-    warning: 'border-yellow-400/25 bg-yellow-400/5 text-[#f3d58a]',
+    warning: 'border-yellow-400/25 bg-yellow-400/5 text-[#fbbf24]',
     error:   'border-rose-400/20 bg-rose-400/5 text-rose-200',
   };
   return <div className={`border rounded-xl px-4 py-3 text-[13px] ${c[type]}`}>{children}</div>;
@@ -346,7 +346,7 @@ function Alert({ type = 'info', children }) {
 function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center py-20">
-      <div className="w-10 h-10 rounded-full border-2 border-transparent border-t-[#d4af37] animate-spin" />
+      <div className="w-10 h-10 rounded-full border-2 border-transparent border-t-[#f59e0b] animate-spin" />
     </div>
   );
 }
@@ -354,7 +354,7 @@ function LoadingSpinner() {
 function PaginationBar({ page, pages, total, onPage }) {
   if (pages <= 1) return null;
   return (
-    <div className="flex items-center justify-between mt-4 text-xs text-[#f4efe2]/50">
+    <div className="flex items-center justify-between mt-4 text-xs text-[#e7ebf2]/50">
       <span>{total.toLocaleString('fr-FR')} résultat{total > 1 ? 's' : ''} — page {page}/{pages}</span>
       <div className="flex gap-2">
         <AdminBtn size="sm" color="gray" disabled={page <= 1} onClick={() => onPage(page - 1)}>← Précédent</AdminBtn>
@@ -369,7 +369,7 @@ function SectionBox({ title, children, action }) {
   return (
     <div className="lux-card mb-6">
       <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-white/5">
-        <h3 className="lux-serif text-xl font-semibold text-[#f4efe2]">{pretty}</h3>
+        <h3 className="lux-serif text-xl font-semibold text-[#e7ebf2]">{pretty}</h3>
         {action && <div>{action}</div>}
       </div>
       <div className="p-5">{children}</div>
@@ -384,11 +384,11 @@ function BarChart({ data, height = 120 }) {
       {data.map((d, i) => (
         <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
           <div
-            className="w-full rounded-t-md bg-[#d4af37] opacity-80 hover:opacity-100 transition-opacity"
+            className="w-full rounded-t-md bg-[#f59e0b] opacity-80 hover:opacity-100 transition-opacity"
             style={{ height: `${(d.value / max) * (height - 20)}px` }}
             title={`${d.label}: ${d.value}`}
           />
-          <span className="text-[#f4efe2]/40 truncate w-full text-center" style={{ fontSize: '9px' }}>{d.label}</span>
+          <span className="text-[#e7ebf2]/40 truncate w-full text-center" style={{ fontSize: '9px' }}>{d.label}</span>
         </div>
       ))}
     </div>
@@ -509,7 +509,7 @@ function OverviewTab({ api, onNavigate }) {
           {s.signups7d.length > 0 ? (
             <BarChart data={s.signups7d} />
           ) : (
-            <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune donnée</p>
+            <p className="text-[#e7ebf2]/40 text-xs text-center py-8">Aucune donnée</p>
           )}
         </SectionBox>
 
@@ -519,7 +519,7 @@ function OverviewTab({ api, onNavigate }) {
             <div className="space-y-2">
               {s.packDistribution.map(p => (
                 <div key={p.pack}>
-                  <div className="flex justify-between text-xs text-[#f4efe2]/60 mb-0.5">
+                  <div className="flex justify-between text-xs text-[#e7ebf2]/60 mb-0.5">
                     <span>{packDisplayName(p.pack)}</span><span className="text-yellow-500 font-bold">{p.pct}%</span>
                   </div>
                   <div className="h-1.5 bg-gray-900">
@@ -529,22 +529,22 @@ function OverviewTab({ api, onNavigate }) {
               ))}
             </div>
           ) : (
-            <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune donnée</p>
+            <p className="text-[#e7ebf2]/40 text-xs text-center py-8">Aucune donnée</p>
           )}
         </SectionBox>
 
         {}
         <SectionBox title="Activité Récente">
           {recentActivity.length === 0 ? (
-            <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune activité récente</p>
+            <p className="text-[#e7ebf2]/40 text-xs text-center py-8">Aucune activité récente</p>
           ) : (
             <div className="space-y-2">
               {recentActivity.slice(0, 10).map((a, i) => (
                 <div key={i} className="flex items-start gap-2 text-xs">
                   <Badge label={(a.level || 'info').toUpperCase()} color={levelColors[a.level] || 'gray'} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[#f4efe2]/80 truncate">{a.action}</p>
-                    <p className="text-[#f4efe2]/40">{a.target} · {a.createdAt ? new Date(a.createdAt).toLocaleString('fr-FR') : ''}</p>
+                    <p className="text-[#e7ebf2]/80 truncate">{a.action}</p>
+                    <p className="text-[#e7ebf2]/40">{a.target} · {a.createdAt ? new Date(a.createdAt).toLocaleString('fr-FR') : ''}</p>
                   </div>
                 </div>
               ))}
@@ -565,7 +565,7 @@ function OverviewTab({ api, onNavigate }) {
             <button
               key={a.tab}
               onClick={() => onNavigate(a.tab)}
-              className="relative lux-card lux-card-hover p-4 text-left flex items-center gap-3 text-sm text-[#f4efe2]"
+              className="relative lux-card lux-card-hover p-4 text-left flex items-center gap-3 text-sm text-[#e7ebf2]"
             >
               <span className="lux-icon-chip !w-9 !h-9 shrink-0">{a.icon}</span>
               {a.label}
@@ -621,7 +621,7 @@ function AnalyticsTab({ api }) {
         <SectionBox title="Inscriptions — 7 jours">
           {(s.signups7d || []).length > 0 ? (
             <BarChart data={s.signups7d} height={150} />
-          ) : <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune donnée</p>}
+          ) : <p className="text-[#e7ebf2]/40 text-xs text-center py-8">Aucune donnée</p>}
         </SectionBox>
         <SectionBox title="Répartition des Packs">
           {(s.packDistribution || []).length > 0 ? (
@@ -629,7 +629,7 @@ function AnalyticsTab({ api }) {
               {s.packDistribution.map(p => (
                 <div key={p.pack}>
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-[#f4efe2]/60">{packDisplayName(p.pack)}</span>
+                    <span className="text-[#e7ebf2]/60">{packDisplayName(p.pack)}</span>
                     <span className="text-yellow-400 font-bold">{p.count} ({p.pct}%)</span>
                   </div>
                   <div className="h-1 bg-gray-900">
@@ -638,7 +638,7 @@ function AnalyticsTab({ api }) {
                 </div>
               ))}
             </div>
-          ) : <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune donnée</p>}
+          ) : <p className="text-[#e7ebf2]/40 text-xs text-center py-8">Aucune donnée</p>}
         </SectionBox>
       </div>
 
@@ -646,11 +646,11 @@ function AnalyticsTab({ api }) {
         <SectionBox title="Revenus">
           <div className="space-y-3">
             <div className="flex justify-between text-xs border-b border-white/10 pb-2">
-              <span className="text-[#f4efe2]/50">Revenus (frais collectés)</span>
+              <span className="text-[#e7ebf2]/50">Revenus (frais collectés)</span>
               <span className="font-bold text-green-400">${(s.revenue || 0).toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-xs border-b border-white/10 pb-2">
-              <span className="text-[#f4efe2]/50">Variation vs mois dernier</span>
+              <span className="text-[#e7ebf2]/50">Variation vs mois dernier</span>
               <span className={`font-bold ${(s.revenueChange || 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>{s.revenueChange || 0}%</span>
             </div>
           </div>
@@ -658,7 +658,7 @@ function AnalyticsTab({ api }) {
 
         <SectionBox title="Analytics Avancées">
           {/* TODO backend: comptes KYC vérifiés (User.countDocuments({kycStatus:'verified'})) et comptes 2FA (User.countDocuments({twoFactorEnabled:true})) nécessiteraient un petit ajout côté backend */}
-          <p className="text-[#f4efe2]/40 text-xs">Analytics avancées (rétention, géographie, session) à venir — non trackées actuellement côté plateforme.</p>
+          <p className="text-[#e7ebf2]/40 text-xs">Analytics avancées (rétention, géographie, session) à venir — non trackées actuellement côté plateforme.</p>
         </SectionBox>
       </div>
     </div>
@@ -764,7 +764,7 @@ function UsersTab({ api }) {
           { value: 'week', label: 'Cette semaine' },
           { value: 'month', label: 'Ce mois' },
         ]} />
-        <div className="text-xs text-[#f4efe2]/50 flex items-center">{total.toLocaleString('fr-FR')} résultat(s)</div>
+        <div className="text-xs text-[#e7ebf2]/50 flex items-center">{total.toLocaleString('fr-FR')} résultat(s)</div>
       </div>
 
       <AdminTable
@@ -772,8 +772,8 @@ function UsersTab({ api }) {
           { key: 'name', label: 'Utilisateur', render: (_, r) => (
             <div>
               <p className="font-bold text-white">{r.firstName} {r.lastName}</p>
-              <p className="text-[#f4efe2]/40">{r.email}</p>
-              {r.userId && <p className="text-[#f4efe2]/30 font-mono text-[11px] mt-0.5">{r.userId}</p>}
+              <p className="text-[#e7ebf2]/40">{r.email}</p>
+              {r.userId && <p className="text-[#e7ebf2]/30 font-mono text-[11px] mt-0.5">{r.userId}</p>}
             </div>
           )},
           { key: 'kycStatus', label: 'KYC', render: v => <Badge label={kycLabels[v] || v} color={kycColors[v] || 'gray'} /> },
@@ -918,7 +918,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
           ['Statut', user.status],
         ].map(([k, v]) => (
           <div key={k} className="border border-white/10 rounded p-2">
-            <p className="text-[#f4efe2]/40">{k}</p>
+            <p className="text-[#e7ebf2]/40">{k}</p>
             <p className="text-white font-bold">{v}</p>
           </div>
         ))}
@@ -934,7 +934,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
 
       {user.status !== 'deleted' && user.kycStatus !== 'verified' && (
         <SectionBox title="Valider le KYC manuellement">
-          <p className="text-xs text-[#f4efe2]/50 mb-2">
+          <p className="text-xs text-[#e7ebf2]/50 mb-2">
             Marque ce compte comme vérifié même sans document déposé — à utiliser seulement si l'identité a été confirmée autrement (appel vidéo, pièce fournie hors plateforme, etc.). Action tracée dans les logs.
           </p>
           <div className="space-y-2">
@@ -958,7 +958,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
 
       {user.status === 'deleted' ? (
         <SectionBox title="Zone de danger">
-          <p className="text-xs text-[#f4efe2]/50">Ce compte a déjà été supprimé.</p>
+          <p className="text-xs text-[#e7ebf2]/50">Ce compte a déjà été supprimé.</p>
         </SectionBox>
       ) : (
         <SectionBox title="Zone de danger">
@@ -1150,8 +1150,8 @@ function KYCTab({ api }) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-bold text-white text-sm">{userName(item)}</p>
-                  <p className="text-xs text-[#f4efe2]/50">{item.userId?.email}</p>
-                  <p className="text-xs text-[#f4efe2]/40 mt-1">
+                  <p className="text-xs text-[#e7ebf2]/50">{item.userId?.email}</p>
+                  <p className="text-xs text-[#e7ebf2]/40 mt-1">
                     Soumis le {new Date(item.submittedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -1178,10 +1178,10 @@ function KYCTab({ api }) {
                       <img src={idDocSrc} alt="ID Doc" className="max-h-32 mx-auto" />
                     ) : (
                       <div className="h-24 flex items-center justify-center bg-gray-900">
-                        <p className="text-[#f4efe2]/40 text-xs">Pièce d'identité</p>
+                        <p className="text-[#e7ebf2]/40 text-xs">Pièce d'identité</p>
                       </div>
                     )}
-                    <p className="text-xs text-[#f4efe2]/50 mt-2">PIÈCE D'IDENTITÉ</p>
+                    <p className="text-xs text-[#e7ebf2]/50 mt-2">PIÈCE D'IDENTITÉ</p>
                     {idDocSrc && (
                       <a href={idDocSrc} target="_blank" rel="noreferrer" className="text-xs text-yellow-500 hover:underline">Ouvrir</a>
                     )}
@@ -1191,10 +1191,10 @@ function KYCTab({ api }) {
                       <img src={selfieSrc} alt="Selfie" className="max-h-32 mx-auto" />
                     ) : (
                       <div className="h-24 flex items-center justify-center bg-gray-900">
-                        <p className="text-[#f4efe2]/40 text-xs">Selfie</p>
+                        <p className="text-[#e7ebf2]/40 text-xs">Selfie</p>
                       </div>
                     )}
-                    <p className="text-xs text-[#f4efe2]/50 mt-2">SELFIE</p>
+                    <p className="text-xs text-[#e7ebf2]/50 mt-2">SELFIE</p>
                     {selfieSrc && (
                       <a href={selfieSrc} target="_blank" rel="noreferrer" className="text-xs text-yellow-500 hover:underline">Ouvrir</a>
                     )}
@@ -1235,7 +1235,7 @@ function KYCTab({ api }) {
             </SectionBox>
           ) : (
             <div className="border border-white/10 rounded-lg p-6 text-center">
-              <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une vérification KYC</p>
+              <p className="text-[#e7ebf2]/40 text-sm">Sélectionnez une vérification KYC</p>
             </div>
           )}
         </div>
@@ -1327,8 +1327,8 @@ function AccountDeletionsTab({ api }) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-bold text-white text-sm">{userName(item)}</p>
-                  <p className="text-xs text-[#f4efe2]/50">{item.userId?.email}</p>
-                  <p className="text-xs text-[#f4efe2]/40 mt-1">
+                  <p className="text-xs text-[#e7ebf2]/50">{item.userId?.email}</p>
+                  <p className="text-xs text-[#e7ebf2]/40 mt-1">
                     Demandé le {new Date(item.requestedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -1346,8 +1346,8 @@ function AccountDeletionsTab({ api }) {
             <SectionBox title={`Demande — ${userName(selected)}`}>
               <div className="space-y-4">
                 <div className="border border-white/10 rounded p-3">
-                  <p className="text-xs text-[#f4efe2]/40 mb-1">Motif donné par l'utilisateur</p>
-                  <p className="text-sm text-white">{selected.reason || <span className="text-[#f4efe2]/40">Aucun motif fourni</span>}</p>
+                  <p className="text-xs text-[#e7ebf2]/40 mb-1">Motif donné par l'utilisateur</p>
+                  <p className="text-sm text-white">{selected.reason || <span className="text-[#e7ebf2]/40">Aucun motif fourni</span>}</p>
                 </div>
 
                 {selected.status === 'pending' && (
@@ -1378,7 +1378,7 @@ function AccountDeletionsTab({ api }) {
             </SectionBox>
           ) : (
             <div className="border border-white/10 rounded-lg p-6 text-center">
-              <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une demande</p>
+              <p className="text-[#e7ebf2]/40 text-sm">Sélectionnez une demande</p>
             </div>
           )}
         </div>
@@ -1752,11 +1752,11 @@ function InvestmentsTab({ api }) {
       {msg && <div className="mb-4"><Alert type={msg.includes('Erreur') ? 'error' : 'success'}>{msg}</Alert></div>}
 
       {}
-      <p className="text-xs text-[#f4efe2]/40 mb-1">Répartition par pack — page actuelle uniquement</p>
+      <p className="text-xs text-[#e7ebf2]/40 mb-1">Répartition par pack — page actuelle uniquement</p>
       <div className="grid grid-cols-3 lg:grid-cols-6 gap-2 mb-4">
         {INVESTMENT_PACK_KEYS.map(p => (
           <div key={p} className={`border border-${packColors[p]}-500/30 rounded p-3 text-center`}>
-            <p className="text-xs text-[#f4efe2]/50 uppercase tracking-widest">{packDisplayName(p)}</p>
+            <p className="text-xs text-[#e7ebf2]/50 uppercase tracking-widest">{packDisplayName(p)}</p>
             <p className="text-xl font-semibold text-yellow-400">{investments.filter(i => i.pack === p).length}</p>
           </div>
         ))}
@@ -1820,7 +1820,7 @@ function InvestmentsTab({ api }) {
           { key: 'amount', label: 'Montant', render: v => <span className="text-yellow-400 font-bold">${v?.toLocaleString()}</span> },
           { key: 'roi', label: 'ROI', render: v => <span className="text-green-400 font-bold">+{v}%</span> },
           { key: 'earnings', label: 'Gains', render: v => <span className="text-blue-400">${v?.toFixed(2)}</span> },
-          { key: 'endDate', label: 'Fin', render: v => <span className="text-[#f4efe2]/60">{new Date(v).toLocaleDateString('fr-FR')}</span> },
+          { key: 'endDate', label: 'Fin', render: v => <span className="text-[#e7ebf2]/60">{new Date(v).toLocaleDateString('fr-FR')}</span> },
           { key: 'actions', label: '', render: (_, r) => (
             <div className="flex gap-1">
               <AdminBtn size="sm" onClick={() => setSelected(r)}>VOIR</AdminBtn>
@@ -1854,7 +1854,7 @@ function InvestmentsTab({ api }) {
                 ['Fin le', new Date(selected.endDate).toLocaleDateString('fr-FR')],
               ].map(([k, v]) => (
                 <div key={k} className="border border-white/10 rounded p-2">
-                  <p className="text-[#f4efe2]/40">{k}</p>
+                  <p className="text-[#e7ebf2]/40">{k}</p>
                   <p className="text-white font-bold">{v}</p>
                 </div>
               ))}
@@ -2037,7 +2037,7 @@ function TransactionsTab({ api }) {
                     ['Date', new Date(selected.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })],
                   ].map(([k, v]) => (
                     <div key={k} className="border border-white/10 rounded p-2">
-                      <p className="text-[#f4efe2]/40">{k}</p>
+                      <p className="text-[#e7ebf2]/40">{k}</p>
                       <p className="text-white font-bold">{v}</p>
                     </div>
                   ))}
@@ -2047,11 +2047,11 @@ function TransactionsTab({ api }) {
                   /^https?:\/\/.*\.(png|jpe?g|gif|webp)$/i.test(selected.proof) ? (
                     <div className="border border-white/10 rounded p-3 text-center">
                       <img src={selected.proof} alt="Preuve de paiement" className="max-h-40 mx-auto" />
-                      <p className="text-xs text-[#f4efe2]/50 mt-2">Preuve de paiement</p>
+                      <p className="text-xs text-[#e7ebf2]/50 mt-2">Preuve de paiement</p>
                     </div>
                   ) : (
                     <div className="border border-white/10 rounded p-3">
-                      <p className="text-xs text-[#f4efe2]/40 mb-1">
+                      <p className="text-xs text-[#e7ebf2]/40 mb-1">
                         {selected.type === 'withdrawal' ? 'Adresse USDT de destination' : 'ID de transaction USDT'}
                       </p>
                       <code className="block text-yellow-300 text-xs break-all">{selected.proof}</code>
@@ -2123,7 +2123,7 @@ function TransactionsTab({ api }) {
             </SectionBox>
           ) : (
             <div className="border border-white/10 rounded-lg p-6 text-center">
-              <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une transaction</p>
+              <p className="text-[#e7ebf2]/40 text-sm">Sélectionnez une transaction</p>
             </div>
           )}
         </div>
@@ -2199,7 +2199,7 @@ function AcademyTab({ api }) {
                 <div className="flex gap-2 mt-1">
                   <Badge label={course.category?.toUpperCase()} color="gray" />
                   <Badge label={course.level?.toUpperCase()} color={levelColors[course.level] || 'gray'} />
-                  <span className="text-xs text-[#f4efe2]/50">{course.completions?.toLocaleString()} complétion(s)</span>
+                  <span className="text-xs text-[#e7ebf2]/50">{course.completions?.toLocaleString()} complétion(s)</span>
                 </div>
               </div>
             </div>
@@ -2321,7 +2321,7 @@ function FAQAdminTab({ api }) {
               <p className="font-bold text-white text-sm">{f.question}</p>
               <div className="flex gap-2 mt-1 items-center">
                 <Badge label={(FAQ_CATEGORIES.find(c => c.value === f.category)?.label || f.category).toUpperCase()} color="gray" />
-                <span className="text-xs text-[#f4efe2]/40">ordre: {f.order}</span>
+                <span className="text-xs text-[#e7ebf2]/40">ordre: {f.order}</span>
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">
@@ -2333,7 +2333,7 @@ function FAQAdminTab({ api }) {
             </div>
           </div>
         ))}
-        {faqs.length === 0 && <p className="text-[#f4efe2]/50 text-sm text-center py-8">Aucune question pour l'instant</p>}
+        {faqs.length === 0 && <p className="text-[#e7ebf2]/50 text-sm text-center py-8">Aucune question pour l'instant</p>}
       </div>
 
       <Modal open={showModal} onClose={() => setShowModal(false)} title={editing ? 'MODIFIER LA QUESTION' : 'NOUVELLE QUESTION'}>
@@ -2454,7 +2454,7 @@ function TradingTab({ api }) {
 
       <div className="flex gap-2 mb-4 flex-wrap">
         {[['codes', 'Codes de scénario'], ['assets', 'Actifs'], ['positions', 'Positions'], ['settings', 'Trading libre']].map(([id, label]) => (
-          <button key={id} onClick={() => setTab(id)} className={`px-4 py-2 text-xs font-semibold tracking-widest border rounded transition-all ${tab === id ? 'bg-yellow-500 text-black border-yellow-500' : 'border-white/10 text-[#f4efe2]/60 hover:border-yellow-700'}`}>
+          <button key={id} onClick={() => setTab(id)} className={`px-4 py-2 text-xs font-semibold tracking-widest border rounded transition-all ${tab === id ? 'bg-yellow-500 text-black border-yellow-500' : 'border-white/10 text-[#e7ebf2]/60 hover:border-yellow-700'}`}>
             {label.toUpperCase()}
           </button>
         ))}
@@ -2475,7 +2475,7 @@ function TradingTab({ api }) {
                   r.status === 'active'
                     ? <AdminBtn size="sm" color="red" onClick={() => toggleCodeStatus(r.id, 'disabled')}>DÉSACTIVER</AdminBtn>
                     : <AdminBtn size="sm" color="green" onClick={() => toggleCodeStatus(r.id, 'active')}>ACTIVER</AdminBtn>
-                ) : <span className="text-[#f4efe2]/40 text-xs">Verrouillé</span>
+                ) : <span className="text-[#e7ebf2]/40 text-xs">Verrouillé</span>
               )},
             ]}
             data={codes}
@@ -2534,7 +2534,7 @@ function TradingTab({ api }) {
               { key: 'userId', label: 'Utilisateur', render: (_, r) => r.userId ? `${r.userId.firstName || ''} ${r.userId.lastName || ''}`.trim() : '' },
               { key: 'mode', label: 'Mode', render: v => <Badge label={v === 'code' ? 'CODE' : 'LIBRE'} color={v === 'code' ? 'blue' : 'purple'} /> },
               { key: 'asset', label: 'Actif' },
-              { key: 'type', label: 'Type', render: (v, r) => r.mode === 'code' ? <span className="text-[#f4efe2]/50">{r.code}</span> : <Badge label={v} color={v === 'BUY' ? 'green' : 'red'} /> },
+              { key: 'type', label: 'Type', render: (v, r) => r.mode === 'code' ? <span className="text-[#e7ebf2]/50">{r.code}</span> : <Badge label={v} color={v === 'BUY' ? 'green' : 'red'} /> },
               { key: 'amount', label: 'Montant', render: v => `$${v.toFixed(2)}` },
               { key: 'status', label: 'Statut', render: v => <Badge label={v === 'open' ? 'EN COURS' : 'TERMINÉE'} color={v === 'open' ? 'yellow' : 'gray'} /> },
               { key: 'outcome', label: 'Issue', render: (v, r) => r.status === 'closed' ? <Badge label={v === 'win' ? 'GAGNÉE' : v === 'loss' ? 'PERDUE' : 'NEUTRE'} color={v === 'win' ? 'green' : v === 'loss' ? 'red' : 'gray'} /> : '—' },
@@ -2549,7 +2549,7 @@ function TradingTab({ api }) {
       {tab === 'settings' && (
         <SectionBox title="Réglages du trading libre (BUY/SELL)" action={<AdminBtn size="sm" color="green" onClick={saveSettings} disabled={savingSettings}>{savingSettings ? 'SAUVEGARDE...' : '💾 SAUVEGARDER'}</AdminBtn>}>
           <div className="space-y-3 max-w-md">
-            <p className="text-xs text-[#f4efe2]/50">
+            <p className="text-xs text-[#e7ebf2]/50">
               S'applique uniquement aux positions ouvertes directement sur le graphe (BUY/SELL). Les codes de scénario gardent leur propre pourcentage et durée, définis par code.
             </p>
             <Input
@@ -2703,10 +2703,10 @@ function ConfigTab({ api }) {
         <SectionBox title="Mode Maintenance">
           <div className="space-y-3">
             <div className="flex items-center justify-between border border-white/10 rounded p-3">
-              <span className="text-sm text-[#f4efe2]/80">Mode Maintenance</span>
+              <span className="text-sm text-[#e7ebf2]/80">Mode Maintenance</span>
               <button
                 onClick={() => setConfig({ ...config, maintenanceMode: !config.maintenanceMode })}
-                className={`px-4 py-1 text-xs font-semibold transition-all ${config.maintenanceMode ? 'bg-red-500 text-white' : 'bg-gray-800 text-[#f4efe2]/60'}`}
+                className={`px-4 py-1 text-xs font-semibold transition-all ${config.maintenanceMode ? 'bg-red-500 text-white' : 'bg-gray-800 text-[#e7ebf2]/60'}`}
               >
                 {config.maintenanceMode ? 'ACTIVÉ' : 'DÉSACTIVÉ'}
               </button>
@@ -2742,7 +2742,7 @@ function ConfigTab({ api }) {
             {config.usdtWallets.map((w, i) => (
               <div key={i} className="flex items-center gap-3 border border-white/10 rounded p-3">
                 <Badge label={w.network} color="yellow" />
-                <code className="flex-1 text-xs text-[#f4efe2]/80 break-all">{w.address}</code>
+                <code className="flex-1 text-xs text-[#e7ebf2]/80 break-all">{w.address}</code>
                 <button
                   type="button"
                   onClick={() => setConfig({ ...config, usdtWallets: config.usdtWallets.filter((_, idx) => idx !== i) })}
@@ -2788,7 +2788,7 @@ function ConfigTab({ api }) {
               </AdminBtn>
             </div>
             {config.usdtWallets.some(w => w.network === newWalletNetwork) && (
-              <p className="text-xs text-[#f4efe2]/40">Ce réseau a déjà une adresse configurée — supprimez-la d'abord pour la remplacer.</p>
+              <p className="text-xs text-[#e7ebf2]/40">Ce réseau a déjà une adresse configurée — supprimez-la d'abord pour la remplacer.</p>
             )}
           </div>
         </SectionBox>
@@ -2800,10 +2800,10 @@ function ConfigTab({ api }) {
               const labels = { academy: '🎓 Académie', referral: '👥 Parrainage' };
               return (
                 <div key={key} className="flex items-center justify-between border border-white/10 rounded p-3">
-                  <span className="text-sm text-[#f4efe2]/80">{labels[key] || key}</span>
+                  <span className="text-sm text-[#e7ebf2]/80">{labels[key] || key}</span>
                   <button
                     onClick={() => setConfig({ ...config, modules: { ...config.modules, [key]: !val } })}
-                    className={`px-4 py-1 text-xs font-semibold transition-all ${val ? 'bg-green-500 text-black' : 'bg-gray-800 text-[#f4efe2]/60'}`}
+                    className={`px-4 py-1 text-xs font-semibold transition-all ${val ? 'bg-green-500 text-black' : 'bg-gray-800 text-[#e7ebf2]/60'}`}
                   >
                     {val ? 'ACTIVÉ' : 'DÉSACTIVÉ'}
                   </button>
@@ -2881,7 +2881,7 @@ function LogsTab({ api }) {
               <div key={i} className="flex items-center justify-between border border-white/10 rounded p-2">
                 <div>
                   <p className="text-white text-xs font-bold">{a.firstName} {a.lastName}</p>
-                  <p className="text-[#f4efe2]/40 text-xs">{a.email}</p>
+                  <p className="text-[#e7ebf2]/40 text-xs">{a.email}</p>
                 </div>
                 <Badge label={a.role?.toUpperCase() || 'ADMIN'} color={a.role === 'superadmin' ? 'red' : 'yellow'} />
               </div>
@@ -2896,12 +2896,12 @@ function LogsTab({ api }) {
               <div key={i} className="border border-red-900/30 bg-red-900/10 rounded p-2 flex items-center justify-between">
                 <div>
                   <p className="text-red-400 font-bold text-xs font-mono">{b.ip}</p>
-                  <p className="text-[#f4efe2]/40 text-xs">{b.reason}</p>
+                  <p className="text-[#e7ebf2]/40 text-xs">{b.reason}</p>
                 </div>
                 <AdminBtn size="sm" color="gray" onClick={() => unblockIP(b.ip)}>DÉBLOQUER</AdminBtn>
               </div>
             ))}
-            {blockedIPs.length === 0 && <p className="text-[#f4efe2]/40 text-xs">Aucune IP bloquée</p>}
+            {blockedIPs.length === 0 && <p className="text-[#e7ebf2]/40 text-xs">Aucune IP bloquée</p>}
           </div>
           <div className="space-y-2">
             <input
@@ -2926,7 +2926,7 @@ function LogsTab({ api }) {
         <SectionBox title="Sécurité">
           <div className="space-y-2">
             <div className="flex justify-between text-xs border-b border-white/10 pb-2">
-              <span className="text-[#f4efe2]/50">IPs bloquées</span>
+              <span className="text-[#e7ebf2]/50">IPs bloquées</span>
               <span className={`font-bold ${blockedIPs.length > 0 ? 'text-red-400' : 'text-green-400'}`}>{blockedIPs.length}</span>
             </div>
           </div>
@@ -2944,10 +2944,10 @@ function LogsTab({ api }) {
       }>
         <AdminTable
           columns={[
-            { key: 'createdAt', label: 'Heure', render: v => <span className="text-[#f4efe2]/50 font-mono text-xs">{v ? new Date(v).toLocaleString('fr-FR') : '—'}</span> },
+            { key: 'createdAt', label: 'Heure', render: v => <span className="text-[#e7ebf2]/50 font-mono text-xs">{v ? new Date(v).toLocaleString('fr-FR') : '—'}</span> },
             { key: 'admin', label: 'Admin', render: v => <span className="text-yellow-400 font-bold">{v ? `${v.firstName} ${v.lastName}` : 'Système'}</span> },
             { key: 'action', label: 'Action' },
-            { key: 'target', label: 'Cible', render: v => <span className="font-mono text-[#f4efe2]/50">{v || '—'}</span> },
+            { key: 'target', label: 'Cible', render: v => <span className="font-mono text-[#e7ebf2]/50">{v || '—'}</span> },
             { key: 'level', label: 'Niveau', render: v => <Badge label={v?.toUpperCase()} color={levelColors[v] || 'gray'} /> },
           ]}
           data={filteredLogs.slice(0, 20)}
@@ -3019,7 +3019,7 @@ function ReportsTab({ api }) {
               <span className="text-xl">{r.icon}</span>
               <div>
                 <h3 className={`font-semibold text-${r.color}-400 text-sm`}>{r.title}</h3>
-                <p className="text-xs text-[#f4efe2]/50 mt-1">{r.desc}</p>
+                <p className="text-xs text-[#e7ebf2]/50 mt-1">{r.desc}</p>
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">
