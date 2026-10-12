@@ -3,6 +3,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getApiUrl } from '../../utils/apiUrl';
 import useForceDarkMode from '../../hooks/useForceDarkMode';
+import AuthShell from './AuthShell';
 
 const OAUTH_ERROR_MESSAGES = {
   google_not_configured: "La connexion Google n'est pas encore configurée sur ce site.",
@@ -76,25 +77,25 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10">
+    <AuthShell>
       <div className="w-full max-w-md">
-        <Link to="/" className="inline-block mb-6 text-sm text-yellow-500 hover:text-yellow-400">
+        <Link to="/" className="inline-flex items-center gap-2 mb-8 text-sm text-[#f4efe2]/50 hover:text-[#f3d58a] transition-colors">
           ← Accueil
         </Link>
 
         <div className="mb-6">
-          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto mb-4" />
-          <h1 className="text-xl font-bold text-white mb-1">
+          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-11 w-auto mb-8 lg:hidden" />
+          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none mb-3">
             {requires2FA ? 'Vérification 2FA' : 'Connexion'}
           </h1>
-          <p className="text-gray-400 text-sm">
+          <p className="text-[#f4efe2]/60 text-sm">
             {requires2FA
               ? 'Code de votre application d\'authentification'
               : 'Accédez à votre espace investisseur'}
           </p>
         </div>
 
-        <div className="imc-auth-card p-5">
+        <div className="lux-card !p-6 sm:!p-8 p-5">
 
             {serverStatus === 'offline' && (
               <div className="mb-6 flex items-start gap-3 p-4 bg-orange-950/50 border border-orange-800/40 rounded">
@@ -109,7 +110,7 @@ export default function Login() {
             )}
 
             {error && (
-              <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/60 border border-red-800/40 rounded animate-fadeIn">
+              <div className="mb-6 flex items-start gap-3 p-4 bg-rose-500/10 border border-rose-400/20 rounded-xl animate-fadeIn">
                 <span className="text-red-400 mt-0.5 text-sm flex-shrink-0">⚠</span>
                 <p className="text-red-300 text-sm">{error}</p>
               </div>
@@ -118,12 +119,12 @@ export default function Login() {
             {!requires2FA ? (
               <>
                 <div className="space-y-3 mb-6">
-                  <p className="text-xs text-gray-600 text-center tracking-widest uppercase mb-4">Connexion rapide</p>
+                  <p className="text-xs text-[#f4efe2]/40 text-center tracking-widest uppercase mb-4">Connexion rapide</p>
                   <button
                     type="button"
                     onClick={() => handleSocialLogin('google')}
                     disabled={!!socialLoading}
-                    className="w-full flex items-center justify-center gap-3 py-3 bg-white/[0.03] border border-white/[0.08] text-white font-semibold hover:bg-white/[0.07] hover:border-white/[0.15] transition-all duration-300 text-sm rounded disabled:opacity-50"
+                    className="lux-btn-ghost w-full !py-3 !gap-3"
                   >
                     {socialLoading === 'google' ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -141,28 +142,28 @@ export default function Login() {
 
                 <div className="flex items-center gap-4 mb-6">
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-yellow-900/30 to-transparent" />
-                  <span className="text-xs text-gray-600 font-medium uppercase tracking-widest">ou</span>
+                  <span className="text-xs text-[#f4efe2]/40 font-medium uppercase tracking-widest">ou</span>
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-yellow-900/30 to-transparent" />
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="group/input">
-                    <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase transition-colors duration-300 group-focus-within/input:text-yellow-400">Email</label>
+                    <label className="block lux-label mb-2">Email</label>
                     <input
                       name="email"
                       type="email"
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded"
+                      className="lux-input"
                       placeholder="votre@email.com"
                     />
                   </div>
 
                   <div className="group/input">
                     <div className="flex justify-between items-center mb-2">
-                      <label className="text-xs font-bold text-yellow-600 tracking-widest uppercase transition-colors duration-300 group-focus-within/input:text-yellow-400">Mot de passe</label>
-                      <Link to="/forgot-password" className="text-xs text-gray-600 hover:text-yellow-500 transition-colors duration-300">Oublié ?</Link>
+                      <label className="lux-label">Mot de passe</label>
+                      <Link to="/forgot-password" className="text-xs text-[#f4efe2]/40 hover:text-yellow-500 transition-colors duration-300">Oublié ?</Link>
                     </div>
                     <div className="relative">
                       <input
@@ -171,13 +172,13 @@ export default function Login() {
                         required
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 pr-12 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 text-sm rounded"
+                        className="lux-input !pr-12"
                         placeholder="••••••••"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-yellow-500 transition-all duration-300 p-1"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f4efe2]/40 hover:text-yellow-500 transition-all duration-300 p-1"
                       >
                         {showPassword ? (
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
@@ -188,7 +189,7 @@ export default function Login() {
                     </div>
                   </div>
 
-                  <button type="submit" disabled={loading} className="imc-btn-primary w-full !py-3.5 disabled:opacity-50">
+                  <button type="submit" disabled={loading} className="lux-btn-gold w-full !py-3.5 disabled:opacity-50">
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
                         <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
@@ -201,7 +202,7 @@ export default function Login() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="p-4 bg-yellow-900/[0.08] border border-yellow-900/25 rounded text-center">
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-[#f4efe2]/60">
                     Code à 6 chiffres de votre application d&apos;authentification
                   </p>
                 </div>
@@ -211,7 +212,7 @@ export default function Login() {
                   required
                   value={formData.twoFactorCode}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white text-center text-xl font-mono tracking-[0.4em] focus:border-yellow-500/60 focus:outline-none focus:bg-black/70 focus:ring-1 focus:ring-yellow-500/20 transition-all duration-300 rounded"
+                  className="lux-input text-center text-xl font-mono tracking-[0.4em] "
                   placeholder="000000"
                   maxLength={6}
                   autoComplete="off"
@@ -221,14 +222,14 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setRequires2FA(false)}
-                    className="px-5 py-3.5 border border-yellow-900/30 text-gray-400 font-semibold hover:border-yellow-700 hover:text-yellow-500 transition-all duration-300 text-sm rounded"
+                    className="lux-btn-ghost !px-5 !py-3.5"
                   >
                     ← Retour
                   </button>
                   <button
                     type="submit"
                     disabled={loading || formData.twoFactorCode.length !== 6}
-                    className="imc-btn-primary flex-1 disabled:opacity-50"
+                    className="lux-btn-gold flex-1 disabled:opacity-50"
                   >
                     {loading ? 'Vérification...' : 'Vérifier'}
                   </button>
@@ -236,12 +237,12 @@ export default function Login() {
               </form>
             )}
 
-            <p className="mt-5 text-center text-xs text-gray-500">
+            <p className="mt-5 text-center text-xs text-[#f4efe2]/50">
               Pas encore de compte ?{' '}
               <Link to="/register" className="text-yellow-400 hover:text-yellow-300">Créer un compte</Link>
             </p>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 }
