@@ -70,7 +70,7 @@ export default function TwoFactorAuth() {
   return (
     <div className="relative bg-[#0a0a0a] border border-yellow-900/20 rounded-lg p-6">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
-      <h3 className="text-lg font-black text-white tracking-wide mb-5">
+      <h3 className="text-lg font-semibold text-white tracking-wide mb-5">
         Authentification à deux facteurs (2FA)
       </h3>
 
@@ -102,14 +102,14 @@ export default function TwoFactorAuth() {
 
               <form onSubmit={handleDisable} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-yellow-600 tracking-widest uppercase mb-2">
+                  <label className="block lux-label mb-2">
                     Mot de passe (pour désactiver)
                   </label>
                   <input
                     type="password"
                     value={disablePassword}
                     onChange={(e) => setDisablePassword(e.target.value)}
-                    className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white placeholder-gray-700 focus:border-red-600/60 focus:outline-none focus:ring-1 focus:ring-red-500/20 transition-all text-sm rounded"
+                    className="w-full px-4 py-3 lux-input focus:ring-1 focus:ring-red-500/20 transition-all text-sm rounded"
                     placeholder="Votre mot de passe"
                     required
                   />
@@ -133,7 +133,7 @@ export default function TwoFactorAuth() {
                 </p>
               </div>
 
-              <ul className="space-y-1.5 text-sm text-gray-400 list-disc list-inside ml-1">
+              <ul className="space-y-1.5 text-sm text-[#f4efe2]/60 list-disc list-inside ml-1">
                 <li>Protection supplémentaire contre les accès non autorisés</li>
                 <li>Code unique généré toutes les 30 secondes</li>
                 <li>Compatible avec Google Authenticator, Authy, etc.</li>
@@ -142,7 +142,7 @@ export default function TwoFactorAuth() {
               <button
                 onClick={handleSetup}
                 disabled={loading}
-                className="px-6 py-3 font-black text-black text-xs tracking-widest uppercase rounded disabled:opacity-50 transition-all bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 bg-[length:200%_100%] hover:animate-gradient"
+                className="lux-btn-gold !px-6 !py-3 disabled:opacity-50"
               >
                 {loading ? 'CONFIGURATION...' : 'ACTIVER 2FA'}
               </button>
@@ -154,8 +154,8 @@ export default function TwoFactorAuth() {
       {step === 'setup' && (
         <div className="space-y-6">
           <div>
-            <h4 className="font-bold text-yellow-500 text-sm tracking-wide mb-3">Étape 1 : Scannez le QR Code</h4>
-            <p className="text-sm text-gray-500 mb-4">
+            <h4 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-3">Étape 1 : Scannez le QR Code</h4>
+            <p className="text-sm text-[#f4efe2]/50 mb-4">
               Utilisez une application d'authentification (Google Authenticator, Authy, etc.)
               pour scanner ce QR code :
             </p>
@@ -169,28 +169,28 @@ export default function TwoFactorAuth() {
 
           <div>
             <h4 className="font-bold text-yellow-500 text-sm tracking-wide mb-2">Ou entrez ce code manuellement :</h4>
-            <div className="p-3 bg-black/50 font-mono text-sm text-gray-300 break-all border border-yellow-900/30 rounded">
+            <div className="p-3 bg-black/50 font-mono text-sm text-[#f4efe2]/80 break-all border border-yellow-900/30 rounded">
               {secret}
             </div>
           </div>
 
           <div>
-            <h4 className="font-bold text-yellow-500 text-sm tracking-wide mb-3">Étape 2 : Vérifiez le code</h4>
+            <h4 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-3">Étape 2 : Vérifiez le code</h4>
             <form onSubmit={handleVerify} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-yellow-600 tracking-widest uppercase mb-2">
+                <label className="block lux-label mb-2">
                   Code de vérification
                 </label>
                 <input
                   type="text"
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
-                  className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white focus:border-yellow-500/60 focus:outline-none text-center text-2xl font-mono tracking-widest rounded"
+                  className="w-full px-4 py-3 lux-input text-center text-2xl font-mono tracking-widest rounded"
                   placeholder="000000"
                   maxLength={6}
                   required
                 />
-                <p className="mt-2 text-xs text-gray-600">
+                <p className="mt-2 text-xs text-[#f4efe2]/35">
                   Entrez le code à 6 chiffres affiché dans votre application
                 </p>
               </div>
@@ -199,7 +199,7 @@ export default function TwoFactorAuth() {
                 <button
                   type="submit"
                   disabled={loading || verificationCode.length !== 6}
-                  className="flex-1 py-3 font-black text-black text-xs tracking-widest uppercase rounded disabled:opacity-50 transition-all bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 bg-[length:200%_100%] hover:animate-gradient"
+                  className="lux-btn-gold flex-1 !py-3 disabled:opacity-50"
                 >
                   {loading ? 'VÉRIFICATION...' : 'VÉRIFIER ET ACTIVER'}
                 </button>
@@ -211,7 +211,7 @@ export default function TwoFactorAuth() {
                     setVerificationCode('');
                     setError('');
                   }}
-                  className="px-6 py-3 border border-yellow-900/30 text-gray-400 font-bold text-xs tracking-widest uppercase hover:border-yellow-600 hover:text-yellow-500 transition-all rounded"
+                  className="px-6 py-3 border border-yellow-900/30 text-[#f4efe2]/60 font-bold text-xs tracking-widest uppercase hover:border-yellow-600 hover:text-yellow-500 transition-all rounded"
                 >
                   ANNULER
                 </button>

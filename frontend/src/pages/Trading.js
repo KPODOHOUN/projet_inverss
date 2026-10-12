@@ -14,7 +14,7 @@ function CandlestickChart({ series, source }) {
   const plotW = width - padL - padR, plotH = height - padT - padB;
 
   if (!series || series.length < 2) {
-    return <div className="h-[260px] flex items-center justify-center text-gray-600 text-sm">Pas assez de données</div>;
+    return <div className="h-[260px] flex items-center justify-center text-[#f4efe2]/35 text-sm">Pas assez de données</div>;
   }
 
   const candles = series.map((p, i) => {
@@ -56,11 +56,11 @@ function CandlestickChart({ series, source }) {
   return (
     <div>
       <div className="flex items-baseline gap-3 mb-4 flex-wrap">
-        <span className="text-2xl font-black text-white">${last.close.toLocaleString('fr-FR')}</span>
-        <span className={`text-sm font-bold ${isUp ? 'text-green-400' : 'text-red-400'}`}>
+        <span className="lux-num text-3xl sm:text-4xl font-light text-[#f4efe2]">${last.close.toLocaleString('fr-FR')}</span>
+        <span className={`lux-pill ${isUp ? 'bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20' : 'bg-rose-400/10 text-rose-300 ring-1 ring-inset ring-rose-400/20'}`}>
           {isUp ? '▲' : '▼'} {Math.abs(changePct).toFixed(2)}%
         </span>
-        <span className="text-xs text-gray-600">sur {n} jours</span>
+        <span className="text-xs text-[#f4efe2]/35">sur {n} jours</span>
       </div>
       <div className="relative">
         <svg
@@ -73,14 +73,14 @@ function CandlestickChart({ series, source }) {
           {gridLines.map((g, i) => (
             <g key={i}>
               <line x1={padL} y1={g.y} x2={width - padR} y2={g.y} stroke="currentColor" className="text-gray-800" strokeWidth="1" />
-              <text x={padL - 8} y={g.y} textAnchor="end" dominantBaseline="middle" fontSize="10" fill="currentColor" className="text-gray-500">
+              <text x={padL - 8} y={g.y} textAnchor="end" dominantBaseline="middle" fontSize="10" fill="currentColor" className="text-[#f4efe2]/50">
                 ${g.value >= 1000 ? Math.round(g.value).toLocaleString('fr-FR') : g.value.toFixed(g.value < 10 ? 3 : 1)}
               </text>
             </g>
           ))}
 
           {dateTickIdx.map((i, k) => (
-            <text key={k} x={xAt(i)} y={height - 8} textAnchor={k === 0 ? 'start' : k === dateTickIdx.length - 1 ? 'end' : 'middle'} fontSize="10" fill="currentColor" className="text-gray-500">
+            <text key={k} x={xAt(i)} y={height - 8} textAnchor={k === 0 ? 'start' : k === dateTickIdx.length - 1 ? 'end' : 'middle'} fontSize="10" fill="currentColor" className="text-[#f4efe2]/50">
               {candles[i].date.slice(5)}
             </text>
           ))}
@@ -105,7 +105,7 @@ function CandlestickChart({ series, source }) {
           })}
 
           {hover !== null && (
-            <line x1={xAt(hover)} y1={padT} x2={xAt(hover)} y2={padT + plotH} stroke="currentColor" className="text-gray-600" strokeWidth="1" strokeDasharray="3,3" />
+            <line x1={xAt(hover)} y1={padT} x2={xAt(hover)} y2={padT + plotH} stroke="currentColor" className="text-[#f4efe2]/35" strokeWidth="1" strokeDasharray="3,3" />
           )}
         </svg>
 
@@ -117,13 +117,13 @@ function CandlestickChart({ series, source }) {
               transform: tooltipRight ? 'translateX(calc(-100% - 10px))' : 'translateX(10px)'
             }}
           >
-            <p className="text-[10px] text-gray-500 whitespace-nowrap">{shown.date}</p>
+            <p className="text-[10px] text-[#f4efe2]/50 whitespace-nowrap">{shown.date}</p>
             <p className="text-sm font-bold text-yellow-400 whitespace-nowrap">${shown.close.toLocaleString('fr-FR')}</p>
           </div>
         )}
       </div>
       {source !== 'live' && (
-        <p className="text-[10px] text-gray-600 mt-2 italic">
+        <p className="text-[10px] text-[#f4efe2]/35 mt-2 italic">
           Simulation interne — ne reflète pas un marché externe réel.
         </p>
       )}
@@ -160,18 +160,18 @@ function PositionRow({ p }) {
           </span>
           <span className="text-white font-bold text-sm">{p.asset}</span>
         </div>
-        <span className={`text-xs font-bold whitespace-nowrap ${running ? 'text-yellow-500' : 'text-gray-500'}`}>
+        <span className={`text-xs font-bold whitespace-nowrap ${running ? 'text-yellow-500' : 'text-[#f4efe2]/50'}`}>
           {running ? 'En cours' : p.outcome === 'win' ? 'Gagnée' : p.outcome === 'loss' ? 'Perdue' : 'Neutre'}
         </span>
       </div>
-      <div className="flex justify-between text-xs text-gray-500">
+      <div className="flex justify-between text-xs text-[#f4efe2]/50">
         <span>${p.amount.toFixed(2)} engagés</span>
         {amountShown !== null && amountShown !== undefined ? (
           <span className={`font-bold ${amountShown >= 0 ? 'text-green-400' : 'text-red-400'}`}>
             {amountShown >= 0 ? '+' : ''}${amountShown.toFixed(2)}{running ? ' (estimé)' : ''}
           </span>
         ) : running ? (
-          <span className="text-gray-600 italic">Résultat à la clôture</span>
+          <span className="text-[#f4efe2]/35 italic">Résultat à la clôture</span>
         ) : null}
       </div>
       {running && remaining > 0 && (
@@ -341,68 +341,70 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
     : positions.filter(p => now - new Date(p.openedAt).getTime() <= periodMs[positionFilter]);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12">
-      <div className="mb-8">
-        <h1 className="text-2xl font-black text-white">Trading</h1>
+    <div className="space-y-6">
+      <div className="animate-cardIn mb-2">
+        <p className="lux-label mb-2">Marchés</p>
+        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none">Trading</h1>
+        <p className="mt-2 text-sm text-[#f4efe2]/50">Prenez position sur les grands actifs mondiaux.</p>
       </div>
 
       {user.kycStatus !== 'verified' && (
-        <div className="mb-8 p-6 bg-yellow-900/10 border border-yellow-800/40 rounded">
-          <h3 className="font-bold text-yellow-400 mb-2">Vérification KYC requise</h3>
-          <p className="text-yellow-200/70 mb-4">Vous devez compléter votre vérification d'identité avant de trader.</p>
-          <button onClick={() => onNavigate?.('kyc')} className="inline-block px-6 py-2 bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition-colors rounded">
-            COMPLÉTER MON KYC →
+        <div className="lux-card-gold p-6">
+          <h3 className="relative lux-serif text-2xl font-semibold text-[#f3d58a] mb-1">Vérification KYC requise</h3>
+          <p className="relative text-sm text-[#f4efe2]/60 mb-4">Vous devez compléter votre vérification d'identité avant de trader.</p>
+          <button onClick={() => onNavigate?.('kyc')} className="relative lux-btn-gold !px-6">
+            Compléter mon KYC →
           </button>
         </div>
       )}
 
       {/* Asset picker */}
-      <div className="grid lg:grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {assets.map(a => (
           <button
             key={a.key}
             onClick={() => setSelectedAsset(a.key)}
-            className={`p-4 border rounded-lg text-left transition-colors ${selectedAsset === a.key ? 'border-yellow-500 bg-yellow-900/10' : 'border-yellow-900/20 hover:border-yellow-700'}`}
+            className={`lux-card p-4 text-left transition-all ${selectedAsset === a.key ? '!border-yellow-500/50 shadow-[0_0_0_1px_rgba(212,175,55,0.25),0_16px_40px_-20px_rgba(212,175,55,0.5)]' : 'lux-card-hover'}`}
           >
             <div className="flex items-center gap-1.5">
-              <p className="font-bold text-white text-sm">{a.name}</p>
-              {a.source === 'live' && <span className="w-1.5 h-1.5 rounded-full bg-green-500" title="Données réelles" />}
+              <p className="font-medium text-[#f4efe2] text-sm">{a.name}</p>
+              {a.source === 'live' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" title="Données réelles" />}
             </div>
-            <p className="text-xs text-gray-500">{a.symbol} · ${a.price.toLocaleString('fr-FR')}</p>
+            <p className="text-xs text-[#f4efe2]/45 mt-0.5 lux-num">{a.symbol} · ${a.price.toLocaleString('fr-FR')}</p>
           </button>
         ))}
       </div>
 
       {/* ── Self-directed trading: BUY/SELL live on the chart ─────────────── */}
       {currentAsset && (
-        <div className="mb-8 p-6 bg-[#0d0d0d] border border-yellow-900/20 rounded-lg">
+        <div className="p-6 sm:p-7 lux-card">
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <h2 className="font-black text-white">{currentAsset.name}</h2>
-            <span className="text-xs font-bold text-yellow-500 bg-yellow-900/20 border border-yellow-700/40 px-2 py-0.5 rounded">
+            <h2 className="lux-serif text-2xl font-semibold text-[#f4efe2]">{currentAsset.name}</h2>
+            <span className="lux-pill bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/25">
               {settings.payoutPercent}%
             </span>
           </div>
 
           {chart ? <CandlestickChart series={chart.series} source={chart.source} /> : <div className="h-[220px]" />}
 
-          {selfError && <div className="mt-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{selfError}</div>}
-          {selfSuccess && <div className="mt-4 p-3 bg-green-950/40 border border-green-800/40 text-green-300 text-sm rounded font-bold">✓ {selfSuccess}</div>}
+          {selfError && <div className="mt-4 p-3 rounded-xl bg-rose-500/10 border border-rose-400/20 text-rose-200 text-sm">{selfError}</div>}
+          {selfSuccess && <div className="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-400/20 text-emerald-200 text-sm">✓ {selfSuccess}</div>}
 
           <div className="mt-5 flex flex-wrap items-end gap-3">
             <div className="flex-1 min-w-[120px]">
-              <label className="block text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Montant ($)</label>
+              <label className="block lux-label !text-[10px] mb-1.5">Montant ($)</label>
               <input
                 type="number" step="0.01" min="0.01"
                 value={selfAmount} onChange={e => setSelfAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-3 py-2.5 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none font-bold rounded"
+                className="lux-input"
               />
             </div>
             <div className="min-w-[110px]">
-              <label className="block text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-wider">Durée</label>
+              <label className="block lux-label !text-[10px] mb-1.5">Durée</label>
               <select
                 value={selfDuration} onChange={e => setSelfDuration(Number(e.target.value))}
-                className="w-full px-3 py-2.5 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none font-bold rounded"
+                className="lux-input"
               >
                 {settings.durationsMinutes.map(d => (
                   <option key={d} value={d}>{d} min</option>
@@ -412,73 +414,73 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
             <button
               onClick={() => openSelfPosition('SELL')}
               disabled={!!selfSubmitting || user.kycStatus !== 'verified'}
-              className="flex-1 min-w-[110px] py-3 bg-red-600 hover:bg-red-500 text-white font-black rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 min-w-[110px] py-3 rounded-[0.65rem] font-semibold text-sm text-white bg-gradient-to-b from-rose-500 to-rose-700 shadow-[0_8px_22px_-10px_rgba(244,63,94,0.7)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
-              {selfSubmitting === 'SELL' ? '...' : '▼ EN BAS'}
+              {selfSubmitting === 'SELL' ? '…' : '▼ En bas'}
             </button>
             <button
               onClick={() => openSelfPosition('BUY')}
               disabled={!!selfSubmitting || user.kycStatus !== 'verified'}
-              className="flex-1 min-w-[110px] py-3 bg-green-600 hover:bg-green-500 text-white font-black rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 min-w-[110px] py-3 rounded-[0.65rem] font-semibold text-sm text-white bg-gradient-to-b from-emerald-500 to-emerald-700 shadow-[0_8px_22px_-10px_rgba(16,185,129,0.7)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
-              {selfSubmitting === 'BUY' ? '...' : '▲ EN HAUT'}
+              {selfSubmitting === 'BUY' ? '…' : '▲ En haut'}
             </button>
           </div>
         </div>
       )}
 
       {/* ── Scenario codes: fully independent from the chart above ────────── */}
-      <div className="mb-8 p-6 bg-[#0d0d0d] border border-blue-900/20 rounded-lg">
+      <div className="lux-card p-6">
         <div className="flex items-center gap-2 mb-1">
-          <h2 className="font-black text-white">Code de scénario</h2>
+          <h2 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Code de scénario</h2>
         </div>
-        <p className="text-xs text-gray-500 mb-4">
+        <p className="text-xs text-[#f4efe2]/50 mb-4">
           Vous avez reçu un code de l'administrateur ? Entrez-le avec un montant : le résultat appliqué sera exactement le pourcentage défini sur ce code, quel que soit le marché.
         </p>
 
-        {codeError && <div className="mb-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{codeError}</div>}
-        {codeSuccess && <div className="mb-4 p-3 bg-green-950/40 border border-green-800/40 text-green-300 text-sm rounded font-bold">✓ {codeSuccess}</div>}
+        {codeError && <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-400/20 text-rose-200 text-sm">{codeError}</div>}
+        {codeSuccess && <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-400/20 text-emerald-200 text-sm">✓ {codeSuccess}</div>}
 
         <form onSubmit={redeemCode} className="flex flex-wrap items-end gap-3">
           <div className="flex-1 min-w-[140px]">
-            <label className="block text-[10px] text-blue-300 font-bold mb-1 uppercase tracking-wider">Code</label>
+            <label className="block lux-label !text-[10px] mb-1.5">Code</label>
             <input
               type="text"
               value={code} onChange={e => setCode(e.target.value.toUpperCase())}
               placeholder="Ex: 5E5LPR"
-              className="w-full px-3 py-2.5 bg-black border border-blue-900/30 text-white focus:border-blue-500 focus:outline-none font-bold rounded uppercase"
+              className="lux-input uppercase"
             />
           </div>
           <div className="flex-1 min-w-[120px]">
-            <label className="block text-[10px] text-blue-300 font-bold mb-1 uppercase tracking-wider">Montant ($)</label>
+            <label className="block lux-label !text-[10px] mb-1.5">Montant ($)</label>
             <input
               type="number" step="0.01" min="0.01"
               value={codeAmount} onChange={e => setCodeAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-3 py-2.5 bg-black border border-blue-900/30 text-white focus:border-blue-500 focus:outline-none font-bold rounded"
+              className="lux-input"
             />
           </div>
           <button
             type="submit"
             disabled={codeSubmitting || user.kycStatus !== 'verified'}
-            className="py-3 px-8 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-black rounded disabled:opacity-40 disabled:cursor-not-allowed"
+            className="lux-btn-gold !py-3 !px-8"
           >
-            {codeSubmitting ? 'TRAITEMENT...' : 'UTILISER LE CODE'}
+            {codeSubmitting ? 'Traitement…' : 'Utiliser le code'}
           </button>
         </form>
-        <p className="text-[10px] text-gray-600 mt-2">Disponible : ${balance.toFixed(2)}</p>
+        <p className="text-[10px] text-[#f4efe2]/35 mt-2">Disponible : ${balance.toFixed(2)}</p>
       </div>
 
       {/* ── History, shared by both mechanisms ─────────────────────────────── */}
-      <div className="bg-[#0d0d0d] border border-yellow-900/20 p-6 rounded-lg">
+      <div className="lux-card p-6">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
-          <h3 className="text-lg font-black text-yellow-500">Mes positions</h3>
+          <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Mes positions</h3>
           <div className="flex flex-wrap gap-2">
             {POSITION_PERIODS.map(({ value, label }) => (
               <button
                 key={value}
                 onClick={() => setPositionFilter(value)}
-                className={`px-3 py-1 text-xs font-bold rounded transition-colors ${positionFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+                className={`lux-chip ${positionFilter === value ? 'is-active' : ''}`}
               >
                 {label}
               </button>
@@ -486,7 +488,7 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
           </div>
         </div>
         {filteredPositions.length === 0 ? (
-          <p className="text-center py-8 text-gray-500 text-sm">
+          <p className="text-center py-8 text-[#f4efe2]/50 text-sm">
             {positions.length === 0 ? "Aucune position pour l'instant" : 'Aucune position sur cette période'}
           </p>
         ) : (

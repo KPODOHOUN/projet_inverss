@@ -257,18 +257,16 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="dash-scope min-h-screen bg-black relative">
+    <div className="dash-scope lux-page min-h-screen relative">
       <div className="relative z-10">
 
-      {}
-      <header className="imc-glass-nav sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-12 sm:h-16 flex items-center justify-between">
+      <header className="lux-header sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-[68px] flex items-center justify-between">
 
-          {}
           <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-1.5 sm:p-2 text-yellow-400 hover:bg-yellow-500/10 transition-colors bg-transparent border-none cursor-pointer"
+              className="lg:hidden p-2 rounded-lg text-yellow-300 hover:bg-yellow-500/10 transition-colors bg-transparent border-none cursor-pointer"
               aria-label="Menu"
             >
               {sidebarOpen ? <IC.Close /> : <IC.Menu />}
@@ -276,19 +274,20 @@ export default function Dashboard() {
             <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-8 w-auto object-contain hidden sm:block" />
           </div>
 
-          {}
           <div className="flex items-center gap-2 sm:gap-4">
             <NotificationBell onNavigate={handleNotificationNavigate} />
-            <div className="text-right hidden sm:block">
-              <p className="font-semibold text-sm text-white leading-tight">
-                {user?.firstName} {user?.lastName}
-              </p>
-              <p className="text-xs text-gray-500">{user?.email}</p>
+            <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-yellow-900/30">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-[#17130a] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a] overflow-hidden shrink-0">
+                {user?.avatarUrl
+                  ? <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                  : `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase()}
+              </div>
+              <div className="leading-tight">
+                <p className="font-medium text-sm text-[#f4efe2]">{user?.firstName} {user?.lastName}</p>
+                <p className="text-xs text-[#f4efe2]/40">{user?.email}</p>
+              </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 border border-yellow-600/50 rounded text-yellow-400 hover:bg-yellow-600 hover:text-white text-xs sm:text-sm bg-transparent cursor-pointer"
-            >
+            <button onClick={handleLogout} className="lux-btn-ghost !px-3 sm:!px-4 !py-2" aria-label="Déconnexion">
               <IC.Logout />
               <span className="hidden sm:inline">Déconnexion</span>
             </button>
@@ -296,42 +295,35 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/70 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-10">
 
-          {}
           <aside className={`
             lg:col-span-1
             fixed lg:static top-0 left-0 h-full lg:h-auto w-72 lg:w-auto
             z-50 lg:z-auto
             transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
             transition-transform duration-300 ease-in-out
-            pt-12 sm:pt-16 lg:pt-0
+            pt-14 sm:pt-[68px] lg:pt-0
             overflow-y-auto lg:overflow-visible
           `}>
-            <div className="bg-black lg:bg-transparent h-full lg:h-auto">
+            <div className="bg-[#07070a] lg:bg-transparent h-full lg:h-auto p-3 lg:p-0 lg:sticky lg:top-24">
 
-              {}
-              <nav className="bg-gray-900 border border-white/10 rounded-lg p-2">
+              <nav className="lux-card p-2 space-y-0.5">
                 {navItems.map(({ id, Icon, label, external }) => (
                   <button
                     key={id}
                     onClick={() => { if (external) navigate(external); else setActiveTab(id); setSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm font-medium bg-transparent border-none cursor-pointer text-left ${
-                      activeTab === id
-                        ? 'bg-yellow-600 text-white'
-                        : 'text-gray-400 hover:text-yellow-400 hover:bg-white/5'
-                    }`}
+                    className={`lux-nav-item ${activeTab === id ? 'is-active' : ''}`}
                   >
-                    <span className={activeTab === id ? 'text-white' : 'text-current'}>
+                    <span className={activeTab === id ? 'text-[#f3d58a]' : 'text-current opacity-80'}>
                       <Icon />
                     </span>
                     {label}
@@ -339,18 +331,15 @@ export default function Dashboard() {
                 ))}
               </nav>
 
-              {}
-              <div className="mt-3 bg-gray-900 border border-white/10 rounded-lg p-4">
-                <h3 className="font-semibold text-xs text-yellow-500 mb-3">
-                  Statut du compte
-                </h3>
-                <div className="space-y-2.5 text-xs">
+              <div className="mt-4 lux-card p-5">
+                <p className="lux-label mb-4">Statut du compte</p>
+                <div className="space-y-3 text-xs">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500">Type</span>
-                    <span className="font-semibold uppercase text-white">{ROLE_LABEL[user?.role] || user?.role}</span>
+                    <span className="text-[#f4efe2]/50">Type</span>
+                    <span className="font-semibold lux-gold-text uppercase tracking-wider">{ROLE_LABEL[user?.role] || user?.role}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500">KYC</span>
+                    <span className="text-[#f4efe2]/50">KYC</span>
                     <span className={`flex items-center gap-1 font-semibold ${
                       user?.kycStatus === 'verified' ? 'text-green-400' :
                       user?.kycStatus === 'rejected' ? 'text-red-400' : 'text-yellow-400'
@@ -361,8 +350,8 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500">2FA</span>
-                    <span className={`flex items-center gap-1 font-semibold ${user?.twoFactorEnabled ? 'text-green-400' : 'text-gray-500'}`}>
+                    <span className="text-[#f4efe2]/50">2FA</span>
+                    <span className={`flex items-center gap-1 font-semibold ${user?.twoFactorEnabled ? 'text-green-400' : 'text-[#f4efe2]/50'}`}>
                       {user?.twoFactorEnabled
                         ? <><IC.Check color="#4ade80" /> Activé</>
                         : <><IC.X color="#6b7280" /> Désactivé</>
@@ -399,19 +388,25 @@ export default function Dashboard() {
 
 function Spinner() {
   return (
-    <div className="flex items-center justify-center py-16">
+    <div className="flex items-center justify-center py-20">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-10 h-10 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-gray-500 text-sm tracking-wide">Chargement…</p>
+        <div className="relative w-11 h-11">
+          <div className="absolute inset-0 rounded-full border border-yellow-900/40" />
+          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#d4af37] animate-spin" />
+        </div>
+        <p className="lux-label">Chargement</p>
       </div>
     </div>
   );
 }
 
-function PageHeader({ title, children }) {
+function PageHeader({ title, subtitle, children }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-      <h2 className="text-base sm:text-xl font-bold text-white tracking-tight">{title}</h2>
+    <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
+      <div>
+        <h2 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#f4efe2] leading-none">{title}</h2>
+        {subtitle && <p className="mt-2 text-sm text-[#f4efe2]/50">{subtitle}</p>}
+      </div>
       {children}
     </div>
   );
@@ -419,35 +414,42 @@ function PageHeader({ title, children }) {
 
 function Card({ children, className = '' }) {
   return (
-    <div className={`bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg ${className}`}>
+    <div className={`lux-card ${className}`}>
       {children}
     </div>
   );
 }
 
+const TONE = {
+  green:  'bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20',
+  red:    'bg-rose-400/10 text-rose-300 ring-1 ring-inset ring-rose-400/20',
+  gold:   'bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/25',
+  blue:   'bg-sky-400/10 text-sky-300 ring-1 ring-inset ring-sky-400/20',
+  violet: 'bg-violet-400/10 text-violet-300 ring-1 ring-inset ring-violet-400/20',
+  gray:   'bg-white/5 text-[#f4efe2]/60 ring-1 ring-inset ring-white/10',
+};
+
 function Badge({ status }) {
   const map = {
-    active:      { label: 'Actif',      cls: 'bg-green-900/50 text-green-400' },
-    completed:   { label: 'Terminé',    cls: 'bg-blue-900/50 text-blue-400'   },
-    pending:     { label: 'En attente', cls: 'bg-yellow-900/50 text-yellow-400' },
-    failed:      { label: 'Échoué',     cls: 'bg-red-900/50 text-red-400'     },
-    deposit:      { label: 'Dépôt',           cls: 'bg-green-900/50 text-green-400'  },
-    withdrawal:   { label: 'Retrait',         cls: 'bg-red-900/50 text-red-400'      },
-    investment:   { label: 'Investissement',  cls: 'bg-blue-900/50 text-blue-400'    },
-    earning:      { label: 'Gain',            cls: 'bg-green-900/50 text-green-400'  },
-    reinvestment: { label: 'Réinvestissement',cls: 'bg-blue-900/50 text-blue-400'    },
-    commission:   { label: 'Commission',      cls: 'bg-purple-900/50 text-purple-400'},
-    refund:       { label: 'Remboursement',   cls: 'bg-gray-800 text-gray-300'       },
-    trading:      { label: 'Trading',         cls: 'bg-purple-900/50 text-purple-400'},
-    rejected:     { label: 'Rejeté',          cls: 'bg-red-900/50 text-red-400'      },
-    approved:     { label: 'Approuvé',        cls: 'bg-blue-900/50 text-blue-400'    },
-    processing:   { label: 'En traitement',   cls: 'bg-purple-900/50 text-purple-400'},
-    cancelled:    { label: 'Annulé',          cls: 'bg-gray-800 text-gray-400'       },
+    active:       { label: 'Actif',            tone: 'green'  },
+    completed:    { label: 'Terminé',          tone: 'blue'   },
+    pending:      { label: 'En attente',       tone: 'gold'   },
+    failed:       { label: 'Échoué',           tone: 'red'    },
+    deposit:      { label: 'Dépôt',            tone: 'green'  },
+    withdrawal:   { label: 'Retrait',          tone: 'red'    },
+    investment:   { label: 'Investissement',   tone: 'blue'   },
+    earning:      { label: 'Gain',             tone: 'green'  },
+    reinvestment: { label: 'Réinvestissement', tone: 'blue'   },
+    commission:   { label: 'Commission',       tone: 'violet' },
+    refund:       { label: 'Remboursement',    tone: 'gray'   },
+    trading:      { label: 'Trading',          tone: 'violet' },
+    rejected:     { label: 'Rejeté',           tone: 'red'    },
+    approved:     { label: 'Approuvé',         tone: 'blue'   },
+    processing:   { label: 'En traitement',    tone: 'violet' },
+    cancelled:    { label: 'Annulé',           tone: 'gray'   },
   };
-  const { label, cls } = map[status] || { label: status, cls: 'bg-gray-800 text-gray-400' };
-  return (
-    <span className={`px-2.5 py-1 text-xs font-bold tracking-wide rounded-full ${cls}`}>{label.toUpperCase()}</span>
-  );
+  const { label, tone } = map[status] || { label: status, tone: 'gray' };
+  return <span className={`lux-pill ${TONE[tone]}`}>{label}</span>;
 }
 
 function OverviewTab({ user, balance, summary, investments, transactions, stats, loading, onRefresh, onNavigate }) {
@@ -456,155 +458,172 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
   const quickLinks = [
     { id: 'academy',  Icon: IC.Academy,  title: 'Académie',   desc: 'Formez-vous à l\'investissement' },
     { id: 'trading',  Icon: IC.TrendUp,  title: 'Trading',    desc: 'Suivez les marchés en direct' },
-    { id: 'referral', Icon: IC.Referral, title: 'Parrainage', desc: 'Invitez vos contacts' },
+    user?.role === 'ambassador'
+      ? { id: 'faq',      Icon: IC.Help,     title: "Centre d'aide", desc: 'Questions fréquentes' }
+      : { id: 'referral', Icon: IC.Referral, title: 'Parrainage',    desc: 'Invitez vos contacts' },
   ];
 
   const recentActivity = [...(transactions || [])]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 5);
 
+  const hour = new Date().getHours();
+  const greeting = hour < 18 ? 'Bonjour' : 'Bonsoir';
+  const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
 
-      {}
-      <div>
-        <h2 className="text-base sm:text-lg font-bold text-white tracking-tight mb-1">
-          Bonjour, {user?.firstName}
+      <div className="animate-cardIn">
+        <p className="lux-label mb-2 capitalize">{today}</p>
+        <h2 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-[1.05]">
+          {greeting}, <span className="lux-gold-text italic">{user?.firstName}</span>
         </h2>
-        <p className="text-gray-500 text-sm">Voici un aperçu de votre compte IMC</p>
+        <p className="mt-2 text-sm text-[#f4efe2]/50">Voici l'état de votre patrimoine aujourd'hui.</p>
       </div>
 
-      {}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-1 bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 shadow-2xl shadow-yellow-500/20 relative overflow-hidden rounded-lg">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-black/10 rounded-bl-full pointer-events-none" />
-          <p className="text-xs font-bold tracking-widest uppercase text-black/50 mb-2">Solde disponible</p>
-          <h3 className="text-xl sm:text-2xl font-bold text-black mb-5 tracking-tight">
-            $ <AnimatedNumber value={balance} />
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => onNavigate('wallet')}
-              className="flex items-center gap-1.5 px-4 py-2 rounded bg-black text-yellow-500 font-bold text-xs hover:bg-gray-900 transition-colors tracking-wide cursor-pointer border-none"
-            >
-              Déposer <IC.ArrowRight />
-            </button>
-            <button
-              onClick={() => onNavigate('invest')}
-              className="flex items-center gap-1.5 px-4 py-2 border-2 border-black/40 rounded font-bold text-xs hover:bg-black/10 transition-colors tracking-wide text-black cursor-pointer bg-transparent"
-            >
-              Investir
-            </button>
-            <button
-              onClick={() => onNavigate('wallet')}
-              className="flex items-center gap-1.5 px-4 py-2 border-2 border-black/40 rounded font-bold text-xs hover:bg-black/10 transition-colors tracking-wide text-black cursor-pointer bg-transparent"
-            >
-              Retirer
-            </button>
-          </div>
-        </div>
-
-        <button
-          onClick={() => onNavigate('investments')}
-          className="text-left bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg p-6 hover:border-yellow-700/50 transition-colors cursor-pointer"
-        >
-          <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">Investi</p>
-          <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 tracking-tight">
-            $ <AnimatedNumber value={summary?.invested ?? 0} />
-          </h3>
-          <span className="text-xs text-yellow-500 font-bold flex items-center gap-1">
-            Voir mes investissements <IC.ArrowRight />
-          </span>
-        </button>
-
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg p-6">
-          <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">Valeur du portefeuille</p>
-          <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 tracking-tight">
-            $ <AnimatedNumber value={summary?.currentValue ?? 0} />
-          </h3>
-          <span className="text-xs text-gray-500">Capital investi + gains accumulés</span>
-        </div>
-      </div>
-
-      {}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {quickLinks.map(({ id, Icon, title, desc }, i) => (
-          <button
-            key={id}
-            onClick={() => onNavigate(id)}
-            style={{ animationDelay: `${i * 80}ms` }}
-            className="animate-cardIn w-full text-left p-5 bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/20 rounded-lg hover:border-yellow-500/40 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer"
-          >
-            <div className="text-yellow-500/70 group-hover:text-yellow-500 transition-colors mb-3">
-              <Icon />
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-5">
+        <div className="lux-card-gold lg:col-span-3 p-6 sm:p-8 animate-cardIn overflow-hidden">
+          <svg aria-hidden="true" viewBox="0 0 400 140" preserveAspectRatio="none" className="absolute right-0 top-[22%] w-[55%] h-[48%] pointer-events-none opacity-60 hidden sm:block">
+            <defs>
+              <linearGradient id="luxArea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#d4af37" stopOpacity="0.22" />
+                <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="luxLine" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#d4af37" stopOpacity="0" />
+                <stop offset="60%" stopColor="#f3d58a" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#f3d58a" stopOpacity="1" />
+              </linearGradient>
+            </defs>
+            <path d="M0,120 C40,115 70,95 110,100 C150,105 170,80 210,70 C250,60 270,78 310,50 C340,30 370,32 400,12 L400,140 L0,140 Z" fill="url(#luxArea)" />
+            <path d="M0,120 C40,115 70,95 110,100 C150,105 170,80 210,70 C250,60 270,78 310,50 C340,30 370,32 400,12" fill="none" stroke="url(#luxLine)" strokeWidth="1.5" />
+          </svg>
+          <div className="relative flex flex-col h-full">
+            <div className="flex items-center justify-between mb-6">
+              <p className="lux-label !text-[#f3d58a]/70">Solde disponible</p>
+              <span className="lux-pill bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">USDT</span>
             </div>
-            <p className="font-bold text-white text-sm group-hover:text-yellow-400 transition-colors mb-1">{title}</p>
-            <p className="text-xs text-gray-500">{desc}</p>
+            <p className="lux-num text-4xl sm:text-5xl font-light text-[#f4efe2] mb-1">
+              <span className="text-[#f3d58a]/70 text-2xl sm:text-3xl align-top mr-1">$</span><AnimatedNumber value={balance} />
+            </p>
+            <p className="text-xs text-[#f4efe2]/40 mb-8">Disponible pour investir ou retirer</p>
+            <div className="mt-auto flex flex-wrap gap-2.5">
+              <button onClick={() => onNavigate('wallet')} className="lux-btn-gold">
+                Déposer <IC.ArrowRight />
+              </button>
+              <button onClick={() => onNavigate('invest')} className="lux-btn-ghost !bg-black/40 backdrop-blur-sm">Investir</button>
+              <button onClick={() => onNavigate('wallet')} className="lux-btn-ghost !bg-black/40 backdrop-blur-sm">Retirer</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-5">
+          <button
+            onClick={() => onNavigate('investments')}
+            style={{ animationDelay: '80ms' }}
+            className="lux-card lux-card-hover animate-cardIn text-left p-6 cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <p className="lux-label">Capital investi</p>
+              <span className="lux-icon-chip !w-8 !h-8"><IC.Briefcase /></span>
+            </div>
+            <p className="lux-num text-2xl sm:text-3xl font-light text-[#f4efe2]">
+              <span className="text-[#f4efe2]/40 text-lg mr-1">$</span><AnimatedNumber value={summary?.invested ?? 0} />
+            </p>
+            <span className="mt-3 text-xs text-[#d4af37] font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+              Mes investissements <IC.ArrowRight />
+            </span>
           </button>
-        ))}
+
+          <div style={{ animationDelay: '160ms' }} className="lux-card animate-cardIn p-6">
+            <div className="flex items-center justify-between mb-4">
+              <p className="lux-label">Valeur du portefeuille</p>
+              <span className="lux-icon-chip !w-8 !h-8"><IC.TrendUp /></span>
+            </div>
+            <p className="lux-num text-2xl sm:text-3xl font-light text-[#f4efe2]">
+              <span className="text-[#f4efe2]/40 text-lg mr-1">$</span><AnimatedNumber value={summary?.currentValue ?? 0} />
+            </p>
+            <p className="mt-3 text-xs text-[#f4efe2]/40">Capital + gains accumulés</p>
+          </div>
+        </div>
       </div>
 
-      {}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <Card className="lg:col-span-2 p-6">
-          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase mb-4">Mon portefeuille</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <StatCard Icon={IC.Wallet}    title="Déposé total"          value={<>$ <AnimatedNumber value={summary?.deposited ?? 0} /></>} accent="yellow" />
-            <StatCard Icon={IC.Coin}      title="Gains totaux"          value={<>$ <AnimatedNumber value={stats?.totalEarnings ?? 0} /></>} accent="blue" />
-            <StatCard Icon={IC.Briefcase} title="Investissements actifs" value={<AnimatedNumber value={stats?.activeInvestments ?? 0} decimals={0} />} accent="green" />
-            <StatCard Icon={IC.TrendUp}   title="ROI total"              value={<><AnimatedNumber value={stats?.totalROI ?? 0} /> %</>}  accent="purple" />
-          </div>
-        </Card>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <StatCard Icon={IC.Wallet}    title="Déposé total"           value={<>$ <AnimatedNumber value={summary?.deposited ?? 0} /></>} delay={0} />
+        <StatCard Icon={IC.Coin}      title="Gains totaux"           value={<>$ <AnimatedNumber value={stats?.totalEarnings ?? 0} /></>} delay={60} positive />
+        <StatCard Icon={IC.Briefcase} title="Investissements actifs" value={<AnimatedNumber value={stats?.activeInvestments ?? 0} decimals={0} />} delay={120} />
+        <StatCard Icon={IC.TrendUp}   title="ROI total"              value={<><AnimatedNumber value={stats?.totalROI ?? 0} /> %</>} delay={180} positive />
+      </div>
 
-        <Card className="lg:col-span-3 p-6">
-          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase mb-4">Flux de trésorerie</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-5">
+        <Card className="lg:col-span-3 p-6 sm:p-7">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <p className="lux-label mb-1">6 derniers mois</p>
+              <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Flux de trésorerie</h3>
+            </div>
+          </div>
           <CashFlowChart transactions={transactions || []} />
         </Card>
+
+        <div className="lg:col-span-2 grid grid-cols-1 gap-3">
+          {quickLinks.map(({ id, Icon, title, desc }, i) => (
+            <button
+              key={id}
+              onClick={() => onNavigate(id)}
+              style={{ animationDelay: `${i * 80}ms` }}
+              className="lux-card lux-card-hover animate-cardIn w-full text-left p-4 sm:p-5 flex items-center gap-4 group cursor-pointer"
+            >
+              <span className="lux-icon-chip shrink-0"><Icon /></span>
+              <span className="flex-1 min-w-0">
+                <span className="block font-medium text-[#f4efe2] text-sm group-hover:text-[#f3d58a] transition-colors">{title}</span>
+                <span className="block text-xs text-[#f4efe2]/45 mt-0.5">{desc}</span>
+              </span>
+              <span className="text-[#f4efe2]/30 group-hover:text-[#d4af37] group-hover:translate-x-0.5 transition-all"><IC.ArrowRight /></span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      {}
       <Card className="overflow-hidden">
-        <div className="flex items-center justify-between flex-wrap gap-3 p-6 pb-0">
-          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase">Activités récentes</h3>
-          <button
-            onClick={() => onNavigate('transactions')}
-            className="text-xs text-gray-500 hover:text-yellow-500 transition-colors flex items-center gap-1 bg-transparent border-none cursor-pointer"
-          >
+        <div className="flex items-center justify-between flex-wrap gap-3 px-6 sm:px-7 pt-6 sm:pt-7">
+          <div>
+            <p className="lux-label mb-1">Historique</p>
+            <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2]">Activités récentes</h3>
+          </div>
+          <button onClick={() => onNavigate('transactions')} className="lux-btn-ghost !py-1.5 !px-3 !text-xs">
             Voir tout <IC.ArrowRight />
           </button>
         </div>
         {recentActivity.length > 0 ? (
-          <div className="overflow-x-auto mt-4">
-            <table className="w-full">
-              <thead className="bg-black/60">
+          <div className="overflow-x-auto mt-5">
+            <table className="w-full lux-table">
+              <thead>
                 <tr>
-                  {['Activité', 'Référence', 'Date', 'Montant', 'Statut'].map(col => (
-                    <th key={col} className="px-5 py-3 text-left text-xs font-bold text-yellow-500 tracking-widest uppercase">
-                      {col}
-                    </th>
-                  ))}
+                  {['Activité', 'Référence', 'Date', 'Montant', 'Statut'].map(col => <th key={col}>{col}</th>)}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-yellow-900/15">
+              <tbody>
                 {recentActivity.map((tx, i) => (
-                  <tr key={i} className="hover:bg-yellow-900/8 transition-colors">
-                    <td className="px-5 py-4"><Badge status={tx.type} /></td>
-                    <td className="px-5 py-4 text-xs text-gray-500 font-mono">#{String(tx._id).slice(-6).toUpperCase()}</td>
-                    <td className="px-5 py-4 text-sm text-gray-400">{new Date(tx.createdAt).toLocaleDateString('fr-FR')}</td>
-                    <td className="px-5 py-4 text-sm font-bold text-white">$ {tx.amount}</td>
-                    <td className="px-5 py-4"><Badge status={tx.status} /></td>
+                  <tr key={i}>
+                    <td><Badge status={tx.type} /></td>
+                    <td className="text-xs text-[#f4efe2]/40 font-mono">#{String(tx._id).slice(-6).toUpperCase()}</td>
+                    <td className="text-sm text-[#f4efe2]/60">{new Date(tx.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td className={`text-sm font-medium lux-num ${tx.amount < 0 ? 'text-rose-300' : 'text-[#f4efe2]'}`}>
+                      {tx.amount < 0 ? '−' : ''}$ {Math.abs(tx.amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
+                    <td><Badge status={tx.status} /></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <div className="text-center py-10">
-            <p className="text-gray-600 text-sm mb-4">Aucune activité pour l'instant</p>
-            <button
-              onClick={() => onNavigate('invest')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors tracking-wide cursor-pointer border-none"
-            >
+          <div className="text-center py-14 px-6">
+            <span className="lux-icon-chip !w-12 !h-12 mb-4"><IC.Transactions /></span>
+            <p className="text-[#f4efe2]/50 text-sm mb-5">Aucune activité pour l'instant</p>
+            <button onClick={() => onNavigate('invest')} className="lux-btn-gold">
               Commencer à investir <IC.ArrowRight />
             </button>
           </div>
@@ -614,14 +633,15 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
   );
 }
 
-function StatCard({ Icon, title, value, accent }) {
-  const border = { yellow: 'border-yellow-500/30', green: 'border-green-500/30', blue: 'border-blue-500/30', purple: 'border-purple-500/30' };
-  const text   = { yellow: 'text-yellow-500',       green: 'text-green-400',      blue: 'text-blue-400',     purple: 'text-purple-400'      };
+function StatCard({ Icon, title, value, delay = 0, positive = false }) {
   return (
-    <div className={`bg-black/40 border-2 ${border[accent]} rounded-lg p-4`}>
-      <div className={`${text[accent]} mb-2`}><Icon /></div>
-      <p className="text-gray-500 text-[11px] mb-1 font-medium">{title}</p>
-      <p className="text-base sm:text-lg font-bold text-white tracking-tight">{value}</p>
+    <div style={{ animationDelay: `${delay}ms` }} className="lux-card lux-card-hover animate-cardIn p-5">
+      <div className="flex items-center justify-between mb-4">
+        <span className="lux-icon-chip !w-8 !h-8"><Icon /></span>
+        {positive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />}
+      </div>
+      <p className="text-[11px] text-[#f4efe2]/45 mb-1.5 font-medium">{title}</p>
+      <p className="lux-num text-lg sm:text-xl font-medium text-[#f4efe2]">{value}</p>
     </div>
   );
 }
@@ -648,31 +668,38 @@ function CashFlowChart({ transactions }) {
   const hasData = months.some(m => m.net !== 0);
 
   if (!hasData) {
-    return <div className="h-[160px] flex items-center justify-center text-gray-600 text-sm">Pas encore de mouvements à afficher</div>;
+    return (
+      <div className="h-[180px] flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-yellow-900/30">
+        <p className="text-[#f4efe2]/45 text-sm">Pas encore de mouvements à afficher</p>
+        <p className="text-[#f4efe2]/25 text-xs">Vos dépôts et retraits apparaîtront ici</p>
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-2 h-[140px] mb-2">
-        {months.map(m => {
-          const h = m.net === 0 ? 2 : Math.max(6, (Math.abs(m.net) / maxAbs) * 120);
+      <div className="relative flex items-end justify-between gap-3 h-[170px] mb-3">
+        <div className="absolute inset-x-0 top-[20%] border-t border-dashed border-white/5 pointer-events-none" />
+        <div className="absolute inset-x-0 top-[55%] border-t border-dashed border-white/5 pointer-events-none" />
+        {months.map((m, i) => {
+          const h = m.net === 0 ? 3 : Math.max(8, (Math.abs(m.net) / maxAbs) * 140);
           const isUp = m.net >= 0;
           return (
-            <div key={m.key} className="flex-1 flex flex-col items-center justify-end h-full">
-              <span className={`text-[10px] font-bold mb-1 whitespace-nowrap ${m.net === 0 ? 'text-gray-700' : isUp ? 'text-green-400' : 'text-red-400'}`}>
-                {m.net !== 0 ? `${isUp ? '+' : '-'}$${Math.abs(m.net) >= 1000 ? (Math.abs(m.net) / 1000).toFixed(1) + 'k' : Math.abs(m.net).toFixed(0)}` : ''}
+            <div key={m.key} className="relative flex-1 flex flex-col items-center justify-end h-full">
+              <span className={`lux-num text-[10px] font-semibold mb-1.5 whitespace-nowrap ${m.net === 0 ? 'text-transparent' : isUp ? 'text-[#f3d58a]' : 'text-rose-300'}`}>
+                {m.net !== 0 ? `${isUp ? '+' : '−'}$${Math.abs(m.net) >= 1000 ? (Math.abs(m.net) / 1000).toFixed(1) + 'k' : Math.abs(m.net).toFixed(0)}` : '·'}
               </span>
               <div
-                className={`w-full rounded-t ${m.net === 0 ? 'bg-gray-800' : isUp ? 'bg-gradient-to-t from-yellow-700 to-yellow-400' : 'bg-gradient-to-t from-red-900 to-red-500'}`}
-                style={{ height: `${h}px` }}
+                className={`animate-drawCandle w-full max-w-[42px] rounded-t-lg ${m.net === 0 ? 'bg-white/5' : isUp ? 'bg-gradient-to-t from-[#a8832a]/60 via-[#d4af37] to-[#f3d58a] shadow-[0_0_18px_-4px_rgba(212,175,55,0.6)]' : 'bg-gradient-to-t from-rose-900/60 to-rose-400'}`}
+                style={{ height: `${h}px`, animationDelay: `${i * 70}ms` }}
               />
             </div>
           );
         })}
       </div>
-      <div className="flex justify-between gap-2">
+      <div className="flex justify-between gap-3 border-t border-white/5 pt-3">
         {months.map(m => (
-          <span key={m.key} className="flex-1 text-center text-[10px] text-gray-500 capitalize">{m.label}</span>
+          <span key={m.key} className="flex-1 text-center text-[11px] text-[#f4efe2]/40 capitalize">{m.label.replace('.', '')}</span>
         ))}
       </div>
     </div>
@@ -725,7 +752,7 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
             <button
               key={value}
               onClick={() => setPeriodFilter(value)}
-              className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+              className={`lux-chip ${periodFilter === value ? 'is-active' : ''}`}
             >
               {label}
             </button>
@@ -739,8 +766,8 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
             <Card key={i} className="p-5 sm:p-6">
               <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
                 <div>
-                  <h3 className="text-lg font-bold text-yellow-500 tracking-wide">{packDisplayName(inv.pack)}</h3>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <h3 className="lux-serif text-2xl font-semibold lux-gold-text">{packDisplayName(inv.pack)}</h3>
+                  <p className="text-xs text-[#f4efe2]/50 mt-0.5">
                     Créé le {new Date(inv.createdAt).toLocaleDateString('fr-FR')}
                   </p>
                 </div>
@@ -748,14 +775,14 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { label: 'Montant',    value: `$ ${inv.amount}`,     cls: 'text-white' },
-                  { label: 'ROI actuel', value: `+${inv.roi} %`, cls: 'text-green-400' },
-                  { label: 'Gains',      value: `$ ${inv.earnings}`,   cls: 'text-yellow-500' },
-                  { label: 'Échéance',   value: inv.endDate ? new Date(inv.endDate).toLocaleDateString('fr-FR') : '—', cls: 'text-white' },
+                  { label: 'Montant',    value: `$ ${inv.amount}`,     cls: 'text-[#f4efe2]' },
+                  { label: 'ROI actuel', value: `+${inv.roi} %`, cls: 'text-emerald-300' },
+                  { label: 'Gains',      value: `$ ${inv.earnings}`,   cls: 'text-[#f3d58a]' },
+                  { label: 'Échéance',   value: inv.endDate ? new Date(inv.endDate).toLocaleDateString('fr-FR') : '—', cls: 'text-[#f4efe2]' },
                 ].map(({ label, value, cls }) => (
-                  <div key={label}>
-                    <p className="text-xs text-gray-500 mb-1">{label}</p>
-                    <p className={`font-bold text-sm ${cls}`}>{value}</p>
+                  <div key={label} className="rounded-xl bg-white/[0.02] border border-white/5 px-3.5 py-3">
+                    <p className="lux-label !text-[10px] mb-1.5">{label}</p>
+                    <p className={`lux-num font-medium text-base ${cls}`}>{value}</p>
                   </div>
                 ))}
               </div>
@@ -764,11 +791,11 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
                 <div className="mt-5 pt-5 border-t border-yellow-900/20">
                   {confirmingId === inv._id ? (
                     <div className="bg-yellow-900/10 border border-yellow-700/30 rounded p-4">
-                      <p className="text-sm text-gray-300 mb-1">
+                      <p className="text-sm text-[#f4efe2]/80 mb-1">
                         Clôturer maintenant vous rendra <span className="text-yellow-500 font-bold">$ {(Number(inv.amount) + Number(inv.earnings)).toFixed(2)}</span> sur
                         votre solde (capital $ {inv.amount} + gains accumulés à ce jour $ {inv.earnings}).
                       </p>
-                      <p className="text-xs text-gray-500 mb-4">
+                      <p className="text-xs text-[#f4efe2]/50 mb-4">
                         Vous ne recevrez pas le reste du rendement prévu jusqu'à l'échéance. Cette action est définitive.
                       </p>
                       {closeError && <p className="text-xs text-red-400 mb-3">{closeError}</p>}
@@ -776,14 +803,14 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
                         <button
                           onClick={() => handleClose(inv._id)}
                           disabled={closingId === inv._id}
-                          className="px-4 py-2 rounded bg-yellow-500 text-black font-bold text-xs hover:bg-yellow-400 transition-colors disabled:opacity-50 cursor-pointer border-none"
+                          className="lux-btn-gold !px-4 !py-2 !text-xs"
                         >
                           {closingId === inv._id ? 'Traitement...' : 'Confirmer la clôture'}
                         </button>
                         <button
                           onClick={() => { setConfirmingId(null); setCloseError(''); }}
                           disabled={closingId === inv._id}
-                          className="px-4 py-2 rounded border border-gray-700 text-gray-400 font-bold text-xs hover:border-gray-500 transition-colors cursor-pointer bg-transparent"
+                          className="lux-btn-ghost !px-4 !py-2 !text-xs"
                         >
                           Annuler
                         </button>
@@ -792,7 +819,7 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
                   ) : (
                     <button
                       onClick={() => { setConfirmingId(inv._id); setCloseError(''); }}
-                      className="text-xs text-gray-500 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer underline"
+                      className="text-xs text-[#f4efe2]/50 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer underline"
                     >
                       Couper cet investissement et récupérer mon capital + gains
                     </button>
@@ -804,14 +831,14 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
         </div>
       ) : investments.length > 0 ? (
         <Card className="p-6 text-center">
-          <p className="text-gray-500">Aucun investissement sur cette période</p>
+          <p className="text-[#f4efe2]/50">Aucun investissement sur cette période</p>
         </Card>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-gray-500 mb-5">Aucun investissement pour le moment</p>
+          <p className="text-[#f4efe2]/50 mb-5">Aucun investissement pour le moment</p>
           <button
             onClick={() => onNavigate('invest')}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors tracking-wide cursor-pointer border-none"
+            className="lux-btn-gold !px-6 !py-3"
           >
             Commencer à investir <IC.ArrowRight />
           </button>
@@ -870,7 +897,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
   return (
     <div className="space-y-6">
       <PageHeader title="Historique des transactions">
-        <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer select-none">
+        <label className="flex items-center gap-2 text-xs text-[#f4efe2]/60 cursor-pointer select-none">
           <input type="checkbox" checked={showHidden} onChange={e => setShowHidden(e.target.checked)} className="accent-yellow-500" />
           Afficher les transactions masquées
         </label>
@@ -881,7 +908,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
           <button
             key={t}
             onClick={() => setTypeFilter(t)}
-            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${typeFilter === t ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+            className={`lux-chip ${typeFilter === t ? 'is-active' : ''}`}
           >
             {typeLabelMap[t] || t}
           </button>
@@ -893,7 +920,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
           <button
             key={value}
             onClick={() => setPeriodFilter(value)}
-            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+            className={`lux-chip ${periodFilter === value ? 'is-active' : ''}`}
           >
             {label}
           </button>
@@ -903,30 +930,28 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
       {filtered.length > 0 ? (
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-black/60">
+            <table className="w-full lux-table">
+              <thead>
                 <tr>
-                  {['Date', 'Type', 'Montant', 'Statut', ''].map(col => (
-                    <th key={col} className="px-5 py-3 text-left text-xs font-bold text-yellow-500 tracking-widest uppercase">
-                      {col}
-                    </th>
-                  ))}
+                  {['Date', 'Type', 'Montant', 'Statut', ''].map(col => <th key={col}>{col}</th>)}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-yellow-900/15">
+              <tbody>
                 {filtered.map((tx, i) => (
-                  <tr key={i} className={`hover:bg-yellow-900/8 transition-colors ${tx.hiddenForUser ? 'opacity-50' : ''}`}>
-                    <td className="px-5 py-4 text-sm text-gray-400">
-                      {new Date(tx.createdAt).toLocaleDateString('fr-FR')}
+                  <tr key={i} className={tx.hiddenForUser ? 'opacity-50' : ''}>
+                    <td className="text-sm text-[#f4efe2]/60">
+                      {new Date(tx.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
-                    <td className="px-5 py-4"><Badge status={tx.type} /></td>
-                    <td className="px-5 py-4 text-sm font-bold text-white">$ {tx.amount}</td>
-                    <td className="px-5 py-4"><Badge status={tx.status} /></td>
-                    <td className="px-5 py-4 text-right">
+                    <td><Badge status={tx.type} /></td>
+                    <td className={`text-sm font-medium lux-num ${tx.amount < 0 ? 'text-rose-300' : 'text-[#f4efe2]'}`}>
+                      {tx.amount < 0 ? '−' : ''}$ {Math.abs(tx.amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
+                    <td><Badge status={tx.status} /></td>
+                    <td className="text-right">
                       <button
                         onClick={() => toggleHide(tx)}
                         disabled={busyId === tx._id}
-                        className="text-xs text-gray-500 hover:text-yellow-500 bg-transparent border-none cursor-pointer disabled:opacity-40"
+                        className="text-xs text-[#f4efe2]/50 hover:text-yellow-500 bg-transparent border-none cursor-pointer disabled:opacity-40"
                       >
                         {tx.hiddenForUser ? 'Réafficher' : 'Masquer'}
                       </button>
@@ -939,7 +964,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
         </Card>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-gray-500 text-sm">
+          <p className="text-[#f4efe2]/50 text-sm">
             {transactions.length === 0 ? 'Aucune transaction pour le moment' : 'Aucune transaction ne correspond à ces filtres'}
           </p>
         </Card>
@@ -984,7 +1009,7 @@ function FAQTab() {
         value={search}
         onChange={e => setSearch(e.target.value)}
         placeholder="Rechercher une question…"
-        className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+        className="lux-input"
       />
 
       <div className="flex flex-wrap gap-2">
@@ -992,7 +1017,7 @@ function FAQTab() {
           <button
             key={c}
             onClick={() => setCategory(c)}
-            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${category === c ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+            className={`lux-chip ${category === c ? 'is-active' : ''}`}
           >
             {c === 'all' ? 'Toutes' : (FAQ_CATEGORY_LABELS[c] || c)}
           </button>
@@ -1005,20 +1030,20 @@ function FAQTab() {
             <Card key={f._id} className="overflow-hidden">
               <button
                 onClick={() => setOpenId(openId === f._id ? null : f._id)}
-                className="w-full flex items-center justify-between gap-3 p-4 text-left bg-transparent border-none cursor-pointer"
+                className="w-full flex items-center justify-between gap-3 p-5 text-left bg-transparent border-none cursor-pointer group"
               >
-                <span className="font-semibold text-white text-sm">{f.question}</span>
-                <span className="text-yellow-500 text-sm shrink-0">{openId === f._id ? '−' : '+'}</span>
+                <span className="font-medium text-[#f4efe2] text-sm group-hover:text-[#f3d58a] transition-colors">{f.question}</span>
+                <span className={`lux-icon-chip !w-7 !h-7 shrink-0 transition-transform duration-300 ${openId === f._id ? 'rotate-45' : ''}`}>+</span>
               </button>
               {openId === f._id && (
-                <div className="px-4 pb-4 text-sm text-gray-400 whitespace-pre-wrap">{f.answer}</div>
+                <div className="px-5 pb-5 text-sm leading-relaxed text-[#f4efe2]/60 whitespace-pre-wrap border-t border-white/5 pt-4">{f.answer}</div>
               )}
             </Card>
           ))}
         </div>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-gray-500 text-sm">
+          <p className="text-[#f4efe2]/50 text-sm">
             {faqs.length === 0 ? "Aucune question pour l'instant" : 'Aucun résultat pour cette recherche'}
           </p>
         </Card>
@@ -1034,15 +1059,13 @@ function SecurityTab() {
       <TwoFactorAuth />
       <PasswordChange />
       <Card className="p-6">
-        <h3 className="font-bold text-sm tracking-widest uppercase text-yellow-500 mb-4">Sessions actives</h3>
-        <div className="flex items-center justify-between p-4 bg-black/50 border border-yellow-900/15 rounded">
+        <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-4">Sessions actives</h3>
+        <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl">
           <div>
             <p className="font-semibold text-white text-sm">Session actuelle</p>
-            <p className="text-xs text-gray-500 mt-0.5">Dernière activité : maintenant</p>
+            <p className="text-xs text-[#f4efe2]/50 mt-0.5">Dernière activité : maintenant</p>
           </div>
-          <span className="px-2.5 py-1 bg-green-900/50 text-green-400 text-xs font-bold tracking-wide rounded-full">
-            ACTIVE
-          </span>
+          <span className="lux-pill bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">Active</span>
         </div>
       </Card>
       <DeleteAccountSection />
@@ -1107,27 +1130,27 @@ function DeleteAccountSection() {
 
   return (
     <Card className="p-6">
-      <h3 className="font-bold text-sm tracking-widest uppercase text-red-500 mb-2">Supprimer mon compte</h3>
+      <h3 className="lux-serif text-2xl font-semibold text-rose-300 mb-2">Supprimer mon compte</h3>
 
       {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
       {error && <div className="mb-4 p-3 bg-red-900/40 border border-red-500/50 rounded text-red-300 text-sm">{error}</div>}
 
       {pendingRequest ? (
         <div className="space-y-3">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[#f4efe2]/60">
             Votre demande de suppression a été envoyée le {new Date(pendingRequest.requestedAt).toLocaleDateString('fr-FR')} et attend la validation d'un administrateur.
           </p>
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="px-4 py-2 border border-yellow-900/30 text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
+            className="px-4 py-2 border border-yellow-900/30 text-[#f4efe2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
           >
             Annuler ma demande
           </button>
         </div>
       ) : !confirming ? (
         <div>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-[#f4efe2]/50 mb-4">
             Cette action est irréversible une fois validée par un administrateur : votre profil, vos données personnelles et votre accès au compte seront définitivement supprimés.
           </p>
           <button
@@ -1143,29 +1166,29 @@ function DeleteAccountSection() {
             Confirmez votre mot de passe pour envoyer la demande de suppression. Un administrateur devra la valider avant que le compte ne soit effectivement supprimé.
           </p>
           <div>
-            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Mot de passe</label>
+            <label className="block lux-label mb-2">Mot de passe</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+              className="lux-input"
               required
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Motif <span className="text-gray-600 font-normal normal-case">(optionnel)</span></label>
+            <label className="block lux-label mb-2">Motif <span className="text-[#f4efe2]/35 font-normal normal-case">(optionnel)</span></label>
             <textarea
               value={reason}
               onChange={e => setReason(e.target.value)}
               rows={2}
-              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+              className="lux-input"
             />
           </div>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={() => { setConfirming(false); setPassword(''); setError(''); }}
-              className="px-4 py-2 border border-yellow-900/30 text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
+              className="px-4 py-2 border border-yellow-900/30 text-[#f4efe2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
             >
               Annuler
             </button>
@@ -1214,7 +1237,7 @@ function PasswordChange() {
 
   return (
     <Card className="p-6">
-      <h3 className="font-bold text-sm tracking-widest uppercase text-yellow-500 mb-5">
+      <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-5">
         Changer le mot de passe
       </h3>
       {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
@@ -1222,12 +1245,12 @@ function PasswordChange() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {fields.map(({ label, key }) => (
           <div key={key}>
-            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">{label}</label>
+            <label className="block lux-label mb-2">{label}</label>
             <input
               type="password"
               value={form[key]}
               onChange={e => setForm({ ...form, [key]: e.target.value })}
-              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+              className="lux-input"
               required
             />
           </div>
@@ -1235,7 +1258,7 @@ function PasswordChange() {
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-3 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors disabled:opacity-50 tracking-wide cursor-pointer border-none"
+          className="lux-btn-gold !px-6 !py-3"
         >
           {loading ? 'Modification…' : 'Modifier le mot de passe'}
         </button>
@@ -1293,14 +1316,14 @@ function ProfileTab({ user }) {
       <Card className="p-6">
         <div className="flex flex-wrap items-center gap-6">
           <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-full bg-black border-2 border-yellow-900/30 overflow-hidden flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full p-[2px] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a] shadow-[0_10px_30px_-10px_rgba(212,175,55,0.6)]"><div className="w-full h-full rounded-full bg-[#0b0a08] overflow-hidden flex items-center justify-center">
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-2xl font-black text-yellow-600">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
+                <span className="lux-serif text-3xl font-semibold lux-gold-text">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
               )}
-            </div>
-            <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-yellow-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-400 transition-colors">
+            </div></div>
+            <label className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer bg-[#f3d58a] hover:brightness-110 ring-2 ring-[#07070a] transition">
               <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleAvatarChange} className="hidden" disabled={avatarUploading} />
               <span className="text-black text-xs font-black">{avatarUploading ? '…' : '✎'}</span>
             </label>
@@ -1308,7 +1331,7 @@ function ProfileTab({ user }) {
 
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-gray-500 uppercase tracking-widest font-bold">ID utilisateur</span>
+              <span className="lux-label">ID utilisateur</span>
               <span className={`inline-flex items-center gap-1 text-xs font-bold ${
                 user?.kycStatus === 'verified' ? 'text-green-400' : user?.kycStatus === 'rejected' ? 'text-red-400' : 'text-yellow-400'
               }`}>
@@ -1320,12 +1343,12 @@ function ProfileTab({ user }) {
             <div className="flex items-center gap-2 mt-1">
               <code className="text-yellow-400 font-bold text-sm">{user?.userId || '—'}</code>
               {user?.userId && (
-                <button type="button" onClick={copyUserId} className="text-xs text-gray-500 hover:text-yellow-500 bg-transparent border-none cursor-pointer">
+                <button type="button" onClick={copyUserId} className="text-xs text-[#f4efe2]/50 hover:text-yellow-500 bg-transparent border-none cursor-pointer">
                   {copied ? '✓ Copié' : 'Copier'}
                 </button>
               )}
             </div>
-            <p className="text-xs text-gray-600 mt-1">
+            <p className="text-xs text-[#f4efe2]/35 mt-1">
               Membre depuis {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '—'}
             </p>
           </div>
@@ -1339,44 +1362,44 @@ function ProfileTab({ user }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[{ label: 'Prénom', key: 'firstName' }, { label: 'Nom', key: 'lastName' }].map(({ label, key }) => (
               <div key={key}>
-                <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">{label}</label>
+                <label className="block lux-label mb-2">{label}</label>
                 <input
                   type="text"
                   value={form[key]}
                   onChange={e => setForm({ ...form, [key]: e.target.value })}
-                  className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+                  className="lux-input"
                 />
               </div>
             ))}
           </div>
           <div>
-            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Email</label>
+            <label className="block lux-label mb-2">Email</label>
             <input
               type="email"
               value={user?.email}
               disabled
-              className="w-full px-4 py-3 bg-gray-900/50 border-2 border-yellow-900/15 rounded text-gray-500 text-sm cursor-not-allowed"
+              className="lux-input opacity-60 cursor-not-allowed"
             />
-            <p className="mt-1.5 text-xs text-gray-600">L'adresse email ne peut pas être modifiée</p>
+            <p className="mt-1.5 text-xs text-[#f4efe2]/35">L'adresse email ne peut pas être modifiée</p>
           </div>
           <div>
-            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Téléphone</label>
+            <label className="block lux-label mb-2">Téléphone</label>
             <PhoneInput value={form.phone} onChange={v => setForm({ ...form, phone: v })} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Pays</label>
+              <label className="block lux-label mb-2">Pays</label>
               <select
                 value={form.country}
                 onChange={e => setForm({ ...form, country: e.target.value, city: '' })}
-                className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+                className="lux-input"
               >
                 <option value="">Sélectionner…</option>
                 {COUNTRIES.map(c => <option key={c.iso2} value={c.name}>{c.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Ville</label>
+              <label className="block lux-label mb-2">Ville</label>
               <CityAutocomplete
                 value={form.city}
                 onChange={v => setForm({ ...form, city: v })}
@@ -1385,18 +1408,18 @@ function ProfileTab({ user }) {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Adresse</label>
+            <label className="block lux-label mb-2">Adresse</label>
             <input
               type="text"
               value={form.address}
               onChange={e => setForm({ ...form, address: e.target.value })}
-              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
+              className="lux-input"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors disabled:opacity-50 tracking-wide cursor-pointer border-none"
+            className="lux-btn-gold !px-6 !py-3"
           >
             {loading ? 'Mise à jour…' : 'Mettre à jour le profil'}
           </button>

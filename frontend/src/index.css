@@ -449,6 +449,243 @@ html.light-mode .imc-badge {
   color: #9A7B1A;
 }
 
+/* ── Luxe design system (noir & or raffiné) ─────────────────────────
+   Shared surfaces/typography for the redesign, so every page draws from
+   the same small set of tokens instead of ad-hoc Tailwind combinations. */
+
+:root {
+  --lux-bg: #07070a;
+  --lux-surface: rgba(255, 255, 255, 0.028);
+  --lux-surface-2: rgba(255, 255, 255, 0.045);
+  --lux-line: rgba(212, 175, 55, 0.12);
+  --lux-line-strong: rgba(212, 175, 55, 0.32);
+  --lux-gold: #d4af37;
+  --lux-gold-light: #f3d58a;
+  --lux-gold-deep: #a8832a;
+  --lux-text: #f4efe2;
+  --lux-muted: rgba(244, 239, 226, 0.55);
+  --lux-faint: rgba(244, 239, 226, 0.35);
+}
+
+.lux-page {
+  background:
+    radial-gradient(1100px 600px at 10% -10%, rgba(212, 175, 55, 0.09), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(212, 175, 55, 0.05), transparent 60%),
+    var(--lux-bg);
+  color: var(--lux-text);
+}
+
+.lux-serif { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: 0.005em; }
+.lux-num { font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+.lux-gold-text {
+  background: linear-gradient(135deg, var(--lux-gold-light) 0%, var(--lux-gold) 45%, var(--lux-gold-deep) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lux-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lux-faint);
+}
+
+.lux-card {
+  position: relative;
+  background: linear-gradient(180deg, var(--lux-surface-2), var(--lux-surface));
+  border: 1px solid var(--lux-line);
+  border-radius: 1rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px -24px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.lux-card-hover {
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.lux-card-hover:hover {
+  border-color: var(--lux-line-strong);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 22px 44px -22px rgba(212, 175, 55, 0.18);
+}
+
+/* Gold hairline border via a masked gradient — the hero/balance card's
+   signature look, distinct from the regular hairline cards around it. */
+.lux-card-gold {
+  position: relative;
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(500px 220px at 85% -20%, rgba(243, 213, 138, 0.18), transparent 60%),
+    linear-gradient(160deg, #15130d 0%, #0b0a08 60%, #0a0a0a 100%);
+  box-shadow: 0 30px 60px -30px rgba(212, 175, 55, 0.35);
+}
+.lux-card-gold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(243, 213, 138, 0.8), rgba(212, 175, 55, 0.15) 40%, rgba(212, 175, 55, 0.05) 60%, rgba(243, 213, 138, 0.5));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.lux-btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: 0.65rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #17130a;
+  background: linear-gradient(135deg, var(--lux-gold-light), var(--lux-gold) 55%, var(--lux-gold-deep));
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 22px -10px rgba(212, 175, 55, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+.lux-btn-gold:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 12px 28px -10px rgba(212, 175, 55, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.4); }
+.lux-btn-gold:active { transform: translateY(0) scale(0.98); }
+.lux-btn-gold:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.lux-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: 0.65rem;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--lux-text);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(244, 239, 226, 0.12);
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+.lux-btn-ghost:hover { border-color: var(--lux-line-strong); color: var(--lux-gold-light); background: rgba(212, 175, 55, 0.06); }
+.lux-btn-ghost:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.lux-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.65rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(244, 239, 226, 0.1);
+  color: var(--lux-text);
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.lux-input::placeholder { color: rgba(244, 239, 226, 0.28); }
+.lux-input:focus { outline: none; border-color: rgba(212, 175, 55, 0.55); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12); background: rgba(0, 0, 0, 0.5); }
+
+.lux-nav-item {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.65rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--lux-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.lux-nav-item:hover { color: var(--lux-text); background: rgba(255, 255, 255, 0.035); }
+.lux-nav-item.is-active {
+  color: var(--lux-gold-light);
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.14), rgba(212, 175, 55, 0.02));
+}
+.lux-nav-item.is-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22%;
+  bottom: 22%;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--lux-gold-light), var(--lux-gold-deep));
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+}
+
+.lux-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.lux-pill::before { content: ''; width: 5px; height: 5px; border-radius: 999px; background: currentColor; opacity: 0.85; }
+
+.lux-table th {
+  padding: 0.85rem 1.25rem;
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lux-faint);
+  border-bottom: 1px solid var(--lux-line);
+}
+.lux-table td { padding: 0.95rem 1.25rem; border-bottom: 1px solid rgba(244, 239, 226, 0.05); }
+.lux-table tbody tr { transition: background 0.2s ease; }
+.lux-table tbody tr:hover { background: rgba(212, 175, 55, 0.035); }
+.lux-table tbody tr:last-child td { border-bottom: none; }
+
+.lux-icon-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.7rem;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  color: var(--lux-gold);
+}
+
+.lux-chip {
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--lux-muted);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(244, 239, 226, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lux-chip:hover { color: var(--lux-text); border-color: var(--lux-line-strong); }
+.lux-chip.is-active {
+  color: #17130a;
+  background: linear-gradient(135deg, var(--lux-gold-light), var(--lux-gold));
+  border-color: transparent;
+  box-shadow: 0 6px 16px -8px rgba(212, 175, 55, 0.7);
+}
+
+.lux-header {
+  background: rgba(7, 7, 10, 0.72);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-bottom: 1px solid var(--lux-line);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

@@ -59,11 +59,11 @@ export default function InstallPWA() {
       className="fixed inset-x-0 z-[100] px-4 sm:px-6"
       style={{ bottom: 'max(16px, env(safe-area-inset-bottom, 0px))' }}
     >
-      <div className="max-w-md mx-auto bg-black border-2 border-yellow-500/60 shadow-2xl shadow-black/50 rounded-lg p-4 flex items-start gap-3">
-        <img src="/logo192.png" alt="" className="w-10 h-10 rounded shrink-0" />
+      <div className="max-w-md mx-auto lux-card-gold !bg-[#0d0c0a] p-4 flex items-start gap-3 shadow-2xl">
+        <img src="/logo192.png" alt="" className="relative w-10 h-10 rounded-xl shrink-0" />
 
-        <div className="flex-1 min-w-0">
-          <p className="text-white font-bold text-sm">Installer l'application IMC</p>
+        <div className="relative flex-1 min-w-0">
+          <p className="text-[#f4efe2] font-semibold text-sm">Installer l'application IMC</p>
           {isIOS && !installEvent ? (
             <p className="text-gray-400 text-xs mt-1 leading-relaxed">
               Appuyez sur <span className="text-yellow-500 font-semibold">Partager</span> puis
@@ -76,7 +76,7 @@ export default function InstallPWA() {
           {!isIOS && installEvent && (
             <button
               onClick={handleInstall}
-              className="mt-3 px-4 py-2 bg-yellow-500 text-black text-xs font-bold tracking-wide rounded hover:bg-yellow-400 transition-colors cursor-pointer border-none"
+              className="mt-3 lux-btn-gold !px-4 !py-2 !text-xs"
             >
               INSTALLER
             </button>
@@ -86,7 +86,7 @@ export default function InstallPWA() {
         <button
           onClick={dismiss}
           aria-label="Fermer"
-          className="text-gray-500 hover:text-white transition-colors bg-transparent border-none cursor-pointer p-1 shrink-0"
+          className="relative text-[#f4efe2]/40 hover:text-[#f4efe2] transition-colors bg-transparent border-none cursor-pointer p-1 shrink-0"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
