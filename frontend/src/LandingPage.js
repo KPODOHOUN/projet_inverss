@@ -157,7 +157,7 @@ function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, 
               type="button"
               onClick={() => scrollToSection(item.id)}
               className={`px-4 py-1.5 rounded-full text-sm transition-all bg-transparent border-none cursor-pointer ${
-                activeSection === item.id ? 'text-[#17130a] !bg-gradient-to-r from-[#f3d58a] to-[#d4af37] font-medium' : 'text-[#f4efe2]/60 hover:text-[#f4efe2]'
+                activeSection === item.id ? 'text-[#17130a] !bg-white font-medium' : 'text-[#f4efe2]/60 hover:text-[#f4efe2]'
               }`}
             >
               {item.label}
@@ -210,7 +210,7 @@ function HeroSection({ scrollToSection }) {
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <img src="/images/Gemini_Generated_Image_dm8veudm8veudm8v.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.10]" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#07070a]/40 via-[#07070a]/70 to-[#07070a]" />
-        <div className="absolute left-1/2 top-[-20%] -translate-x-1/2 w-[900px] h-[600px] rounded-full bg-[radial-gradient(closest-side,rgba(212,175,55,0.16),transparent)] blur-2xl" />
+        <div className="absolute left-1/2 top-[-20%] -translate-x-1/2 w-[900px] h-[600px] rounded-full blur-2xl" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-14 items-center">
@@ -245,7 +245,7 @@ function HeroSection({ scrollToSection }) {
         </div>
 
         <div className="relative hidden lg:flex justify-center animate-hero-in" style={{ animationDelay: '180ms', animationFillMode: 'backwards' }}>
-          <div className="absolute inset-0 m-auto w-[380px] h-[380px] rounded-full bg-[radial-gradient(closest-side,rgba(212,175,55,0.35),transparent)] blur-3xl" />
+          <div className="absolute inset-0 m-auto w-[380px] h-[380px] rounded-full blur-3xl" />
           <div className="absolute inset-0 m-auto w-[440px] h-[440px] rounded-full border border-yellow-500/10" />
           <div className="absolute inset-0 m-auto w-[540px] h-[540px] rounded-full border border-yellow-500/5" />
           <div className="relative w-full max-w-[400px] animate-float-slow">
@@ -262,7 +262,7 @@ function HeroSection({ scrollToSection }) {
               </svg>
               <div className="relative">
                 <div className="flex items-center justify-between mb-6">
-                  <img src="/logo-on-dark.png" alt="" className="h-7 w-auto" />
+                  <img src="/logo-on-light.png" alt="" className="h-7 w-auto" />
                   <span className="lux-pill bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">USDT</span>
                 </div>
                 <p className="lux-label !text-[#f3d58a]/70 mb-2">Solde disponible</p>
@@ -271,7 +271,7 @@ function HeroSection({ scrollToSection }) {
                 </p>
                 <div className="grid grid-cols-3 gap-2">
                   {[['S&P 500', '25 j'], ['Nasdaq 100', '21 j'], ['Turbo 48H', '2 j']].map(([n, d]) => (
-                    <div key={n} className="rounded-xl bg-black/40 border border-white/5 px-3 py-2.5">
+                    <div key={n} className="rounded-xl bg-black/[0.04] border border-black/5 px-3 py-2.5">
                       <p className="text-[11px] text-[#f4efe2]/80 truncate">{n}</p>
                       <p className="text-[10px] text-[#f4efe2]/40">{d}</p>
                     </div>
@@ -314,7 +314,7 @@ function HeroSection({ scrollToSection }) {
 function MarketStrip() {
   const items = [...MARKETS, ...MARKETS];
   return (
-    <div className="relative z-10 border-y border-yellow-900/20 bg-white/[0.015] py-5 overflow-hidden">
+    <div className="relative z-10 border-y border-white/10 bg-white/[0.015] py-5 overflow-hidden">
       <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#07070a] to-transparent z-10 pointer-events-none" />
       <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#07070a] to-transparent z-10 pointer-events-none" />
       <div className="lux-marquee flex gap-12 w-max">
@@ -349,16 +349,16 @@ function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="relative z-10 py-24 sm:py-32 px-5 sm:px-6">
+    <section id="how-it-works" className="lux-light relative z-10 py-24 sm:py-32 px-5 sm:px-6">
       <div className="max-w-7xl mx-auto">
         <SectionTitle eyebrow="Comment ça marche" title="Quatre étapes," accent="aucune complexité." subtitle="Un parcours pensé pour aller à l'essentiel, de l'inscription à vos premiers gains." />
 
         <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div className="hidden lg:block absolute top-[38px] left-[12%] right-[12%] h-px bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent" />
+          <div className="hidden lg:block absolute top-[54px] left-[12%] right-[12%] h-px bg-black/10" />
           {steps.map((step, i) => (
             <ScrollReveal key={step.title} delay={i * 110}>
               <div className="relative lux-card lux-card-hover p-7 h-full">
-                <span className="relative z-10 inline-flex w-[52px] h-[52px] mb-6 rounded-full items-center justify-center lux-serif text-2xl font-semibold text-[#17130a] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a] shadow-[0_10px_30px_-8px_rgba(212,175,55,0.7)]">
+                <span className="relative z-10 inline-flex w-[52px] h-[52px] mb-6 rounded-full items-center justify-center lux-serif text-xl font-semibold text-white bg-[#0a0a0a]">
                   {i + 1}
                 </span>
                 <h3 className="lux-serif text-2xl font-semibold text-[#f4efe2] mb-2">{step.title}</h3>
@@ -382,7 +382,7 @@ function SecuritySection() {
 
   return (
     <section id="security" className="relative z-10 py-24 sm:py-32 px-5 sm:px-6 border-t border-white/5">
-      <div className="absolute right-0 top-1/3 w-[500px] h-[500px] rounded-full bg-[radial-gradient(closest-side,rgba(212,175,55,0.07),transparent)] pointer-events-none" />
+      <div className="absolute right-0 top-1/3 w-[500px] h-[500px] rounded-full pointer-events-none" />
       <div className="max-w-7xl mx-auto relative">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-14 items-center">
           <div>
@@ -438,7 +438,7 @@ function Footer({ scrollToSection }) {
   const linkCls = 'text-sm text-[#f4efe2]/50 hover:text-[#f3d58a] transition-colors bg-transparent border-none cursor-pointer p-0';
 
   return (
-    <footer className="relative z-10 pt-20 pb-10 px-5 sm:px-6 border-t border-yellow-900/20">
+    <footer className="relative z-10 pt-20 pb-10 px-5 sm:px-6 border-t border-white/10">
       <div className="max-w-7xl mx-auto">
         <div className="grid sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-12 mb-16">
           <div>

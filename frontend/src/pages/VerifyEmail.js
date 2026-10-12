@@ -158,7 +158,7 @@ export default function VerifyEmail() {
                       onChange={e => handleChange(index, e.target.value)}
                       onKeyDown={e => handleKeyDown(index, e)}
                       onPaste={index === 0 ? handlePaste : undefined}
-                      className="w-12 h-14 text-center text-2xl font-semibold bg-black/50 border border-yellow-900/30 rounded text-white focus:border-yellow-500/60 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
+                      className="w-12 h-14 text-center text-2xl font-semibold bg-black/50 border border-white/10 rounded text-white focus:border-yellow-500/60 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-all"
                       autoFocus={index === 0}
                     />
                   ))}
@@ -197,7 +197,7 @@ export default function VerifyEmail() {
               </form>
             )}
 
-            <div className="mt-6 pt-4 border-t border-yellow-900/10">
+            <div className="mt-6 pt-4 border-t border-white/10">
               <button onClick={logout} className="w-full text-center text-xs text-[#f4efe2]/40 hover:text-red-400 transition-colors">
                 Utiliser un autre compte
               </button>

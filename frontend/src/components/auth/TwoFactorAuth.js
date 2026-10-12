@@ -68,7 +68,7 @@ export default function TwoFactorAuth() {
   };
 
   return (
-    <div className="relative bg-[#0a0a0a] border border-yellow-900/20 rounded-lg p-6">
+    <div className="relative bg-[#0a0a0a] border border-white/10 rounded-lg p-6">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
       <h3 className="text-lg font-semibold text-white tracking-wide mb-5">
         Authentification à deux facteurs (2FA)
@@ -126,7 +126,7 @@ export default function TwoFactorAuth() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="p-4 bg-yellow-900/10 border border-yellow-900/30 rounded">
+              <div className="p-4 bg-yellow-900/10 border border-white/10 rounded">
                 <p className="text-sm text-yellow-200/90">
                   <strong className="text-yellow-400">Recommandé :</strong> Activez l'authentification à deux facteurs
                   pour une sécurité renforcée de votre compte.
@@ -161,7 +161,7 @@ export default function TwoFactorAuth() {
             </p>
 
             {qrCode && (
-              <div className="flex justify-center p-4 bg-white border border-yellow-900/30 rounded">
+              <div className="flex justify-center p-4 bg-white border border-white/10 rounded">
                 <img src={qrCode} alt="QR Code 2FA" className="max-w-xs" />
               </div>
             )}
@@ -169,7 +169,7 @@ export default function TwoFactorAuth() {
 
           <div>
             <h4 className="font-bold text-yellow-500 text-sm tracking-wide mb-2">Ou entrez ce code manuellement :</h4>
-            <div className="p-3 bg-black/50 font-mono text-sm text-[#f4efe2]/80 break-all border border-yellow-900/30 rounded">
+            <div className="p-3 bg-black/50 font-mono text-sm text-[#f4efe2]/80 break-all border border-white/10 rounded">
               {secret}
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function TwoFactorAuth() {
                     setVerificationCode('');
                     setError('');
                   }}
-                  className="px-6 py-3 border border-yellow-900/30 text-[#f4efe2]/60 font-bold text-xs tracking-widest uppercase hover:border-yellow-600 hover:text-yellow-500 transition-all rounded"
+                  className="px-6 py-3 border border-white/10 text-[#f4efe2]/60 font-bold text-xs tracking-widest uppercase hover:border-yellow-600 hover:text-yellow-500 transition-all rounded"
                 >
                   ANNULER
                 </button>

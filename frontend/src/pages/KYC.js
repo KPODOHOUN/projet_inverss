@@ -143,7 +143,7 @@ export default function KYC() {
         </div>
 
         {kycStatus && (
-          <div className="bg-[#0a0a0a] border border-yellow-900/20 p-6 rounded-lg">
+          <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-lg">
             <h3 className="lux-serif text-2xl font-semibold mb-4 text-[#f4efe2]">Statut Actuel</h3>
             <div className="space-y-4">
               {getStatusBadge(kycStatus.kycStatus)}
@@ -176,7 +176,7 @@ export default function KYC() {
         )}
 
         {(!kycStatus?.kycStatus || kycStatus.kycStatus === 'none' || kycStatus.kycStatus === 'rejected') && (
-          <div className="bg-[#0a0a0a] border border-yellow-900/20 p-6 rounded-lg">
+          <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-lg">
             <h3 className="text-2xl font-bold mb-6 text-white">Télécharger vos Documents</h3>
 
             {error && (
@@ -200,7 +200,7 @@ export default function KYC() {
                   Carte d'identité nationale, passeport ou permis de conduire (recto-verso)
                 </p>
 
-                <div className="border-2 border-dashed border-yellow-900/30 p-6 text-center hover:border-yellow-600/60 transition-colors rounded">
+                <div className="border-2 border-dashed border-white/10 p-6 text-center hover:border-yellow-600/60 transition-colors rounded">
                   <input
                     type="file"
                     id="idDocument"
@@ -238,7 +238,7 @@ export default function KYC() {
                   Photo de vous tenant votre pièce d'identité à côté de votre visage
                 </p>
 
-                <div className="border-2 border-dashed border-yellow-900/30 p-6 text-center hover:border-yellow-600/60 transition-colors rounded">
+                <div className="border-2 border-dashed border-white/10 p-6 text-center hover:border-yellow-600/60 transition-colors rounded">
                   <input
                     type="file"
                     id="selfie"
@@ -263,7 +263,7 @@ export default function KYC() {
                 </div>
               </div>
 
-              <div className="bg-yellow-900/10 border border-yellow-900/30 p-6 rounded">
+              <div className="bg-yellow-900/10 border border-white/10 p-6 rounded">
                 <h4 className="font-bold text-yellow-500 mb-3">⚠️ Instructions Importantes :</h4>
                 <ul className="space-y-2 text-yellow-200/70 text-sm">
                   <li>• Les documents doivent être clairs et lisibles</li>
@@ -285,7 +285,7 @@ export default function KYC() {
           </div>
         )}
 
-        <div className="bg-[#0a0a0a] border border-yellow-900/10 p-6 rounded-lg">
+        <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-lg">
           <h3 className="lux-serif text-2xl font-semibold mb-4 text-[#f4efe2]">Pourquoi le KYC est-il nécessaire ?</h3>
           <ul className="space-y-3 text-[#f4efe2]/60">
             <li className="flex items-start gap-3">

@@ -215,19 +215,19 @@ export default function Register() {
                     className={`w-full px-4 py-3 bg-black/50 border text-white placeholder-gray-700 focus:outline-none transition-all duration-300 text-sm rounded ${
                       formData.confirmPassword && formData.password !== formData.confirmPassword
                         ? 'border-red-800/60 focus:border-red-700 focus:ring-1 focus:ring-red-500/20'
-                        : 'border-yellow-900/30 focus:border-yellow-500/60 focus:ring-1 focus:ring-yellow-500/20'
+                        : 'border-white/10 focus:border-yellow-500/60 focus:ring-1 focus:ring-yellow-500/20'
                     }`} placeholder="••••••••" />
                   {formData.confirmPassword && formData.password !== formData.confirmPassword && (
                     <p className="mt-1 text-xs text-red-400 animate-fadeIn">Les mots de passe ne correspondent pas</p>
                   )}
                 </div>
 
-                <div className="flex items-start gap-3 p-4 bg-yellow-900/[0.04] border border-yellow-900/20 rounded">
+                <div className="flex items-start gap-3 p-4 bg-yellow-900/[0.04] border border-white/10 rounded">
                   <div className="relative mt-0.5 flex-shrink-0">
                     <input id="terms" type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="sr-only" />
                     <button type="button" onClick={() => setAcceptedTerms(!acceptedTerms)}
                       className={`w-5 h-5 border-2 flex items-center justify-center transition-all duration-300 rounded ${
-                        acceptedTerms ? 'bg-gradient-to-br from-yellow-400 to-yellow-700 border-yellow-500' : 'bg-black/50 border-yellow-900/40 hover:border-yellow-700'
+                        acceptedTerms ? 'bg-gradient-to-br from-yellow-400 to-yellow-700 border-yellow-500' : 'bg-black/50 border-white/10 hover:border-yellow-700'
                       }`}>
                       {acceptedTerms && <svg className="w-3 h-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
                     </button>

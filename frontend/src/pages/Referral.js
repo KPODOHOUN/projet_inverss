@@ -156,7 +156,7 @@ export default function Referral({ onNavigate }) {
           const filteredReferrals = (referralData?.referrals || []).filter(r => withinPeriod(r.joinedAt, periodFilter));
           if (filteredReferrals.length === 0) {
             return (
-              <div className="text-center py-12 rounded-xl border border-dashed border-yellow-900/30">
+              <div className="text-center py-12 rounded-xl border border-dashed border-white/10">
                 {referralData?.referrals?.length > 0 ? (
                   <p className="text-sm text-[#f4efe2]/50">Aucun filleul sur cette période</p>
                 ) : (

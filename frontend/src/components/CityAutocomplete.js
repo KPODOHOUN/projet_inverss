@@ -61,7 +61,7 @@ export default function CityAutocomplete({ value, onChange, countryIso2, placeho
         className="lux-input disabled:opacity-50 disabled:cursor-not-allowed"
       />
       {open && countryIso2 && (loading || suggestions.length > 0) && (
-        <div className="absolute z-20 mt-1.5 w-full bg-[#0d0c0a] border border-yellow-900/30 rounded-xl shadow-2xl max-h-56 overflow-y-auto py-1">
+        <div className="absolute z-20 mt-1.5 w-full bg-[#0d0c0a] border border-white/10 rounded-xl shadow-2xl max-h-56 overflow-y-auto py-1">
           {loading && <div className="px-4 py-2 text-xs text-gray-500">Recherche…</div>}
           {!loading && suggestions.map((s, i) => (
             <button

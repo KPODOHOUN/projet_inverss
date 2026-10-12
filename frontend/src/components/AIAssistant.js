@@ -55,7 +55,7 @@ export default function AIAssistant() {
       <button
         onClick={() => setOpen(o => !o)}
         aria-label="Assistant"
-        className="fixed bottom-5 right-5 z-[90] w-14 h-14 rounded-full bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a] text-[#17130a] shadow-[0_14px_34px_-10px_rgba(212,175,55,0.75)] ring-1 ring-[#f3d58a]/40 flex items-center justify-center hover:scale-105 transition-transform border-none cursor-pointer"
+        className="fixed bottom-5 right-5 z-[90] w-14 h-14 rounded-full bg-white text-[#17130a] flex items-center justify-center hover:scale-105 transition-transform border-none cursor-pointer"
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -65,7 +65,7 @@ export default function AIAssistant() {
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-[90] w-[92vw] max-w-sm h-[70vh] max-h-[520px] bg-[#0b0a08]/95 backdrop-blur-xl border border-yellow-900/40 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-24 right-5 z-[90] w-[92vw] max-w-sm h-[70vh] max-h-[520px] bg-[#0b0a08]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
           <div className="px-4 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 flex items-center justify-between">
             <p className="font-black text-black text-sm">Assistant IMC</p>
           </div>
@@ -74,7 +74,7 @@ export default function AIAssistant() {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] px-3 py-2 rounded-lg text-sm whitespace-pre-wrap ${
-                  m.role === 'user' ? 'bg-gradient-to-br from-[#f3d58a] to-[#d4af37] text-[#17130a] font-medium' : 'bg-white/[0.04] text-[#f4efe2]/85 border border-white/5'
+                  m.role === 'user' ? 'bg-white text-[#17130a] font-medium' : 'bg-white/[0.04] text-[#f4efe2]/85 border border-white/5'
                 }`}>
                   {m.content}
                 </div>
@@ -100,7 +100,7 @@ export default function AIAssistant() {
             <div ref={bottomRef} />
           </div>
 
-          <form onSubmit={send} className="p-3 border-t border-yellow-900/20 flex gap-2">
+          <form onSubmit={send} className="p-3 border-t border-white/10 flex gap-2">
             <input
               type="text"
               value={input}

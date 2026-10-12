@@ -66,7 +66,7 @@ export default function NotificationBell({ onNavigate }) {
         type="button"
         onClick={() => setOpen(o => !o)}
         aria-label="Notifications"
-        className="relative w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-yellow-900/40 text-yellow-500 hover:bg-yellow-900/20 transition-all bg-transparent cursor-pointer"
+        className="relative w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-white/10 text-yellow-500 hover:bg-yellow-900/20 transition-all bg-transparent cursor-pointer"
       >
         <svg className="w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none">
           <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -80,8 +80,8 @@ export default function NotificationBell({ onNavigate }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 max-w-[90vw] bg-black border border-yellow-900/40 rounded-lg shadow-2xl z-50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-yellow-900/20">
+        <div className="absolute right-0 mt-2 w-80 max-w-[90vw] bg-black border border-white/10 rounded-lg shadow-2xl z-50 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
             <span className="font-semibold text-sm text-white">Notifications</span>
             {unreadCount > 0 && (
               <button onClick={markAllRead} className="text-[11px] text-yellow-500 font-bold hover:text-yellow-400 bg-transparent border-none cursor-pointer">
@@ -97,7 +97,7 @@ export default function NotificationBell({ onNavigate }) {
                 <button
                   key={notif._id}
                   onClick={() => handleClick(notif)}
-                  className={`w-full text-left px-4 py-3 border-b border-yellow-900/10 hover:bg-yellow-900/10 transition-colors bg-transparent cursor-pointer ${!notif.read ? 'bg-yellow-900/5' : ''}`}
+                  className={`w-full text-left px-4 py-3 border-b border-white/10 hover:bg-yellow-900/10 transition-colors bg-transparent cursor-pointer ${!notif.read ? 'bg-yellow-900/5' : ''}`}
                 >
                   <div className="flex items-start gap-2">
                     {!notif.read && <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-yellow-500 shrink-0" />}

@@ -111,7 +111,7 @@ function CandlestickChart({ series, source }) {
 
         {hover !== null && (
           <div
-            className="absolute top-2 bg-black border border-yellow-900/40 rounded px-3 py-2 pointer-events-none shadow-lg"
+            className="absolute top-2 bg-black border border-white/10 rounded px-3 py-2 pointer-events-none shadow-lg"
             style={{
               left: `${(hover / (n - 1)) * 100}%`,
               transform: tooltipRight ? 'translateX(calc(-100% - 10px))' : 'translateX(10px)'
@@ -152,7 +152,7 @@ function PositionRow({ p }) {
   }, [running, p.closesAt]);
 
   return (
-    <div className="p-3 bg-black/40 border border-yellow-900/10 rounded">
+    <div className="p-3 bg-black/40 border border-white/10 rounded">
       <div className="flex justify-between items-start mb-1 gap-2">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide ${isCode ? 'bg-blue-900/40 text-blue-300' : 'bg-purple-900/40 text-purple-300'}`}>
@@ -364,11 +364,11 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
           <button
             key={a.key}
             onClick={() => setSelectedAsset(a.key)}
-            className={`lux-card p-4 text-left transition-all ${selectedAsset === a.key ? '!border-yellow-500/50 shadow-[0_0_0_1px_rgba(212,175,55,0.25),0_16px_40px_-20px_rgba(212,175,55,0.5)]' : 'lux-card-hover'}`}
+            className={`lux-card p-4 text-left transition-all ${selectedAsset === a.key ? '!border-yellow-500/50' : 'lux-card-hover'}`}
           >
             <div className="flex items-center gap-1.5">
               <p className="font-medium text-[#f4efe2] text-sm">{a.name}</p>
-              {a.source === 'live' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" title="Données réelles" />}
+              {a.source === 'live' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Données réelles" />}
             </div>
             <p className="text-xs text-[#f4efe2]/45 mt-0.5 lux-num">{a.symbol} · ${a.price.toLocaleString('fr-FR')}</p>
           </button>
@@ -414,14 +414,14 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
             <button
               onClick={() => openSelfPosition('SELL')}
               disabled={!!selfSubmitting || user.kycStatus !== 'verified'}
-              className="flex-1 min-w-[110px] py-3 rounded-[0.65rem] font-semibold text-sm text-white bg-gradient-to-b from-rose-500 to-rose-700 shadow-[0_8px_22px_-10px_rgba(244,63,94,0.7)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="flex-1 min-w-[110px] py-3 rounded-[0.65rem] font-semibold text-sm text-white bg-rose-600 hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               {selfSubmitting === 'SELL' ? '…' : '▼ En bas'}
             </button>
             <button
               onClick={() => openSelfPosition('BUY')}
               disabled={!!selfSubmitting || user.kycStatus !== 'verified'}
-              className="flex-1 min-w-[110px] py-3 rounded-[0.65rem] font-semibold text-sm text-white bg-gradient-to-b from-emerald-500 to-emerald-700 shadow-[0_8px_22px_-10px_rgba(16,185,129,0.7)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="flex-1 min-w-[110px] py-3 rounded-[0.65rem] font-semibold text-sm text-white bg-emerald-600 hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               {selfSubmitting === 'BUY' ? '…' : '▲ En haut'}
             </button>

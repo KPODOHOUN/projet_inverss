@@ -276,8 +276,8 @@ export default function Dashboard() {
 
           <div className="flex items-center gap-2 sm:gap-4">
             <NotificationBell onNavigate={handleNotificationNavigate} />
-            <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-yellow-900/30">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-[#17130a] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a] overflow-hidden shrink-0">
+            <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-white/10">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-[#17130a] bg-white overflow-hidden shrink-0">
                 {user?.avatarUrl
                   ? <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
                   : `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase()}
@@ -391,7 +391,7 @@ function Spinner() {
     <div className="flex items-center justify-center py-20">
       <div className="flex flex-col items-center gap-4">
         <div className="relative w-11 h-11">
-          <div className="absolute inset-0 rounded-full border border-yellow-900/40" />
+          <div className="absolute inset-0 rounded-full border border-white/10" />
           <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#d4af37] animate-spin" />
         </div>
         <p className="lux-label">Chargement</p>
@@ -512,8 +512,8 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
               <button onClick={() => onNavigate('wallet')} className="lux-btn-gold">
                 Déposer <IC.ArrowRight />
               </button>
-              <button onClick={() => onNavigate('invest')} className="lux-btn-ghost !bg-black/40 backdrop-blur-sm">Investir</button>
-              <button onClick={() => onNavigate('wallet')} className="lux-btn-ghost !bg-black/40 backdrop-blur-sm">Retirer</button>
+              <button onClick={() => onNavigate('invest')} className="lux-btn-ghost">Investir</button>
+              <button onClick={() => onNavigate('wallet')} className="lux-btn-ghost">Retirer</button>
             </div>
           </div>
         </div>
@@ -638,7 +638,7 @@ function StatCard({ Icon, title, value, delay = 0, positive = false }) {
     <div style={{ animationDelay: `${delay}ms` }} className="lux-card lux-card-hover animate-cardIn p-5">
       <div className="flex items-center justify-between mb-4">
         <span className="lux-icon-chip !w-8 !h-8"><Icon /></span>
-        {positive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />}
+        {positive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
       </div>
       <p className="text-[11px] text-[#f4efe2]/45 mb-1.5 font-medium">{title}</p>
       <p className="lux-num text-lg sm:text-xl font-medium text-[#f4efe2]">{value}</p>
@@ -669,7 +669,7 @@ function CashFlowChart({ transactions }) {
 
   if (!hasData) {
     return (
-      <div className="h-[180px] flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-yellow-900/30">
+      <div className="h-[180px] flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/10">
         <p className="text-[#f4efe2]/45 text-sm">Pas encore de mouvements à afficher</p>
         <p className="text-[#f4efe2]/25 text-xs">Vos dépôts et retraits apparaîtront ici</p>
       </div>
@@ -690,7 +690,7 @@ function CashFlowChart({ transactions }) {
                 {m.net !== 0 ? `${isUp ? '+' : '−'}$${Math.abs(m.net) >= 1000 ? (Math.abs(m.net) / 1000).toFixed(1) + 'k' : Math.abs(m.net).toFixed(0)}` : '·'}
               </span>
               <div
-                className={`animate-drawCandle w-full max-w-[42px] rounded-t-lg ${m.net === 0 ? 'bg-white/5' : isUp ? 'bg-gradient-to-t from-[#a8832a]/60 via-[#d4af37] to-[#f3d58a] shadow-[0_0_18px_-4px_rgba(212,175,55,0.6)]' : 'bg-gradient-to-t from-rose-900/60 to-rose-400'}`}
+                className={`animate-drawCandle w-full max-w-[42px] rounded-t-lg ${m.net === 0 ? 'bg-white/5' : isUp ? 'bg-[#d4af37]' : 'bg-gradient-to-t from-rose-900/60 to-rose-400'}`}
                 style={{ height: `${h}px`, animationDelay: `${i * 70}ms` }}
               />
             </div>
@@ -788,7 +788,7 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
               </div>
 
               {inv.status === 'active' && (
-                <div className="mt-5 pt-5 border-t border-yellow-900/20">
+                <div className="mt-5 pt-5 border-t border-white/10">
                   {confirmingId === inv._id ? (
                     <div className="bg-yellow-900/10 border border-yellow-700/30 rounded p-4">
                       <p className="text-sm text-[#f4efe2]/80 mb-1">
@@ -1143,7 +1143,7 @@ function DeleteAccountSection() {
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="px-4 py-2 border border-yellow-900/30 text-[#f4efe2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
+            className="px-4 py-2 border border-white/10 text-[#f4efe2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
           >
             Annuler ma demande
           </button>
@@ -1188,7 +1188,7 @@ function DeleteAccountSection() {
             <button
               type="button"
               onClick={() => { setConfirming(false); setPassword(''); setError(''); }}
-              className="px-4 py-2 border border-yellow-900/30 text-[#f4efe2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
+              className="px-4 py-2 border border-white/10 text-[#f4efe2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
             >
               Annuler
             </button>
@@ -1316,7 +1316,7 @@ function ProfileTab({ user }) {
       <Card className="p-6">
         <div className="flex flex-wrap items-center gap-6">
           <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-full p-[2px] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a] shadow-[0_10px_30px_-10px_rgba(212,175,55,0.6)]"><div className="w-full h-full rounded-full bg-[#0b0a08] overflow-hidden flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full p-[2px] bg-white"><div className="w-full h-full rounded-full bg-[#0b0a08] overflow-hidden flex items-center justify-center">
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
               ) : (

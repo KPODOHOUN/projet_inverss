@@ -88,7 +88,7 @@ export default function ResetPassword() {
       <div className={`w-full max-w-md relative z-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="mb-8">
           <div className="mb-5">
-            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
+            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto object-contain drop-" />
           </div>
           <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#f4efe2] leading-none mb-3">
             {success ? 'Mot de passe modifié' : 'Nouveau mot de passe'}
@@ -138,7 +138,7 @@ export default function ResetPassword() {
                       required
                       value={otp}
                       onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
-                      className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 rounded text-white focus:border-yellow-500/60 focus:outline-none text-center text-xl font-mono tracking-[0.5em]"
+                      className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded text-white focus:border-yellow-500/60 focus:outline-none text-center text-xl font-mono tracking-[0.5em]"
                       placeholder="000000"
                       maxLength={6}
                       inputMode="numeric"
@@ -164,7 +164,7 @@ export default function ResetPassword() {
                       type={showPassword ? 'text' : 'password'}
                       required value={password}
                       onChange={e => { setPassword(e.target.value); setError(''); }}
-                      className="w-full px-4 py-3 pr-12 bg-black/50 border border-yellow-900/30 rounded text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none text-sm"
+                      className="w-full px-4 py-3 pr-12 bg-black/50 border border-white/10 rounded text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none text-sm"
                       placeholder="••••••••"
                     />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f4efe2]/40 hover:text-yellow-500 transition-colors p-1">
@@ -195,7 +195,7 @@ export default function ResetPassword() {
                     type={showPassword ? 'text' : 'password'}
                     required value={confirmPassword}
                     onChange={e => { setConfirmPassword(e.target.value); setError(''); }}
-                    className={`w-full px-4 py-3 bg-black/50 border rounded text-white placeholder-gray-700 focus:outline-none text-sm transition-colors ${confirmPassword && password !== confirmPassword ? 'border-red-800/60 focus:border-red-700' : 'border-yellow-900/30 focus:border-yellow-500/60'}`}
+                    className={`w-full px-4 py-3 bg-black/50 border rounded text-white placeholder-gray-700 focus:outline-none text-sm transition-colors ${confirmPassword && password !== confirmPassword ? 'border-red-800/60 focus:border-red-700' : 'border-white/10 focus:border-yellow-500/60'}`}
                     placeholder="••••••••"
                   />
                 </div>

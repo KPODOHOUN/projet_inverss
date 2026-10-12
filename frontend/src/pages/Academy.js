@@ -199,7 +199,7 @@ export default function Academy() {
                     className={`w-full text-left px-5 py-3 border-2 rounded font-semibold transition-all ${
                       quizAnswers[qi] === oi
                         ? 'border-yellow-500 bg-yellow-900/30 text-yellow-400'
-                        : 'border-yellow-900/20 text-[#f4efe2]/80 hover:border-yellow-700 hover:bg-yellow-900/10'
+                        : 'border-white/10 text-[#f4efe2]/80 hover:border-yellow-700 hover:bg-yellow-900/10'
                     }`}
                   >
                     <span className="text-yellow-600 font-semibold mr-3">{String.fromCharCode(65 + oi)}.</span>
@@ -307,7 +307,7 @@ export default function Academy() {
           <p className="lux-label mb-3">Vidéos complétées</p>
           <p className="lux-num text-3xl font-light text-[#f4efe2]">{completedCount} <span className="text-lg text-[#f4efe2]/40">/ {totalVideos}</span></p>
           <div className="h-1.5 rounded-full bg-white/5 mt-4 overflow-hidden">
-            <div className="h-full rounded-full bg-gradient-to-r from-[#a8832a] to-[#f3d58a]" style={{ width: `${totalVideos ? (completedCount / totalVideos) * 100 : 0}%` }} />
+            <div className="h-full rounded-full bg-[#d4af37]" style={{ width: `${totalVideos ? (completedCount / totalVideos) * 100 : 0}%` }} />
           </div>
         </div>
         <div className="lux-card p-6">
@@ -360,7 +360,7 @@ export default function Academy() {
               <div className="text-right">
                 <span className="text-xs sm:text-sm text-[#f4efe2]/60">{completedInLevel}/{videos.length} complétées</span>
                 <div className="h-1 w-28 sm:w-32 rounded-full bg-white/5 mt-1.5 overflow-hidden">
-                  <div className="h-full rounded-full bg-gradient-to-r from-[#a8832a] to-[#f3d58a]" style={{ width: `${(completedInLevel / videos.length) * 100}%` }} />
+                  <div className="h-full rounded-full bg-[#d4af37]" style={{ width: `${(completedInLevel / videos.length) * 100}%` }} />
                 </div>
               </div>
             </div>

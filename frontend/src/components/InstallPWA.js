@@ -59,7 +59,7 @@ export default function InstallPWA() {
       className="fixed inset-x-0 z-[100] px-4 sm:px-6"
       style={{ bottom: 'max(16px, env(safe-area-inset-bottom, 0px))' }}
     >
-      <div className="max-w-md mx-auto lux-card-gold !bg-[#0d0c0a] p-4 flex items-start gap-3 shadow-2xl">
+      <div className="max-w-md mx-auto lux-card !bg-[#141414] p-4 flex items-start gap-3 shadow-2xl">
         <img src="/logo192.png" alt="" className="relative w-10 h-10 rounded-xl shrink-0" />
 
         <div className="relative flex-1 min-w-0">

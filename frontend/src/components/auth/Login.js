@@ -201,7 +201,7 @@ export default function Login() {
               </>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="p-4 bg-yellow-900/[0.08] border border-yellow-900/25 rounded text-center">
+                <div className="p-4 bg-yellow-900/[0.08] border border-white/10 rounded text-center">
                   <p className="text-sm text-[#f4efe2]/60">
                     Code à 6 chiffres de votre application d&apos;authentification
                   </p>

@@ -104,11 +104,11 @@ export default function AdminDashboard() {
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
           <div className="hidden md:flex items-center gap-2 text-xs text-[#f4efe2]/50">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Système opérationnel
           </div>
-          <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-yellow-900/30">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-[#17130a] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a]">
+          <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-white/10">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-[#17130a] bg-white">
               {`${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase()}
             </div>
             <div className="leading-tight">
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
       <div className="flex pt-14 sm:pt-16">
         <aside className={`
           fixed lg:sticky top-14 sm:top-16 left-0 h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] w-64 z-40 lg:z-auto
-          bg-[#08080b]/95 lg:bg-transparent border-r border-yellow-900/20
+          bg-[#08080b]/95 lg:bg-transparent border-r border-white/10
           transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
           transition-transform duration-300
           overflow-y-auto flex-shrink-0
@@ -246,7 +246,7 @@ function Badge({ label, color = 'yellow' }) {
 
 function AdminBtn({ children, onClick, color = 'yellow', size = 'sm', disabled }) {
   const c = {
-    yellow: 'text-[#17130a] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a] shadow-[0_6px_18px_-8px_rgba(212,175,55,0.7)] hover:brightness-110',
+    yellow: 'text-[#17130a] bg-white hover:brightness-110',
     green:  'text-emerald-200 bg-emerald-400/10 ring-1 ring-inset ring-emerald-400/30 hover:bg-emerald-400/20',
     red:    'text-rose-200 bg-rose-400/10 ring-1 ring-inset ring-rose-400/30 hover:bg-rose-400/20',
     gray:   'text-[#f4efe2]/70 bg-white/[0.03] ring-1 ring-inset ring-white/10 hover:ring-yellow-500/30 hover:text-[#f3d58a]',
@@ -384,7 +384,7 @@ function BarChart({ data, height = 120 }) {
       {data.map((d, i) => (
         <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
           <div
-            className="w-full rounded-t-md bg-gradient-to-t from-[#a8832a]/50 to-[#f3d58a] opacity-80 hover:opacity-100 transition-opacity"
+            className="w-full rounded-t-md bg-[#d4af37] opacity-80 hover:opacity-100 transition-opacity"
             style={{ height: `${(d.value / max) * (height - 20)}px` }}
             title={`${d.label}: ${d.value}`}
           />
@@ -570,7 +570,7 @@ function OverviewTab({ api, onNavigate }) {
               <span className="lux-icon-chip !w-9 !h-9 shrink-0">{a.icon}</span>
               {a.label}
               {a.badge > 0 && (
-                <span className="absolute top-2.5 right-2.5 min-w-[20px] h-5 px-1.5 bg-rose-500 text-white text-[11px] flex items-center justify-center font-semibold rounded-full shadow-[0_0_10px_rgba(244,63,94,0.6)]">
+                <span className="absolute top-2.5 right-2.5 min-w-[20px] h-5 px-1.5 bg-rose-500 text-white text-[11px] flex items-center justify-center font-semibold rounded-full">
                   {a.badge}
                 </span>
               )}
@@ -645,11 +645,11 @@ function AnalyticsTab({ api }) {
       <div className="grid lg:grid-cols-2 gap-4">
         <SectionBox title="Revenus">
           <div className="space-y-3">
-            <div className="flex justify-between text-xs border-b border-yellow-900/10 pb-2">
+            <div className="flex justify-between text-xs border-b border-white/10 pb-2">
               <span className="text-[#f4efe2]/50">Revenus (frais collectés)</span>
               <span className="font-bold text-green-400">${(s.revenue || 0).toLocaleString()}</span>
             </div>
-            <div className="flex justify-between text-xs border-b border-yellow-900/10 pb-2">
+            <div className="flex justify-between text-xs border-b border-white/10 pb-2">
               <span className="text-[#f4efe2]/50">Variation vs mois dernier</span>
               <span className={`font-bold ${(s.revenueChange || 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>{s.revenueChange || 0}%</span>
             </div>
@@ -917,7 +917,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
           ['Investissements actifs', user.activeInvestments],
           ['Statut', user.status],
         ].map(([k, v]) => (
-          <div key={k} className="border border-yellow-900/20 rounded p-2">
+          <div key={k} className="border border-white/10 rounded p-2">
             <p className="text-[#f4efe2]/40">{k}</p>
             <p className="text-white font-bold">{v}</p>
           </div>
@@ -1144,7 +1144,7 @@ function KYCTab({ api }) {
               className={`border p-4 cursor-pointer transition-all ${
                 selected?.id === item.id
                   ? 'border-yellow-500 bg-yellow-900/10'
-                  : 'border-yellow-900/30 hover:border-yellow-700'
+                  : 'border-white/10 hover:border-yellow-700'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -1173,7 +1173,7 @@ function KYCTab({ api }) {
               <div className="space-y-4">
                 {}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="border border-yellow-900/30 rounded p-3 text-center">
+                  <div className="border border-white/10 rounded p-3 text-center">
                     {idDocSrc ? (
                       <img src={idDocSrc} alt="ID Doc" className="max-h-32 mx-auto" />
                     ) : (
@@ -1186,7 +1186,7 @@ function KYCTab({ api }) {
                       <a href={idDocSrc} target="_blank" rel="noreferrer" className="text-xs text-yellow-500 hover:underline">Ouvrir</a>
                     )}
                   </div>
-                  <div className="border border-yellow-900/30 rounded p-3 text-center">
+                  <div className="border border-white/10 rounded p-3 text-center">
                     {selfieSrc ? (
                       <img src={selfieSrc} alt="Selfie" className="max-h-32 mx-auto" />
                     ) : (
@@ -1209,7 +1209,7 @@ function KYCTab({ api }) {
                       </AdminBtn>
                     </div>
 
-                    <div className="border-t border-yellow-900/20 pt-4">
+                    <div className="border-t border-white/10 pt-4">
                       <Textarea
                         label="Motif de rejet"
                         value={rejectReason}
@@ -1234,7 +1234,7 @@ function KYCTab({ api }) {
               </div>
             </SectionBox>
           ) : (
-            <div className="border border-yellow-900/20 rounded-lg p-6 text-center">
+            <div className="border border-white/10 rounded-lg p-6 text-center">
               <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une vérification KYC</p>
             </div>
           )}
@@ -1321,7 +1321,7 @@ function AccountDeletionsTab({ api }) {
               key={item.id}
               onClick={() => setSelected(item)}
               className={`border p-4 cursor-pointer transition-all ${
-                selected?.id === item.id ? 'border-yellow-500 bg-yellow-900/10' : 'border-yellow-900/30 hover:border-yellow-700'
+                selected?.id === item.id ? 'border-yellow-500 bg-yellow-900/10' : 'border-white/10 hover:border-yellow-700'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -1345,7 +1345,7 @@ function AccountDeletionsTab({ api }) {
           {selected ? (
             <SectionBox title={`Demande — ${userName(selected)}`}>
               <div className="space-y-4">
-                <div className="border border-yellow-900/30 rounded p-3">
+                <div className="border border-white/10 rounded p-3">
                   <p className="text-xs text-[#f4efe2]/40 mb-1">Motif donné par l'utilisateur</p>
                   <p className="text-sm text-white">{selected.reason || <span className="text-[#f4efe2]/40">Aucun motif fourni</span>}</p>
                 </div>
@@ -1358,7 +1358,7 @@ function AccountDeletionsTab({ api }) {
                     <AdminBtn color="green" size="md" onClick={() => handleApprove(selected.id)} disabled={processing}>
                       ✓ APPROUVER ET SUPPRIMER
                     </AdminBtn>
-                    <div className="border-t border-yellow-900/20 pt-4">
+                    <div className="border-t border-white/10 pt-4">
                       <Textarea label="Motif de rejet" value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={3} placeholder="Ex: solde non nul, litige en cours..." />
                       <div className="mt-2">
                         <AdminBtn color="red" size="md" onClick={() => handleReject(selected.id)} disabled={processing || !rejectReason}>
@@ -1377,7 +1377,7 @@ function AccountDeletionsTab({ api }) {
               </div>
             </SectionBox>
           ) : (
-            <div className="border border-yellow-900/20 rounded-lg p-6 text-center">
+            <div className="border border-white/10 rounded-lg p-6 text-center">
               <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une demande</p>
             </div>
           )}
@@ -1450,7 +1450,7 @@ function ReferralsTab({ api }) {
         {}
         <SectionBox title="Configuration de la Commission" action={<AdminBtn size="sm" color="green" onClick={saveCommissionRate} disabled={saving}>SAUVER</AdminBtn>}>
           {msg && <div className="mb-3"><Alert type={msg.includes('Erreur') ? 'error' : 'success'}>{msg}</Alert></div>}
-          <div className="border border-yellow-900/20 rounded p-3">
+          <div className="border border-white/10 rounded p-3">
             <p className="text-xs font-bold text-yellow-500 mb-2">Commission Niveau 1 (Directs)</p>
             <Input
               label="Taux (%)"
@@ -1776,7 +1776,7 @@ function InvestmentsTab({ api }) {
         }>
           <div className="grid lg:grid-cols-3 gap-3">
             {packConfig.map((pack, i) => (
-              <div key={pack.key} className="border border-yellow-900/20 rounded p-3 space-y-2">
+              <div key={pack.key} className="border border-white/10 rounded p-3 space-y-2">
                 <p className="text-xs font-semibold text-yellow-500 tracking-widest">{pack.name.toUpperCase()}</p>
                 <Input label="Min $" type="number" value={pack.minAmount} onChange={e => {
                   const u = [...packConfig]; u[i] = { ...u[i], minAmount: parseFloat(e.target.value) }; setPackConfig(u);
@@ -1853,7 +1853,7 @@ function InvestmentsTab({ api }) {
                 ['Créé le', new Date(selected.createdAt).toLocaleDateString('fr-FR')],
                 ['Fin le', new Date(selected.endDate).toLocaleDateString('fr-FR')],
               ].map(([k, v]) => (
-                <div key={k} className="border border-yellow-900/20 rounded p-2">
+                <div key={k} className="border border-white/10 rounded p-2">
                   <p className="text-[#f4efe2]/40">{k}</p>
                   <p className="text-white font-bold">{v}</p>
                 </div>
@@ -2036,7 +2036,7 @@ function TransactionsTab({ api }) {
                     ['Référence', selected.reference],
                     ['Date', new Date(selected.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })],
                   ].map(([k, v]) => (
-                    <div key={k} className="border border-yellow-900/20 rounded p-2">
+                    <div key={k} className="border border-white/10 rounded p-2">
                       <p className="text-[#f4efe2]/40">{k}</p>
                       <p className="text-white font-bold">{v}</p>
                     </div>
@@ -2045,12 +2045,12 @@ function TransactionsTab({ api }) {
 
                 {selected.proof && (
                   /^https?:\/\/.*\.(png|jpe?g|gif|webp)$/i.test(selected.proof) ? (
-                    <div className="border border-yellow-900/30 rounded p-3 text-center">
+                    <div className="border border-white/10 rounded p-3 text-center">
                       <img src={selected.proof} alt="Preuve de paiement" className="max-h-40 mx-auto" />
                       <p className="text-xs text-[#f4efe2]/50 mt-2">Preuve de paiement</p>
                     </div>
                   ) : (
-                    <div className="border border-yellow-900/30 rounded p-3">
+                    <div className="border border-white/10 rounded p-3">
                       <p className="text-xs text-[#f4efe2]/40 mb-1">
                         {selected.type === 'withdrawal' ? 'Adresse USDT de destination' : 'ID de transaction USDT'}
                       </p>
@@ -2066,7 +2066,7 @@ function TransactionsTab({ api }) {
                     <AdminBtn color="green" size="md" onClick={() => handleApprove(selected.id)} disabled={processing}>
                       ✓ APPROUVER
                     </AdminBtn>
-                    <div className="space-y-2 border-t border-yellow-900/20 pt-4">
+                    <div className="space-y-2 border-t border-white/10 pt-4">
                       <Textarea label="Motif de rejet" value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={2} placeholder="Raison du rejet..." />
                       <AdminBtn color="red" size="md" onClick={() => handleReject(selected.id)} disabled={processing || !rejectReason}>
                         ✗ REJETER
@@ -2090,7 +2090,7 @@ function TransactionsTab({ api }) {
                     <AdminBtn color="green" size="md" onClick={() => handleComplete(selected.id)} disabled={processing}>
                       ✓ MARQUER TERMINÉ (manuel)
                     </AdminBtn>
-                    <div className="space-y-2 border-t border-yellow-900/20 pt-4">
+                    <div className="space-y-2 border-t border-white/10 pt-4">
                       <Textarea label="Motif d'annulation" value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={2} placeholder="Raison de l'annulation..." />
                       <AdminBtn color="red" size="md" onClick={() => handleCancel(selected.id)} disabled={processing || !rejectReason}>
                         ✗ ANNULER
@@ -2102,7 +2102,7 @@ function TransactionsTab({ api }) {
                 {selected.type === 'withdrawal' && selected.status === 'processing' && (
                   <>
                     {selected.nowpaymentsWithdrawalId && selected.nowpaymentsStatus !== 'verified' && (
-                      <div className="space-y-2 border border-yellow-900/20 rounded p-3">
+                      <div className="space-y-2 border border-white/10 rounded p-3">
                         <Input label="Code de vérification NOWPayments (2FA)" value={payoutCode} onChange={e => setPayoutCode(e.target.value)} placeholder="Code reçu par email / Authenticator" />
                         <AdminBtn color="green" size="md" onClick={() => handleVerifyPayout(selected.id)} disabled={processing || !payoutCode.trim()}>
                           ✓ VALIDER LE CODE
@@ -2122,7 +2122,7 @@ function TransactionsTab({ api }) {
               </div>
             </SectionBox>
           ) : (
-            <div className="border border-yellow-900/20 rounded-lg p-6 text-center">
+            <div className="border border-white/10 rounded-lg p-6 text-center">
               <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une transaction</p>
             </div>
           )}
@@ -2191,7 +2191,7 @@ function AcademyTab({ api }) {
 
       <div className="space-y-3">
         {courses.map(course => (
-          <div key={course.id} className={`border rounded p-4 flex items-center justify-between gap-4 ${course.active ? 'border-yellow-900/30' : 'border-gray-800 opacity-60'}`}>
+          <div key={course.id} className={`border rounded p-4 flex items-center justify-between gap-4 ${course.active ? 'border-white/10' : 'border-gray-800 opacity-60'}`}>
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <span className="text-2xl">{categoryIcons[course.category] || '📚'}</span>
               <div className="min-w-0">
@@ -2316,7 +2316,7 @@ function FAQAdminTab({ api }) {
 
       <div className="space-y-3">
         {faqs.map(f => (
-          <div key={f._id} className={`border rounded p-4 flex items-center justify-between gap-4 ${f.active ? 'border-yellow-900/30' : 'border-gray-800 opacity-60'}`}>
+          <div key={f._id} className={`border rounded p-4 flex items-center justify-between gap-4 ${f.active ? 'border-white/10' : 'border-gray-800 opacity-60'}`}>
             <div className="min-w-0">
               <p className="font-bold text-white text-sm">{f.question}</p>
               <div className="flex gap-2 mt-1 items-center">
@@ -2454,7 +2454,7 @@ function TradingTab({ api }) {
 
       <div className="flex gap-2 mb-4 flex-wrap">
         {[['codes', 'Codes de scénario'], ['assets', 'Actifs'], ['positions', 'Positions'], ['settings', 'Trading libre']].map(([id, label]) => (
-          <button key={id} onClick={() => setTab(id)} className={`px-4 py-2 text-xs font-semibold tracking-widest border rounded transition-all ${tab === id ? 'bg-yellow-500 text-black border-yellow-500' : 'border-yellow-900/40 text-[#f4efe2]/60 hover:border-yellow-700'}`}>
+          <button key={id} onClick={() => setTab(id)} className={`px-4 py-2 text-xs font-semibold tracking-widest border rounded transition-all ${tab === id ? 'bg-yellow-500 text-black border-yellow-500' : 'border-white/10 text-[#f4efe2]/60 hover:border-yellow-700'}`}>
             {label.toUpperCase()}
           </button>
         ))}
@@ -2702,7 +2702,7 @@ function ConfigTab({ api }) {
         {}
         <SectionBox title="Mode Maintenance">
           <div className="space-y-3">
-            <div className="flex items-center justify-between border border-yellow-900/20 rounded p-3">
+            <div className="flex items-center justify-between border border-white/10 rounded p-3">
               <span className="text-sm text-[#f4efe2]/80">Mode Maintenance</span>
               <button
                 onClick={() => setConfig({ ...config, maintenanceMode: !config.maintenanceMode })}
@@ -2740,7 +2740,7 @@ function ConfigTab({ api }) {
             )}
 
             {config.usdtWallets.map((w, i) => (
-              <div key={i} className="flex items-center gap-3 border border-yellow-900/20 rounded p-3">
+              <div key={i} className="flex items-center gap-3 border border-white/10 rounded p-3">
                 <Badge label={w.network} color="yellow" />
                 <code className="flex-1 text-xs text-[#f4efe2]/80 break-all">{w.address}</code>
                 <button
@@ -2753,7 +2753,7 @@ function ConfigTab({ api }) {
               </div>
             ))}
 
-            <div className="flex flex-wrap items-end gap-3 pt-2 border-t border-yellow-900/20">
+            <div className="flex flex-wrap items-end gap-3 pt-2 border-t border-white/10">
               <div className="w-40">
                 <Select
                   label="Réseau"
@@ -2799,7 +2799,7 @@ function ConfigTab({ api }) {
             {Object.entries(config.modules).map(([key, val]) => {
               const labels = { academy: '🎓 Académie', referral: '👥 Parrainage' };
               return (
-                <div key={key} className="flex items-center justify-between border border-yellow-900/20 rounded p-3">
+                <div key={key} className="flex items-center justify-between border border-white/10 rounded p-3">
                   <span className="text-sm text-[#f4efe2]/80">{labels[key] || key}</span>
                   <button
                     onClick={() => setConfig({ ...config, modules: { ...config.modules, [key]: !val } })}
@@ -2878,7 +2878,7 @@ function LogsTab({ api }) {
         <SectionBox title="Administrateurs">
           <div className="space-y-2">
             {admins.map((a, i) => (
-              <div key={i} className="flex items-center justify-between border border-yellow-900/20 rounded p-2">
+              <div key={i} className="flex items-center justify-between border border-white/10 rounded p-2">
                 <div>
                   <p className="text-white text-xs font-bold">{a.firstName} {a.lastName}</p>
                   <p className="text-[#f4efe2]/40 text-xs">{a.email}</p>
@@ -2908,14 +2908,14 @@ function LogsTab({ api }) {
               value={newIP}
               onChange={e => setNewIP(e.target.value)}
               placeholder="Nouvelle IP..."
-              className="w-full px-2 py-1 bg-black border border-yellow-900/30 rounded text-white text-xs focus:border-yellow-500 focus:outline-none font-mono"
+              className="w-full px-2 py-1 bg-black border border-white/10 rounded text-white text-xs focus:border-yellow-500 focus:outline-none font-mono"
             />
             <div className="flex gap-2">
               <input
                 value={blockReason}
                 onChange={e => setBlockReason(e.target.value)}
                 placeholder="Raison..."
-                className="flex-1 px-2 py-1 bg-black border border-yellow-900/30 rounded text-white text-xs focus:border-yellow-500 focus:outline-none"
+                className="flex-1 px-2 py-1 bg-black border border-white/10 rounded text-white text-xs focus:border-yellow-500 focus:outline-none"
               />
               <AdminBtn size="sm" color="red" onClick={blockIP}>BLOQUER</AdminBtn>
             </div>
@@ -2925,7 +2925,7 @@ function LogsTab({ api }) {
         {}
         <SectionBox title="Sécurité">
           <div className="space-y-2">
-            <div className="flex justify-between text-xs border-b border-yellow-900/10 pb-2">
+            <div className="flex justify-between text-xs border-b border-white/10 pb-2">
               <span className="text-[#f4efe2]/50">IPs bloquées</span>
               <span className={`font-bold ${blockedIPs.length > 0 ? 'text-red-400' : 'text-green-400'}`}>{blockedIPs.length}</span>
             </div>
