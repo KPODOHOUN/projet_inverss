@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ThemeToggle from '../ThemeToggle';
 
 const POINTS = [
   'Packs d’investissement dès 25 $',
@@ -19,13 +20,13 @@ export default function AuthShell({ children }) {
 
         <div className="relative max-w-lg">
           <p className="lux-label !text-[#b45309] mb-5">IMC Corporation</p>
-          <h2 className="lux-serif text-5xl xl:text-6xl font-semibold text-[#e7ebf2] leading-[1.02] mb-10">
+          <h2 className="lux-serif text-4xl font-semibold text-[#e7ebf2] leading-[1.02] mb-10">
             Votre patrimoine mérite <span className="lux-gold-text italic">l&apos;excellence.</span>
           </h2>
           <ul className="space-y-4">
             {POINTS.map((p) => (
               <li key={p} className="flex items-center gap-3 text-[#e7ebf2]/65">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center bg-[#0b1018] text-white text-xs">✓</span>
+                <span className="w-6 h-6 rounded-full flex items-center justify-center bg-[#2563eb] text-white text-xs">✓</span>
                 {p}
               </li>
             ))}
@@ -38,6 +39,7 @@ export default function AuthShell({ children }) {
       </aside>
 
       <main className="relative flex items-center justify-center px-5 py-12 sm:px-8 overflow-hidden">
+        <ThemeToggle className="absolute top-5 right-5" />
         {children}
       </main>
     </div>

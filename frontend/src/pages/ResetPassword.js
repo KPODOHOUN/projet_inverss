@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom'
 import axios from 'axios';
 import { getApiUrl } from '../utils/apiUrl';
 import AuthShell from '../components/auth/AuthShell';
+import BrandLogo from '../components/BrandLogo';
 
 
 export default function ResetPassword() {
@@ -88,9 +89,9 @@ export default function ResetPassword() {
       <div className={`w-full max-w-md relative z-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="mb-8">
           <div className="mb-5">
-            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto object-contain drop-" />
+            <BrandLogo className="h-12 w-auto object-contain drop-" />
           </div>
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">
+          <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none mb-3">
             {success ? 'Mot de passe modifié' : 'Nouveau mot de passe'}
           </h1>
           <p className="text-[#e7ebf2]/50 text-sm">

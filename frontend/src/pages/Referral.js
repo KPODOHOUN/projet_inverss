@@ -80,7 +80,7 @@ export default function Referral({ onNavigate }) {
     <div className="space-y-8">
       <div className="animate-cardIn">
         <p className="lux-label mb-2">Programme de parrainage</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">
+        <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none">
           Invitez, <span className="lux-gold-text italic">gagnez</span>
         </h1>
         <p className="mt-2 text-sm text-[#e7ebf2]/50">Gagnez {rate}% sur chaque investissement de vos filleuls.</p>
@@ -103,7 +103,7 @@ export default function Referral({ onNavigate }) {
       <div className="lux-card-gold p-6 sm:p-8">
         <div className="relative">
           <p className="lux-label !text-[#fbbf24]/70 mb-1">À partager</p>
-          <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2] mb-6">Votre lien de parrainage</h2>
+          <h2 className="lux-serif text-3xl font-bold text-[#e7ebf2] mb-6">Votre lien de parrainage</h2>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-5">
             <input type="text" value={referralLink} readOnly className="lux-input flex-1 min-w-0 font-mono !text-xs" />
@@ -128,7 +128,7 @@ export default function Referral({ onNavigate }) {
           <span className="lux-num text-3xl font-light lux-gold-text">{rate}%</span>
         </div>
         <div className="flex-1 min-w-[220px]">
-          <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-1">Comment sont calculées vos commissions</h3>
+          <h3 className="lux-serif text-2xl font-bold text-[#e7ebf2] mb-1">Comment sont calculées vos commissions</h3>
           <p className="text-sm text-[#e7ebf2]/55 leading-relaxed">
             Dès qu'un investissement de votre filleul direct est validé, vous recevez {rate}% du montant investi, crédité directement sur votre solde.
           </p>
@@ -139,7 +139,7 @@ export default function Referral({ onNavigate }) {
         <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
           <div>
             <p className="lux-label mb-1">Votre réseau</p>
-            <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">Vos filleuls</h3>
+            <h3 className="lux-serif text-2xl font-bold text-[#e7ebf2]">Vos filleuls</h3>
           </div>
           {referralData?.referrals?.length > 0 && (
             <div className="flex flex-wrap gap-2">

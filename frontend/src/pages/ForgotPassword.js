@@ -44,7 +44,7 @@ export default function ForgotPassword() {
         </Link>
 
         <div className="mb-8">
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">Mot de passe</h1>
+          <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none mb-3">Mot de passe</h1>
           <p className="text-[#e7ebf2]/50 text-sm">Recevez un code à 6 chiffres par email</p>
         </div>
 

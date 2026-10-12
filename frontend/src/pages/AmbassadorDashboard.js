@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import useForceDarkMode from '../hooks/useForceDarkMode';
+import BrandLogo from '../components/BrandLogo';
+import ThemeToggle from '../components/ThemeToggle';
 
 const PERIOD_OPTIONS = [
   { value: 'all', label: 'Tout' },
@@ -19,7 +20,6 @@ const withinPeriod = (dateStr, period) => {
 // they otherwise use the platform (invest, trade, withdraw...) exactly like
 // any standard account, this is just their dedicated referral view.
 export default function AmbassadorDashboard() {
-  useForceDarkMode();
   const { user, logout, api } = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
@@ -48,7 +48,7 @@ export default function AmbassadorDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="lux-page min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
           <p className="mt-4 text-gray-400 font-semibold">Chargement...</p>
@@ -59,127 +59,95 @@ export default function AmbassadorDashboard() {
 
   const filteredReferrals = (data?.referrals || []).filter(r => withinPeriod(r.joinedAt, periodFilter));
 
+  const th = 'px-5 py-3 text-left text-xs font-medium text-[#6f7c90]';
   return (
-    <div className="min-h-screen bg-black">
-      <header className="imc-glass-nav sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-8 w-auto object-contain" />
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="text-right hidden sm:block">
-              <p className="font-semibold text-sm text-white leading-tight">{user?.firstName} {user?.lastName}</p>
-              <p className="text-xs text-gray-500">Ambassadeur</p>
+    <div className="lux-page min-h-screen">
+      <header className="lux-header sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <BrandLogo className="h-8 w-auto shrink-0" />
+            <div className="pl-3 border-l border-white/10 leading-tight hidden sm:block">
+              <p className="text-sm font-semibold text-[#e7ebf2]">{user?.firstName} {user?.lastName}</p>
+              <p className="text-xs text-[#9aa6b8]">Ambassadeur</p>
             </div>
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="px-3 sm:px-4 py-1.5 sm:py-2 border border-white/10 rounded text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-xs sm:text-sm bg-transparent cursor-pointer"
-            >
-              ← Mon compte
-            </button>
-            <button
-              onClick={handleLogout}
-              className="px-3 sm:px-4 py-1.5 sm:py-2 border border-yellow-600/50 rounded text-yellow-400 hover:bg-yellow-600 hover:text-white text-xs sm:text-sm bg-transparent cursor-pointer"
-            >
-              Déconnexion
-            </button>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
+            <button onClick={() => navigate('/dashboard')} className="lux-btn-ghost !px-3 !py-2">← Mon compte</button>
+            <button onClick={handleLogout} className="lux-btn-ghost !px-3 !py-2 hidden sm:inline-flex">Déconnexion</button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
-            ESPACE AMBASSADEUR
-          </h1>
-          <p className="text-xl text-gray-400">Suivez vos filleuls et vos commissions</p>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6 sm:space-y-8">
+        <div className="animate-cardIn">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#e7ebf2]">Espace ambassadeur</h1>
+          <p className="text-sm text-[#9aa6b8] mt-1">Suivez vos filleuls et vos commissions.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 text-black shadow-2xl shadow-yellow-500/30">
-            <p className="text-sm font-semibold mb-2">TOTAL FILLEULS</p>
-            <h3 className="text-2xl font-black mb-2">{data?.totalReferred || 0}</h3>
-            <p className="text-sm opacity-80">Utilisateurs parrainés</p>
-          </div>
-          <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-white/10 rounded-lg p-6 text-white">
-            <p className="text-sm font-semibold mb-2 text-yellow-500">COMMISSIONS TOTALES</p>
-            <h3 className="text-2xl font-black mb-2">${data?.totalCommissions?.toFixed(2) || '0.00'}</h3>
-            <p className="text-sm text-gray-400">Depuis le début</p>
-          </div>
-          <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-blue-900/30 rounded-lg p-6 text-white">
-            <p className="text-sm font-semibold mb-2 text-blue-500">SOLDE DISPONIBLE</p>
-            <h3 className="text-2xl font-black mb-2">${data?.availableBalance?.toFixed(2) || '0.00'}</h3>
-            <p className="text-sm text-gray-400">Prêt à retirer</p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          {[
+            ['Total filleuls', data?.totalReferred || 0, 'Utilisateurs parrainés', 'bg-blue-500/15 text-blue-300', 'text-[#e7ebf2]'],
+            ['Commissions totales', `${data?.totalCommissions?.toFixed(2) || '0.00'} USDT`, 'Depuis le début', 'bg-emerald-500/15 text-emerald-300', 'text-emerald-400'],
+            ['Solde disponible', `${data?.availableBalance?.toFixed(2) || '0.00'} USDT`, 'Prêt à retirer', 'bg-amber-500/15 text-amber-300', 'text-[#e7ebf2]'],
+          ].map(([label, value, sub, chip, cls], i) => (
+            <div key={label} style={{ animationDelay: `${i * 70}ms` }} className="lux-card animate-cardIn p-5">
+              <div className="flex items-start justify-between mb-3">
+                <p className="text-sm font-medium text-[#9aa6b8]">{label}</p>
+                <span className={`w-9 h-9 rounded-xl flex items-center justify-center ${chip}`}>●</span>
+              </div>
+              <p className={`lux-num text-2xl font-bold ${cls}`}>{value}</p>
+              <p className="text-xs text-[#6f7c90] mt-1.5">{sub}</p>
+            </div>
+          ))}
         </div>
 
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-500 rounded-lg p-6 mb-12">
-          <h2 className="text-2xl font-black text-yellow-500 mb-6">VOTRE LIEN DE PARRAINAGE</h2>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <input
-              type="text" value={referralLink} readOnly
-              className="flex-1 px-4 py-3 bg-black border-2 border-white/10 rounded text-white font-mono text-sm"
-            />
-            <button
-              onClick={copyToClipboard}
-              className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all rounded"
-            >
-              {copied ? '✓ COPIÉ' : 'COPIER'}
+        <div className="lux-card-gold p-5 sm:p-7">
+          <h2 className="text-lg font-bold text-[#e7ebf2] mb-1">Votre lien de parrainage</h2>
+          <p className="text-sm text-[#9aa6b8] mb-5">Partagez-le : chaque personne inscrite avec ce lien devient votre filleul.</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input type="text" value={referralLink} readOnly className="lux-input flex-1 font-mono !text-xs" />
+            <button onClick={copyToClipboard} className="lux-btn-gold !px-7 whitespace-nowrap">
+              {copied ? '✓ Copié' : 'Copier le lien'}
             </button>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-white/10 rounded-lg p-6 mb-12">
-          <h3 className="text-2xl font-black text-yellow-500 mb-6">COMMENT SONT CALCULÉES VOS COMMISSIONS</h3>
-          <div className="p-4 bg-yellow-900/20 border border-yellow-500 rounded">
-            <p className="text-sm text-gray-400">
-              Quand un investissement d'un de vos filleuls arrive à échéance (ou est clôturé), vous recevez <strong className="text-yellow-500">10%</strong> des
-              gains réellement générés par ce filleul — pas du montant qu'il a investi. La commission est créditée automatiquement sur votre solde.
+        <div className="lux-card p-5 sm:p-6 flex flex-wrap items-center gap-5">
+          <span className="w-16 h-16 rounded-2xl flex items-center justify-center bg-amber-500/15 text-amber-300 lux-num text-xl font-bold shrink-0">10%</span>
+          <div className="flex-1 min-w-[220px]">
+            <h3 className="font-bold text-[#e7ebf2] mb-1">Comment sont calculées vos commissions</h3>
+            <p className="text-sm text-[#9aa6b8] leading-relaxed">
+              Quand un investissement d'un de vos filleuls arrive à échéance (ou est clôturé), vous recevez 10 % des gains réellement générés par ce filleul — pas du montant investi. La commission est créditée automatiquement sur votre solde.
             </p>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-white/10 rounded-lg p-6 mb-12">
-          <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
-            <h3 className="text-2xl font-black text-yellow-500">VOS FILLEULS</h3>
+        <div className="lux-card overflow-hidden">
+          <div className="flex items-center justify-between flex-wrap gap-3 p-5 sm:p-6 pb-4">
+            <h3 className="text-lg font-bold text-[#e7ebf2]">Vos filleuls</h3>
             {data?.referrals?.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {PERIOD_OPTIONS.map(({ value, label }) => (
-                  <button
-                    key={value}
-                    onClick={() => setPeriodFilter(value)}
-                    className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-white/10 hover:border-yellow-700'}`}
-                  >
-                    {label}
-                  </button>
+                  <button key={value} onClick={() => setPeriodFilter(value)} className={`lux-chip ${periodFilter === value ? 'is-active' : ''}`}>{label}</button>
                 ))}
               </div>
             )}
           </div>
-
           {filteredReferrals.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">👥</div>
-              {data?.referrals?.length > 0 ? (
-                <p className="text-gray-400">Aucun filleul sur cette période</p>
-              ) : (
-                <p className="text-gray-400">Vous n'avez pas encore de filleuls — partagez votre lien pour commencer.</p>
-              )}
-            </div>
+            <p className="text-center text-sm text-[#9aa6b8] px-6 pb-10 pt-4">
+              {data?.referrals?.length > 0 ? 'Aucun filleul sur cette période' : "Vous n'avez pas encore de filleuls — partagez votre lien pour commencer."}
+            </p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-black">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Utilisateur</th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Commissions générées</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
+              <table className="w-full lux-table">
+                <thead><tr><th className={th}>Utilisateur</th><th className={th}>Date</th><th className={th}>Commissions générées</th></tr></thead>
+                <tbody>
                   {filteredReferrals.map((referral, index) => (
-                    <tr key={index} className="hover:bg-yellow-900/10">
-                      <td className="px-6 py-4 text-white">{referral.name}</td>
-                      <td className="px-6 py-4 text-gray-400">{new Date(referral.joinedAt).toLocaleDateString('fr-FR')}</td>
-                      <td className="px-6 py-4 font-bold text-yellow-500">${referral.commissionsEarned?.toFixed(2) || '0.00'}</td>
+                    <tr key={index}>
+                      <td className="text-sm text-[#e7ebf2]">{referral.name}</td>
+                      <td className="text-sm text-[#9aa6b8]">{new Date(referral.joinedAt).toLocaleDateString('fr-FR')}</td>
+                      <td className="lux-num text-sm font-semibold text-emerald-400">{referral.commissionsEarned?.toFixed(2) || '0.00'} USDT</td>
                     </tr>
                   ))}
                 </tbody>
@@ -189,25 +157,18 @@ export default function AmbassadorDashboard() {
         </div>
 
         {data?.commissionHistory?.length > 0 && (
-          <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-white/10 rounded-lg p-6">
-            <h3 className="text-2xl font-black text-yellow-500 mb-6">HISTORIQUE DES COMMISSIONS</h3>
+          <div className="lux-card overflow-hidden">
+            <h3 className="text-lg font-bold text-[#e7ebf2] p-5 sm:p-6 pb-4">Historique des commissions</h3>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-black">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Gains du filleul</th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Taux</th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Commission</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
+              <table className="w-full lux-table">
+                <thead><tr><th className={th}>Date</th><th className={th}>Gains du filleul</th><th className={th}>Taux</th><th className={th}>Commission</th></tr></thead>
+                <tbody>
                   {data.commissionHistory.map((c) => (
-                    <tr key={c._id} className="hover:bg-yellow-900/10">
-                      <td className="px-6 py-4 text-gray-400">{new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
-                      <td className="px-6 py-4 text-white">${c.sourceEarnings.toFixed(2)}</td>
-                      <td className="px-6 py-4 text-gray-400">{c.rate}%</td>
-                      <td className="px-6 py-4 font-bold text-yellow-500">${c.commissionAmount.toFixed(2)}</td>
+                    <tr key={c._id}>
+                      <td className="text-sm text-[#9aa6b8]">{new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>
+                      <td className="lux-num text-sm text-[#e7ebf2]">{c.sourceEarnings.toFixed(2)} USDT</td>
+                      <td className="text-sm text-[#9aa6b8]">{c.rate}%</td>
+                      <td className="lux-num text-sm font-semibold text-emerald-400">+{c.commissionAmount.toFixed(2)} USDT</td>
                     </tr>
                   ))}
                 </tbody>

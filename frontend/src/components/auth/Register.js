@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getApiUrl } from '../../utils/apiUrl';
-import useForceDarkMode from '../../hooks/useForceDarkMode';
 import PhoneInput from '../PhoneInput';
 import AuthShell from './AuthShell';
+import BrandLogo from '../BrandLogo';
 
 export default function Register() {
-  useForceDarkMode();
   const navigate = useNavigate();
   const { register } = useAuth();
   const [searchParams] = useSearchParams();
@@ -106,8 +105,8 @@ export default function Register() {
         </Link>
 
         <div className="mb-6">
-          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-11 w-auto mb-8 lg:hidden" />
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">Inscription</h1>
+          <BrandLogo className="h-11 w-auto mb-8 lg:hidden" />
+          <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none mb-3">Inscription</h1>
           <p className="text-[#e7ebf2]/60 text-sm">Créez votre compte investisseur</p>
         </div>
 

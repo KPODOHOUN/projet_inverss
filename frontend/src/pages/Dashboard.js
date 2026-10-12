@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import useForceDarkMode from '../hooks/useForceDarkMode';
 import { packDisplayName } from '../utils/packNames';
 import AnimatedNumber from '../components/AnimatedNumber';
 import { toast } from '../utils/toast';
@@ -16,6 +15,8 @@ import Trading from './Trading';
 import PhoneInput from '../components/PhoneInput';
 import CityAutocomplete from '../components/CityAutocomplete';
 import COUNTRIES from '../data/countries';
+import BrandLogo from '../components/BrandLogo';
+import ThemeToggle from '../components/ThemeToggle';
 
 const IC = {
   Overview: () => (
@@ -183,7 +184,6 @@ const readTabFromHash = () => {
 };
 
 export default function Dashboard() {
-  useForceDarkMode();
   const { user, logout, api } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTabState] = useState(readTabFromHash);
@@ -290,7 +290,7 @@ export default function Dashboard() {
       <header className="lux-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-8 w-auto object-contain shrink-0" />
+            <BrandLogo className="h-8 w-auto object-contain shrink-0" />
             <div className="pl-3 border-l border-white/10 min-w-0 leading-tight">
               <p className="text-sm font-semibold text-[#e7ebf2]">IMC Corp</p>
               <p className="text-xs text-[#9aa6b8] truncate">{currentLabel}</p>
@@ -298,6 +298,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
             <NotificationBell onNavigate={handleNotificationNavigate} />
             <button
               onClick={() => setActiveTab('profile')}
@@ -380,7 +381,7 @@ export default function Dashboard() {
             </div>
           </aside>
 
-          <main className="min-w-0">
+          <main key={activeTab} className="min-w-0 animate-tabIn">
             {activeTab === 'overview'     && <OverviewTab user={user} balance={balance} summary={summary} investments={investments} transactions={transactions} stats={stats} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
             {activeTab === 'invest'       && <Invest onNavigate={setActiveTab} />}
             {activeTab === 'investments'  && <InvestmentsTab investments={investments} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
@@ -467,7 +468,7 @@ function PageHeader({ title, subtitle, children }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
       <div>
-        <h2 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#e7ebf2] leading-none">{title}</h2>
+        <h2 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none">{title}</h2>
         {subtitle && <p className="mt-2 text-sm text-[#e7ebf2]/50">{subtitle}</p>}
       </div>
       {children}
@@ -573,7 +574,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
         </button>
       </div>
 
-      <div className="lux-card-gold p-5 sm:p-7">
+      <div className="lux-card-gold p-5 sm:p-7 animate-cardIn" style={{ animationDelay: '60ms' }}>
         <div className="flex items-center justify-between gap-3">
           <p className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-[#9aa6b8]">
             <span className="text-amber-400"><IC.Wallet /></span> Solde disponible
@@ -581,7 +582,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
           <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[#2563eb] text-white">USDT</span>
         </div>
         <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
-          <span className="lux-num text-4xl sm:text-5xl font-bold text-white"><AnimatedNumber value={balance} /></span>
+          <span className="lux-num text-3xl sm:text-4xl font-bold text-white"><AnimatedNumber value={balance} /></span>
           <span className="text-lg font-semibold text-[#7aa2ff]">USDT</span>
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
@@ -596,7 +597,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
             <button
               key={label}
               onClick={() => onNavigate(id)}
-              className={`flex flex-col items-center justify-center gap-2 py-4 sm:py-5 rounded-2xl font-semibold text-sm transition-colors border-none cursor-pointer active:scale-[0.98] ${cls}`}
+              className={`lux-lift flex flex-col items-center justify-center gap-2 py-4 sm:py-5 rounded-2xl font-semibold text-sm border-none cursor-pointer ${cls}`}
             >
               <span className={`w-9 h-9 rounded-full flex items-center justify-center ${chip}`}><Icon /></span>
               {label}
@@ -606,10 +607,10 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard Icon={IC.Layers}    tone="blue"   title="Capital engagé"   value={fmtUsd(summary?.invested, 0)} unit="USDT" sub={`Valeur : ${fmtUsd(summary?.currentValue, 0)} USDT`} />
-        <StatCard Icon={IC.Coin}      tone="green"  title="Gains réalisés"   value={`+${fmtUsd(earned)}`} unit="USDT" sub="Cumulés depuis l'ouverture" valueCls="text-emerald-400" />
-        <StatCard Icon={IC.Briefcase} tone="violet" title="Investissements"  value={stats?.activeInvestments ?? 0} unit={(stats?.activeInvestments ?? 0) > 1 ? 'packs' : 'pack'} sub="Actifs en ce moment" />
-        <StatCard Icon={IC.Percent}   tone="amber"  title="Rendement moyen"  value={fmtUsd(stats?.totalROI)} unit="%" sub="Sur le capital investi" />
+        <StatCard delay={120} Icon={IC.Layers}    tone="blue"   title="Capital engagé"   value={fmtUsd(summary?.invested, 0)} unit="USDT" sub={`Valeur : ${fmtUsd(summary?.currentValue, 0)} USDT`} />
+        <StatCard delay={180} Icon={IC.Coin}      tone="green"  title="Gains réalisés"   value={`+${fmtUsd(earned)}`} unit="USDT" sub="Cumulés depuis l'ouverture" valueCls="text-emerald-400" />
+        <StatCard delay={240} Icon={IC.Briefcase} tone="violet" title="Investissements"  value={stats?.activeInvestments ?? 0} unit={(stats?.activeInvestments ?? 0) > 1 ? 'packs' : 'pack'} sub="Actifs en ce moment" />
+        <StatCard delay={300} Icon={IC.Percent}   tone="amber"  title="Rendement moyen"  value={fmtUsd(stats?.totalROI)} unit="%" sub="Sur le capital investi" />
       </div>
 
       <Card className="p-5 sm:p-6">
@@ -640,7 +641,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
               const pct = end > start ? Math.min(100, Math.max(0, ((Date.now() - start) / (end - start)) * 100)) : 100;
               const daysLeft = Math.max(0, Math.ceil((end - Date.now()) / 86400000));
               return (
-                <Card key={inv._id} className="p-5">
+                <Card key={inv._id} className="p-5 lux-card-hover">
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="w-11 h-11 rounded-xl flex items-center justify-center bg-blue-500/15 text-blue-300 shrink-0"><IC.TrendUp /></span>
@@ -666,7 +667,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
                     <span className="text-emerald-400 font-medium">{Math.round(pct)} %</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-[#2563eb] to-[#34d399]" style={{ width: `${pct}%` }} />
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#2563eb] to-[#34d399] animate-growX" style={{ width: `${pct}%` }} />
                   </div>
                   <p className="mt-3 text-xs text-[#9aa6b8]">Gains à date : <span className="lux-num text-emerald-400 font-medium">+{fmtUsd(inv.earnings)} USDT</span></p>
                 </Card>
@@ -690,7 +691,7 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
             const network = tx.method?.startsWith('usdt-') ? ` (${tx.method.slice(5).toUpperCase()})` : '';
             const isOut = tx.amount < 0 || tx.type === 'investment' || tx.type === 'withdrawal';
             return (
-              <div key={tx._id} className="flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5">
+              <div key={tx._id} className="flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 transition-colors hover:bg-white/[0.02]">
                 <span className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${meta.cls}`}><meta.Icon /></span>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm text-[#e7ebf2] truncate">{meta.label}{network}</p>
@@ -711,10 +712,10 @@ function OverviewTab({ user, balance, summary, investments, transactions, stats,
   );
 }
 
-function StatCard({ Icon, title, value, unit, sub, tone = 'blue', valueCls = 'text-[#e7ebf2]' }) {
+function StatCard({ Icon, title, value, unit, sub, tone = 'blue', valueCls = 'text-[#e7ebf2]', delay = 0 }) {
   const chip = { blue: 'bg-blue-500/15 text-blue-300', green: 'bg-emerald-500/15 text-emerald-300', violet: 'bg-violet-500/15 text-violet-300', amber: 'bg-amber-500/15 text-amber-300' };
   return (
-    <div className="lux-card p-4 sm:p-5">
+    <div style={{ animationDelay: `${delay}ms` }} className="lux-card lux-card-hover animate-cardIn p-4 sm:p-5">
       <div className="flex items-start justify-between gap-2 mb-3">
         <p className="text-xs sm:text-sm font-medium text-[#9aa6b8]">{title}</p>
         <span className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${chip[tone]}`}><Icon /></span>
@@ -848,7 +849,7 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
             <Card key={i} className="p-5 sm:p-6">
               <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
                 <div>
-                  <h3 className="lux-serif text-2xl font-semibold lux-gold-text">{packDisplayName(inv.pack)}</h3>
+                  <h3 className="lux-serif text-2xl font-bold lux-gold-text">{packDisplayName(inv.pack)}</h3>
                   <p className="text-xs text-[#e7ebf2]/50 mt-0.5">
                     Créé le {new Date(inv.createdAt).toLocaleDateString('fr-FR')}
                   </p>
@@ -1141,7 +1142,7 @@ function SecurityTab() {
       <TwoFactorAuth />
       <PasswordChange />
       <Card className="p-6">
-        <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-4">Sessions actives</h3>
+        <h3 className="lux-serif text-2xl font-bold text-[#e7ebf2] mb-4">Sessions actives</h3>
         <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl">
           <div>
             <p className="font-semibold text-white text-sm">Session actuelle</p>
@@ -1212,7 +1213,7 @@ function DeleteAccountSection() {
 
   return (
     <Card className="p-6">
-      <h3 className="lux-serif text-2xl font-semibold text-rose-300 mb-2">Supprimer mon compte</h3>
+      <h3 className="lux-serif text-2xl font-bold text-rose-300 mb-2">Supprimer mon compte</h3>
 
       {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
       {error && <div className="mb-4 p-3 bg-red-900/40 border border-red-500/50 rounded text-red-300 text-sm">{error}</div>}
@@ -1319,7 +1320,7 @@ function PasswordChange() {
 
   return (
     <Card className="p-6">
-      <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-5">
+      <h3 className="lux-serif text-2xl font-bold text-[#e7ebf2] mb-5">
         Changer le mot de passe
       </h3>
       {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
@@ -1402,7 +1403,7 @@ function ProfileTab({ user }) {
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
-                <span className="lux-serif text-3xl font-semibold lux-gold-text">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
+                <span className="lux-serif text-3xl font-bold lux-gold-text">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
               )}
             </div></div>
             <label className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer bg-[#fbbf24] hover:brightness-110 ring-2 ring-[#0b1018] transition">

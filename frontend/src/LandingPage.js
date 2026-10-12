@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import useForceDarkMode from './hooks/useForceDarkMode';
+import { useTheme } from './context/ThemeContext';
 import ScrollReveal from './components/effects/ScrollReveal';
+import BrandLogo from './components/BrandLogo';
+import ThemeToggle from './components/ThemeToggle';
 
 const MARKETS = ['S&P 500', 'Nasdaq 100', 'Dow Jones 30', 'CAC 40', 'Euro Stoxx 50', 'FTSE 100', 'Nikkei 225', 'Russell 2000', 'Bund', 'T-Bonds', 'Bitcoin', 'Or', 'EUR/USDT'];
 
 export default function LandingPage() {
-  useForceDarkMode();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -147,7 +148,7 @@ function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, 
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled || mobileMenuOpen ? 'lux-header' : 'bg-transparent border-b border-transparent'}`}>
       <div className="max-w-7xl mx-auto px-5 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
         <button type="button" className="flex items-center bg-transparent border-none p-0 cursor-pointer" onClick={() => scrollToSection('home')}>
-          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-9 sm:h-10 w-auto object-contain" />
+          <BrandLogo className="h-9 sm:h-10 w-auto object-contain" />
         </button>
 
         <div className="hidden md:flex items-center gap-1 p-1 rounded-full border border-white/5 bg-white/[0.02]">
@@ -166,10 +167,13 @@ function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, 
         </div>
 
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           <Link to="/login" className="lux-btn-ghost !py-2 !px-4">Connexion</Link>
           <Link to="/register" className="lux-btn-gold !py-2 !px-4">Ouvrir un compte</Link>
         </div>
 
+        <div className="md:hidden flex items-center gap-1">
+        <ThemeToggle />
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -178,6 +182,7 @@ function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, 
         >
           {mobileMenuOpen ? <IconClose /> : <IconMenu />}
         </button>
+        </div>
       </div>
 
       {mobileMenuOpen && (
@@ -204,20 +209,20 @@ function Navigation({ scrolled, activeSection, scrollToSection, mobileMenuOpen, 
 
 function HeroSection({ scrollToSection }) {
   const { user } = useAuth();
+  const { isLight } = useTheme();
 
   return (
     <section id="home" className="relative min-h-[100svh] flex items-center pt-24 pb-16 px-5 sm:px-6 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <img src="/images/Gemini_Generated_Image_dm8veudm8veudm8v.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.10]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0b1018]/40 via-[#0b1018]/70 to-[#0b1018]" />
-        <div className="absolute left-1/2 top-[-20%] -translate-x-1/2 w-[900px] h-[600px] rounded-full blur-2xl" />
+      <div className="absolute inset-x-0 top-0 h-full pointer-events-none" aria-hidden="true">
+        <img src="/images/Gemini_Generated_Image_dm8veudm8veudm8v.png" alt="" className={`absolute inset-0 w-full h-full object-cover object-top ${isLight ? 'opacity-[0.22]' : 'opacity-[0.35]'}`} />
+        <div className={`absolute inset-0 bg-gradient-to-b ${isLight ? 'from-[#f3f5f9]/10 via-[#f3f5f9]/60 to-[#f3f5f9]' : 'from-[#0b1018]/10 via-[#0b1018]/55 to-[#0b1018]'}`} />
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-14 items-center">
         <div className="animate-hero-in">
           <span className="lux-pill bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25 mb-7">Hub financier dédié aux décideurs</span>
 
-          <h1 className="lux-serif text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#e7ebf2] leading-[0.98] tracking-tight mb-6">
+          <h1 className="lux-serif text-4xl sm:text-5xl font-bold text-[#e7ebf2] leading-[1.05] tracking-tight mb-6">
             Faites fructifier<br />votre patrimoine<br /><span className="lux-gold-text italic">avec élégance.</span>
           </h1>
 
@@ -245,57 +250,11 @@ function HeroSection({ scrollToSection }) {
         </div>
 
         <div className="relative hidden lg:flex justify-center animate-hero-in" style={{ animationDelay: '180ms', animationFillMode: 'backwards' }}>
-          <div className="absolute inset-0 m-auto w-[380px] h-[380px] rounded-full blur-3xl" />
-          <div className="absolute inset-0 m-auto w-[440px] h-[440px] rounded-full border border-yellow-500/10" />
-          <div className="absolute inset-0 m-auto w-[540px] h-[540px] rounded-full border border-yellow-500/5" />
-          <div className="relative w-full max-w-[400px] animate-float-slow">
-            <div className="lux-card-gold p-7">
-              <svg aria-hidden="true" viewBox="0 0 400 140" preserveAspectRatio="none" className="absolute inset-x-0 bottom-[26%] w-full h-[30%] pointer-events-none">
-                <defs>
-                  <linearGradient id="heroArea" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path d="M0,118 C40,112 70,96 110,100 C150,104 170,78 210,70 C250,62 270,80 310,50 C340,30 370,30 400,10 L400,140 L0,140 Z" fill="url(#heroArea)" />
-                <path d="M0,118 C40,112 70,96 110,100 C150,104 170,78 210,70 C250,62 270,80 310,50 C340,30 370,30 400,10" fill="none" stroke="#fbbf24" strokeWidth="1.6" />
-              </svg>
-              <div className="relative">
-                <div className="flex items-center justify-between mb-6">
-                  <img src="/logo-on-light.png" alt="" className="h-7 w-auto" />
-                  <span className="lux-pill bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">USDT</span>
-                </div>
-                <p className="lux-label !text-[#fbbf24]/70 mb-2">Solde disponible</p>
-                <p className="lux-num text-4xl font-light text-[#e7ebf2] mb-24">
-                  <span className="text-[#fbbf24]/70 text-2xl align-top mr-1">$</span>12 480.00
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {[['S&P 500', '25 j'], ['Nasdaq 100', '21 j'], ['Turbo 48H', '2 j']].map(([n, d]) => (
-                    <div key={n} className="rounded-xl bg-black/[0.04] border border-black/5 px-3 py-2.5">
-                      <p className="text-[11px] text-[#e7ebf2]/80 truncate">{n}</p>
-                      <p className="text-[10px] text-[#e7ebf2]/40">{d}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-center text-[10px] tracking-[0.25em] uppercase text-[#e7ebf2]/25 mt-4">Aperçu de l&apos;interface</p>
-          </div>
-
-          <div className="!absolute -left-10 top-[50%] lux-card !bg-[#141b26]/90 px-4 py-3 flex items-center gap-3 animate-float-slow" style={{ animationDelay: '0.8s' }}>
-            <span className="lux-icon-chip !w-9 !h-9"><IconLock size={18} /></span>
-            <span>
-              <span className="block text-xs text-[#e7ebf2]/45">Dépôts & retraits</span>
-              <span className="block text-sm font-medium text-[#e7ebf2]">100 % en USDT</span>
-            </span>
-          </div>
-          <div className="!absolute -right-8 top-[18%] lux-card !bg-[#141b26]/90 px-4 py-3 flex items-center gap-3 animate-float-slow" style={{ animationDelay: '1.6s' }}>
-            <span className="lux-icon-chip !w-9 !h-9"><IconAudit size={18} /></span>
-            <span>
-              <span className="block text-xs text-[#e7ebf2]/45">Packs dès</span>
-              <span className="block text-sm font-medium lux-gold-text">25 $ · 2 à 60 jours</span>
-            </span>
-          </div>
+          <img
+            src="/images/hero-phone.png"
+            alt="Application IMC Corporation"
+            className="relative w-full max-w-[520px] object-contain animate-float-phone drop-shadow-[0_30px_50px_rgba(0,0,0,0.45)]"
+          />
         </div>
       </div>
 
@@ -319,7 +278,7 @@ function MarketStrip() {
       <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0b1018] to-transparent z-10 pointer-events-none" />
       <div className="lux-marquee flex gap-12 w-max">
         {items.map((m, i) => (
-          <span key={i} className="flex items-center gap-12 whitespace-nowrap lux-serif text-xl text-[#e7ebf2]/45">
+          <span key={i} className="flex items-center gap-12 whitespace-nowrap text-base font-medium text-[#e7ebf2]/45">
             {m}<span className="w-1 h-1 rounded-full bg-[#f59e0b]/60" />
           </span>
         ))}
@@ -332,7 +291,7 @@ function SectionTitle({ eyebrow, title, accent, subtitle }) {
   return (
     <ScrollReveal className="max-w-2xl mb-14">
       <p className="lux-label !text-[#f59e0b]/80 mb-3">{eyebrow}</p>
-      <h2 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-[1.05] mb-4">
+      <h2 className="lux-serif text-3xl sm:text-4xl font-bold text-[#e7ebf2] leading-[1.1] mb-4">
         {title} {accent && <span className="lux-gold-text italic">{accent}</span>}
       </h2>
       {subtitle && <p className="text-[#e7ebf2]/55 leading-relaxed">{subtitle}</p>}
@@ -361,7 +320,7 @@ function HowItWorks() {
                 <span className="relative z-10 inline-flex w-[52px] h-[52px] mb-6 rounded-full items-center justify-center lux-serif text-xl font-semibold text-white bg-[#0b1018]">
                   {i + 1}
                 </span>
-                <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-2">{step.title}</h3>
+                <h3 className="lux-serif text-xl font-semibold text-[#e7ebf2] mb-2">{step.title}</h3>
                 <p className="text-sm text-[#e7ebf2]/55 leading-relaxed">{step.description}</p>
               </div>
             </ScrollReveal>
@@ -393,7 +352,7 @@ function SecuritySection() {
               <ScrollReveal key={title} delay={i * 100}>
                 <div className="lux-card lux-card-hover p-7 h-full">
                   <span className="lux-icon-chip !w-12 !h-12 mb-6"><Icon size={22} /></span>
-                  <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-2">{title}</h3>
+                  <h3 className="lux-serif text-xl font-semibold text-[#e7ebf2] mb-2">{title}</h3>
                   <p className="text-sm text-[#e7ebf2]/55 leading-relaxed">{description}</p>
                 </div>
               </ScrollReveal>
@@ -412,7 +371,7 @@ function FinalCTA() {
         <div className="lux-card-gold px-7 py-14 sm:px-16 sm:py-20 text-center overflow-hidden">
           <div className="relative">
             <p className="lux-label !text-[#fbbf24]/70 mb-4">Rejoignez IMC</p>
-            <h2 className="lux-serif text-4xl sm:text-6xl font-semibold text-[#e7ebf2] leading-[1.02] mb-5">
+            <h2 className="lux-serif text-3xl sm:text-4xl font-bold text-[#e7ebf2] leading-[1.1] mb-5">
               Prêt à faire travailler<br /><span className="lux-gold-text italic">votre argent ?</span>
             </h2>
             <p className="text-[#e7ebf2]/55 max-w-lg mx-auto mb-9">Créez votre compte en quelques minutes. Aucun frais d&apos;ouverture.</p>
@@ -442,8 +401,8 @@ function Footer({ scrollToSection }) {
       <div className="max-w-7xl mx-auto">
         <div className="grid sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-12 mb-16">
           <div>
-            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-10 w-auto object-contain mb-6" />
-            <p className="lux-serif text-2xl text-[#e7ebf2]/80 leading-snug max-w-xs">
+            <BrandLogo className="h-10 w-auto object-contain mb-6" />
+            <p className="text-base text-[#e7ebf2]/70 leading-relaxed max-w-xs">
               La plateforme d&apos;investissement intelligente et sociale en Afrique.
             </p>
           </div>

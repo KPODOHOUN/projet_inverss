@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getApiUrl } from '../../utils/apiUrl';
-import useForceDarkMode from '../../hooks/useForceDarkMode';
 import AuthShell from './AuthShell';
+import BrandLogo from '../BrandLogo';
 
 const OAUTH_ERROR_MESSAGES = {
   google_not_configured: "La connexion Google n'est pas encore configurée sur ce site.",
@@ -12,7 +12,6 @@ const OAUTH_ERROR_MESSAGES = {
 };
 
 export default function Login() {
-  useForceDarkMode();
   const navigate = useNavigate();
   const { login } = useAuth();
   const [searchParams] = useSearchParams();
@@ -84,8 +83,8 @@ export default function Login() {
         </Link>
 
         <div className="mb-6">
-          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-11 w-auto mb-8 lg:hidden" />
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">
+          <BrandLogo className="h-11 w-auto mb-8 lg:hidden" />
+          <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none mb-3">
             {requires2FA ? 'Vérification 2FA' : 'Connexion'}
           </h1>
           <p className="text-[#e7ebf2]/60 text-sm">

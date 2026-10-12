@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import useForceDarkMode from '../hooks/useForceDarkMode';
 import { packDisplayName, PACK_NAMES } from '../utils/packNames';
 import { tierOf } from '../utils/packTiers';
+import BrandLogo from '../components/BrandLogo';
+import ThemeToggle from '../components/ThemeToggle';
 
 const INVESTMENT_PACK_KEYS = Object.keys(PACK_NAMES).filter(k => k !== 'turbo48h');
 const TIER_COLOR = { bronze: 'gray', silver: 'blue', gold: 'yellow', platinum: 'purple', diamond: 'green' };
 
 export default function AdminDashboard() {
-  useForceDarkMode();
   const { user, logout, api } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
@@ -99,7 +99,7 @@ export default function AdminDashboard() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-7 sm:h-8 w-auto object-contain" />
+          <BrandLogo className="h-7 sm:h-8 w-auto object-contain" />
           <span className="lux-pill bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25">Administration</span>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
@@ -116,6 +116,7 @@ export default function AdminDashboard() {
               <p className="text-[11px] lux-gold-text capitalize">{user?.role || 'admin'}</p>
             </div>
           </div>
+          <ThemeToggle />
           <button onClick={handleLogout} className="lux-btn-ghost !py-1.5 !px-3 !text-xs">Déconnexion</button>
         </div>
       </header>
@@ -168,7 +169,7 @@ function PageHeader({ title, subtitle, actions }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
       <div>
-        <h1 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#e7ebf2] leading-none">{pretty}</h1>
+        <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none">{pretty}</h1>
         {subtitle && <p className="text-sm text-[#e7ebf2]/50 mt-2">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -275,7 +276,7 @@ function Modal({ open, onClose, title, children }) {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">{pretty}</h2>
+          <h2 className="lux-serif text-2xl font-bold text-[#e7ebf2]">{pretty}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#e7ebf2]/50 hover:text-[#e7ebf2] hover:bg-white/5 text-xl" aria-label="Fermer">×</button>
         </div>
         {children}

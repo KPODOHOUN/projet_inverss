@@ -122,7 +122,7 @@ export default function KYC() {
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="text-center space-y-6">
           <div className="text-4xl">✅</div>
-          <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2]">KYC Vérifié !</h2>
+          <h2 className="lux-serif text-3xl font-bold text-[#e7ebf2]">KYC Vérifié !</h2>
           <p className="text-[#e7ebf2]/60">
             Votre identité a été vérifiée avec succès. Vous pouvez maintenant accéder à toutes les fonctionnalités.
           </p>
@@ -136,7 +136,7 @@ export default function KYC() {
     <div className="max-w-4xl mx-auto px-6 py-12">
       <div className="space-y-8">
         <div>
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">Vérification d'Identité (KYC)</h1>
+          <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none mb-3">Vérification d'Identité (KYC)</h1>
           <p className="text-[#e7ebf2]/50 text-lg">
             Pour des raisons de sécurité et de conformité, nous devons vérifier votre identité avant que vous puissiez investir ou retirer des fonds.
           </p>
@@ -144,7 +144,7 @@ export default function KYC() {
 
         {kycStatus && (
           <div className="bg-[#0b1018] border border-white/10 p-6 rounded-lg">
-            <h3 className="lux-serif text-2xl font-semibold mb-4 text-[#e7ebf2]">Statut Actuel</h3>
+            <h3 className="lux-serif text-2xl font-bold mb-4 text-[#e7ebf2]">Statut Actuel</h3>
             <div className="space-y-4">
               {getStatusBadge(kycStatus.kycStatus)}
 
@@ -286,7 +286,7 @@ export default function KYC() {
         )}
 
         <div className="bg-[#0b1018] border border-white/10 p-6 rounded-lg">
-          <h3 className="lux-serif text-2xl font-semibold mb-4 text-[#e7ebf2]">Pourquoi le KYC est-il nécessaire ?</h3>
+          <h3 className="lux-serif text-2xl font-bold mb-4 text-[#e7ebf2]">Pourquoi le KYC est-il nécessaire ?</h3>
           <ul className="space-y-3 text-[#e7ebf2]/60">
             <li className="flex items-start gap-3">
               <span className="text-green-500 font-bold">✓</span>

@@ -147,7 +147,7 @@ export default function WeeklyPayment({ onNavigate }) {
     <div className="space-y-8">
       <div className="animate-cardIn">
         <p className="lux-label mb-2">Portefeuille USDT</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">Mes gains</h1>
+        <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none">Mes gains</h1>
         <p className="mt-2 text-sm text-[#e7ebf2]/50">Votre argent, en un coup d'œil.</p>
       </div>
 
@@ -179,7 +179,7 @@ export default function WeeklyPayment({ onNavigate }) {
           <div className="flex items-center gap-3 mb-6">
             <span className="lux-icon-chip">↓</span>
             <div>
-              <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Déposer</h3>
+              <h3 className="lux-serif text-2xl font-bold text-[#e7ebf2] leading-none">Déposer</h3>
               <p className="text-xs text-[#e7ebf2]/45 mt-1">Paiement sécurisé par NOWPayments</p>
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function WeeklyPayment({ onNavigate }) {
           <div className="flex items-center gap-3 mb-6">
             <span className="lux-icon-chip">↑</span>
             <div>
-              <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Retirer</h3>
+              <h3 className="lux-serif text-2xl font-bold text-[#e7ebf2] leading-none">Retirer</h3>
               <p className="text-xs text-[#e7ebf2]/45 mt-1">Vers votre portefeuille USDT</p>
             </div>
           </div>
@@ -310,7 +310,7 @@ export default function WeeklyPayment({ onNavigate }) {
         <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
           <div>
             <p className="lux-label mb-1">Mouvements</p>
-            <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Historique récent</h3>
+            <h3 className="lux-serif text-2xl font-bold text-[#e7ebf2] leading-none">Historique récent</h3>
           </div>
           {transactions.length > 0 && (
             <div className="flex flex-wrap gap-2">

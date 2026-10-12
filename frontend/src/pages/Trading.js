@@ -344,13 +344,13 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
     <div className="space-y-6">
       <div className="animate-cardIn mb-2">
         <p className="lux-label mb-2">Marchés</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">Trading</h1>
+        <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none">Trading</h1>
         <p className="mt-2 text-sm text-[#e7ebf2]/50">Prenez position sur les grands actifs mondiaux.</p>
       </div>
 
       {user.kycStatus !== 'verified' && (
         <div className="lux-card-gold p-6">
-          <h3 className="relative lux-serif text-2xl font-semibold text-[#fbbf24] mb-1">Vérification KYC requise</h3>
+          <h3 className="relative lux-serif text-2xl font-bold text-[#fbbf24] mb-1">Vérification KYC requise</h3>
           <p className="relative text-sm text-[#e7ebf2]/60 mb-4">Vous devez compléter votre vérification d'identité avant de trader.</p>
           <button onClick={() => onNavigate?.('kyc')} className="relative lux-btn-gold !px-6">
             Compléter mon KYC →
@@ -379,7 +379,7 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
       {currentAsset && (
         <div className="p-6 sm:p-7 lux-card">
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <h2 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">{currentAsset.name}</h2>
+            <h2 className="lux-serif text-2xl font-bold text-[#e7ebf2]">{currentAsset.name}</h2>
             <span className="lux-pill bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25">
               {settings.payoutPercent}%
             </span>
@@ -432,7 +432,7 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
       {/* ── Scenario codes: fully independent from the chart above ────────── */}
       <div className="lux-card p-6">
         <div className="flex items-center gap-2 mb-1">
-          <h2 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">Code de scénario</h2>
+          <h2 className="lux-serif text-2xl font-bold text-[#e7ebf2]">Code de scénario</h2>
         </div>
         <p className="text-xs text-[#e7ebf2]/50 mb-4">
           Vous avez reçu un code de l'administrateur ? Entrez-le avec un montant : le résultat appliqué sera exactement le pourcentage défini sur ce code, quel que soit le marché.
@@ -474,7 +474,7 @@ export default function Trading({ onNavigate, prefillCode, onPrefillConsumed }) 
       {/* ── History, shared by both mechanisms ─────────────────────────────── */}
       <div className="lux-card p-6">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
-          <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">Mes positions</h3>
+          <h3 className="lux-serif text-2xl font-bold text-[#e7ebf2]">Mes positions</h3>
           <div className="flex flex-wrap gap-2">
             {POSITION_PERIODS.map(({ value, label }) => (
               <button

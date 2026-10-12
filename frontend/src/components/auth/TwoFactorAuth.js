@@ -154,7 +154,7 @@ export default function TwoFactorAuth() {
       {step === 'setup' && (
         <div className="space-y-6">
           <div>
-            <h4 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-3">Étape 1 : Scannez le QR Code</h4>
+            <h4 className="lux-serif text-2xl font-bold text-[#e7ebf2] mb-3">Étape 1 : Scannez le QR Code</h4>
             <p className="text-sm text-[#e7ebf2]/50 mb-4">
               Utilisez une application d'authentification (Google Authenticator, Authy, etc.)
               pour scanner ce QR code :
@@ -175,7 +175,7 @@ export default function TwoFactorAuth() {
           </div>
 
           <div>
-            <h4 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-3">Étape 2 : Vérifiez le code</h4>
+            <h4 className="lux-serif text-2xl font-bold text-[#e7ebf2] mb-3">Étape 2 : Vérifiez le code</h4>
             <form onSubmit={handleVerify} className="space-y-4">
               <div>
                 <label className="block lux-label mb-2">

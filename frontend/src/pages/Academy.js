@@ -181,7 +181,7 @@ export default function Academy() {
     return (
       <div className="max-w-3xl mx-auto px-6 py-12">
         <div className="text-center mb-8">
-          <h2 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-2">QUIZ DE VALIDATION</h2>
+          <h2 className="lux-serif text-2xl font-bold text-[#e7ebf2] mb-2">QUIZ DE VALIDATION</h2>
           <p className="text-[#e7ebf2]/60">{activeVideo.title} — Score minimum requis : 70%</p>
         </div>
 
@@ -238,7 +238,7 @@ export default function Academy() {
         <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-500 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2]">{activeVideo.title}</h2>
+              <h2 className="lux-serif text-3xl font-bold text-[#e7ebf2]">{activeVideo.title}</h2>
               <p className="text-[#e7ebf2]/60 text-sm">{activeVideo.description}</p>
             </div>
             <button onClick={stopVideo} className="text-[#e7ebf2]/50 hover:text-white text-2xl transition-colors">✕</button>
@@ -296,7 +296,7 @@ export default function Academy() {
     <div className="space-y-10">
       <div className="animate-cardIn">
         <p className="lux-label mb-2">Académie IMC</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">
+        <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none">
           Apprendre à <span className="lux-gold-text italic">investir</span>
         </h1>
         <p className="mt-2 text-sm text-[#e7ebf2]/50">Formez-vous à l'investissement, niveau par niveau.</p>
@@ -312,7 +312,7 @@ export default function Academy() {
         </div>
         <div className="lux-card p-6">
           <p className="lux-label mb-3">Niveau d'accès</p>
-          <p className="lux-serif text-3xl font-semibold text-[#e7ebf2] leading-none">
+          <p className="lux-serif text-3xl font-bold text-[#e7ebf2] leading-none">
             {accessLevel === 0 ? 'Aucun pack' : accessLevel === 1 ? 'Débutant' : accessLevel === 2 ? 'Intermédiaire' : 'Avancé'}
           </p>
           <p className="text-xs text-[#e7ebf2]/40 mt-2">
@@ -332,7 +332,7 @@ export default function Academy() {
         <div className="lux-card-gold p-7 sm:p-8 flex flex-wrap items-center justify-between gap-5">
           <div className="relative">
             <p className="lux-label !text-[#fbbf24]/70 mb-1">Contenu verrouillé</p>
-            <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2] mb-1">Pack d'investissement requis</h2>
+            <h2 className="lux-serif text-3xl font-bold text-[#e7ebf2] mb-1">Pack d'investissement requis</h2>
             <p className="text-sm text-[#e7ebf2]/55">Souscrivez au minimum le Pack Starter pour accéder aux vidéos de niveau 1.</p>
           </div>
           <a href="/dashboard#invest" className="relative lux-btn-gold !px-7 !py-3">
@@ -352,7 +352,7 @@ export default function Academy() {
             {/* En-tête niveau */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-white/5">
               <div className="flex flex-wrap items-center gap-3">
-                <h2 className="lux-serif text-2xl sm:text-3xl font-semibold text-[#e7ebf2]">{label}</h2>
+                <h2 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2]">{label}</h2>
                 {isLocked && (
                   <span className="lux-pill bg-white/5 text-[#e7ebf2]/50 ring-1 ring-inset ring-white/10">Requiert pack {minPack}+</span>
                 )}

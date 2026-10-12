@@ -101,7 +101,7 @@ export default function Invest({ onNavigate }) {
       <div className="flex flex-wrap items-end justify-between gap-4 animate-cardIn">
         <div>
           <p className="lux-label mb-2">Catalogue</p>
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">Investir</h1>
+          <h1 className="lux-serif text-2xl sm:text-3xl font-bold text-[#e7ebf2] leading-none">Investir</h1>
           <p className="mt-2 text-sm text-[#e7ebf2]/50">Choisissez un pack adapté à vos objectifs.</p>
         </div>
         <div className="lux-card px-5 py-3.5">
@@ -113,7 +113,7 @@ export default function Invest({ onNavigate }) {
       {user.kycStatus !== 'verified' && (
         <div className="lux-card-gold p-6 flex flex-wrap items-center justify-between gap-4">
           <div className="relative">
-            <h3 className="lux-serif text-2xl font-semibold text-[#fbbf24] mb-1">Vérification KYC requise</h3>
+            <h3 className="lux-serif text-2xl font-bold text-[#fbbf24] mb-1">Vérification KYC requise</h3>
             <p className="text-sm text-[#e7ebf2]/60">Complétez votre vérification d'identité pour pouvoir investir.</p>
           </div>
           <button type="button" onClick={() => onNavigate?.('kyc')} className="relative lux-btn-gold">
@@ -164,7 +164,7 @@ export default function Invest({ onNavigate }) {
               {rateText && (
                 <div className="mb-5">
                   <p className="lux-label !text-[10px] mb-2">Taux journalier</p>
-                  <p className="lux-num text-4xl font-light lux-gold-text leading-none">
+                  <p className="lux-num text-3xl font-light lux-gold-text leading-none">
                     {rateText}<span className="text-lg ml-1">%</span>
                   </p>
                 </div>
@@ -195,7 +195,7 @@ export default function Invest({ onNavigate }) {
             <div className="relative flex justify-between items-start mb-6">
               <div>
                 <p className="lux-label mb-1">Nouvel investissement</p>
-                <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2] leading-none">{packs[selectedPack].name}</h2>
+                <h2 className="lux-serif text-3xl font-bold text-[#e7ebf2] leading-none">{packs[selectedPack].name}</h2>
               </div>
               <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-full flex items-center justify-center text-[#e7ebf2]/50 hover:text-[#e7ebf2] hover:bg-white/5 transition-colors text-xl leading-none" aria-label="Fermer">×</button>
             </div>

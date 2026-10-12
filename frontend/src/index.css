@@ -30,199 +30,12 @@ body.has-install-banner {
 }
 
 html.light-mode body {
-  background: #f7f5f0;
-  color: #14120c;
+  background: #f3f5f9;
+  color: #0f172a;
 }
 
-html.light-mode ::-webkit-scrollbar-track { background: #eee8dc; }
+html.light-mode ::-webkit-scrollbar-track { background: #e2e8f0; }
 html.light-mode ::selection { background: rgba(212,175,55,0.35); color: #14120c; }
-
-/* ============================================================
-   Dashboard / Admin light-mode overrides
-   Dashboard.js and AdminDashboard.js are written with literal dark
-   Tailwind utilities (bg-black, text-white, border-yellow-900/*...)
-   instead of theme-aware classes, so the site-wide light/dark toggle
-   never reached them. Rather than rewrite ~3000 lines of className
-   strings, this maps that same fixed set of utilities to light
-   equivalents whenever an ancestor carries `.light-mode` + `.dash-scope`
-   (the root wrapper of both dashboards). New dark utilities added to
-   either file need an entry here to stay theme-aware.
-   ============================================================ */
-
-html.light-mode .dash-scope { color: #14120c; }
-
-/* Surfaces: black/gray-900/gray-800/gray-700 (darkest -> darker) become
-   white/off-white/light-gold-tinted (lightest -> less light). */
-html.light-mode .dash-scope .bg-black,
-html.light-mode .dash-scope .bg-black\/95 { background-color: #ffffff !important; }
-html.light-mode .dash-scope .bg-black\/50 { background-color: #f5f2ea !important; }
-html.light-mode .dash-scope .bg-gray-900 { background-color: #ffffff !important; }
-html.light-mode .dash-scope .bg-gray-900\/50 { background-color: rgba(255,255,255,0.6) !important; }
-html.light-mode .dash-scope .bg-gray-800 { background-color: #f0ede4 !important; }
-html.light-mode .dash-scope .bg-gray-700 { background-color: #e5e0d3 !important; }
-
-/* Gradients: the handful of dark from/to combos used for cards and the
-   page background. Gold gradients (from-yellow-* to to-yellow-*) are left
-   untouched — they read fine on either theme. */
-html.light-mode .dash-scope [class*="from-gray-900"][class*="to-black"] {
-  background-image: linear-gradient(to bottom right, #ffffff, #f0ede4) !important;
-}
-html.light-mode .dash-scope [class*="from-gray-900"][class*="via-black"][class*="to-gray-900"] {
-  background-image: linear-gradient(to bottom right, #f7f5f0, #f0ede4, #f7f5f0) !important;
-}
-
-/* Gold-tinted hairlines: yellow-900 at low opacity reads as a subtle warm
-   line on black; the same dark-brown at low opacity on white just looks
-   muddy, so the base hue shifts to a visible mid-gold at the same alpha. */
-html.light-mode .dash-scope .border-yellow-900\/10 { border-color: rgba(169,121,26,0.10) !important; }
-html.light-mode .dash-scope .divide-yellow-900\/15 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(169,121,26,0.15) !important; }
-html.light-mode .dash-scope .border-yellow-900\/15 { border-color: rgba(169,121,26,0.15) !important; }
-html.light-mode .dash-scope .border-yellow-900\/20 { border-color: rgba(169,121,26,0.20) !important; }
-html.light-mode .dash-scope .border-yellow-900\/25 { border-color: rgba(169,121,26,0.25) !important; }
-html.light-mode .dash-scope .border-yellow-900\/30 { border-color: rgba(169,121,26,0.30) !important; }
-html.light-mode .dash-scope .border-yellow-900\/35 { border-color: rgba(169,121,26,0.35) !important; }
-html.light-mode .dash-scope .border-yellow-900\/40 { border-color: rgba(169,121,26,0.40) !important; }
-html.light-mode .dash-scope .bg-yellow-900\/5  { background-color: rgba(169,121,26,0.05) !important; }
-html.light-mode .dash-scope .bg-yellow-900\/8  { background-color: rgba(169,121,26,0.08) !important; }
-html.light-mode .dash-scope .bg-yellow-900\/10 { background-color: rgba(169,121,26,0.10) !important; }
-html.light-mode .dash-scope .bg-yellow-900\/15 { background-color: rgba(169,121,26,0.15) !important; }
-html.light-mode .dash-scope .bg-yellow-900\/20 { background-color: rgba(169,121,26,0.20) !important; }
-html.light-mode .dash-scope .bg-yellow-900\/40 { background-color: rgba(169,121,26,0.40) !important; }
-html.light-mode .dash-scope .bg-yellow-900\/50 { background-color: rgba(169,121,26,0.50) !important; }
-
-/* Body/label text: white/gray-300..600 (light-to-mid, for reading on
-   black) become near-black/mid-to-dark grays (for reading on white). */
-html.light-mode .dash-scope .text-white { color: #14120c !important; }
-html.light-mode .dash-scope .text-gray-300 { color: #3d3728 !important; }
-html.light-mode .dash-scope .text-gray-400 { color: #574f3d !important; }
-html.light-mode .dash-scope .text-gray-500 { color: #6f6550 !important; }
-html.light-mode .dash-scope .text-gray-600 { color: #877a5f !important; }
-html.light-mode .dash-scope .border-gray-600 { border-color: #cfc7b0 !important; }
-html.light-mode .dash-scope .border-gray-700 { border-color: #ddd6c4 !important; }
-html.light-mode .dash-scope .border-gray-800 { border-color: #e5e0d3 !important; }
-
-/* Gold accent text: bright yellow-300/400/500 reads well on black but
-   fails contrast on white, so it darkens; gold on gold buttons/borders
-   (already a strong hue) and black text on gold buttons are untouched. */
-html.light-mode .dash-scope .text-yellow-300 { color: #8a6118 !important; }
-html.light-mode .dash-scope .text-yellow-400 { color: #9c7015 !important; }
-html.light-mode .dash-scope .text-yellow-500 { color: #a9791a !important; }
-html.light-mode .dash-scope .text-yellow-500\/70 { color: rgba(169,121,26,0.7) !important; }
-
-/* Semantic alerts (success/error/info/warning): dark tinted backgrounds
-   with bright text (for black) become light tinted backgrounds with
-   dark text (for white), keeping the same hue so meaning stays intact. */
-html.light-mode .dash-scope .bg-green-900\/20 { background-color: rgba(21,128,61,0.08) !important; }
-html.light-mode .dash-scope .bg-green-900\/40 { background-color: rgba(21,128,61,0.12) !important; }
-html.light-mode .dash-scope .bg-green-900\/50 { background-color: rgba(21,128,61,0.15) !important; }
-html.light-mode .dash-scope .border-green-500,
-html.light-mode .dash-scope .border-green-800 { border-color: #22c55e !important; }
-html.light-mode .dash-scope .border-green-500\/30 { border-color: rgba(34,197,94,0.35) !important; }
-html.light-mode .dash-scope .border-green-500\/50 { border-color: rgba(34,197,94,0.5) !important; }
-html.light-mode .dash-scope .text-green-300,
-html.light-mode .dash-scope .text-green-400,
-html.light-mode .dash-scope .text-green-500 { color: #15803d !important; }
-
-html.light-mode .dash-scope .bg-red-900\/10 { background-color: rgba(220,38,38,0.05) !important; }
-html.light-mode .dash-scope .bg-red-900\/20 { background-color: rgba(220,38,38,0.08) !important; }
-html.light-mode .dash-scope .bg-red-900\/40 { background-color: rgba(220,38,38,0.12) !important; }
-html.light-mode .dash-scope .bg-red-900\/50 { background-color: rgba(220,38,38,0.15) !important; }
-html.light-mode .dash-scope .border-red-500,
-html.light-mode .dash-scope .border-red-800,
-html.light-mode .dash-scope .border-red-900\/30 { border-color: #ef4444 !important; }
-html.light-mode .dash-scope .border-red-500\/50 { border-color: rgba(239,68,68,0.5) !important; }
-html.light-mode .dash-scope .text-red-300,
-html.light-mode .dash-scope .text-red-400 { color: #b91c1c !important; }
-html.light-mode .dash-scope .text-red-500 { color: #dc2626 !important; }
-
-html.light-mode .dash-scope .bg-blue-900\/20 { background-color: rgba(29,78,216,0.08) !important; }
-html.light-mode .dash-scope .bg-blue-900\/40 { background-color: rgba(29,78,216,0.12) !important; }
-html.light-mode .dash-scope .bg-blue-900\/50 { background-color: rgba(29,78,216,0.15) !important; }
-html.light-mode .dash-scope .border-blue-500,
-html.light-mode .dash-scope .border-blue-800 { border-color: #3b82f6 !important; }
-html.light-mode .dash-scope .border-blue-500\/30 { border-color: rgba(59,130,246,0.35) !important; }
-html.light-mode .dash-scope .text-blue-300,
-html.light-mode .dash-scope .text-blue-400 { color: #1d4ed8 !important; }
-
-html.light-mode .dash-scope .bg-purple-900\/30 { background-color: rgba(126,34,206,0.10) !important; }
-html.light-mode .dash-scope .bg-purple-900\/40 { background-color: rgba(126,34,206,0.12) !important; }
-html.light-mode .dash-scope .bg-purple-900\/50 { background-color: rgba(126,34,206,0.15) !important; }
-html.light-mode .dash-scope .border-purple-500,
-html.light-mode .dash-scope .border-purple-800 { border-color: #a855f7 !important; }
-html.light-mode .dash-scope .border-purple-800\/40 { border-color: rgba(168,85,247,0.4) !important; }
-html.light-mode .dash-scope .text-purple-300,
-html.light-mode .dash-scope .text-purple-400 { color: #7e22ce !important; }
-
-/* Panel background used by Trading/Invest/Wallet cards — an arbitrary hex
-   value Tailwind emits as a literal escaped class, so it needs its own
-   rule like the named grays above rather than being caught by one. */
-html.light-mode .dash-scope .bg-\[\#0d0d0d\] { background-color: #ffffff !important; }
-
-/* Inputs/cards that use a translucent black as a subtle fill on top of a
-   colored (not black/white) surface — e.g. a chip on the gold balance
-   card — are intentionally left unconverted; they read fine either way. */
-
-/* -- Extended set: same rules, covering the tab pages rendered inside
-   the dashboard (Invest, KYC, Mining, Watch-to-Earn, Referral, Wallet,
-   Academy) which use a wider palette than Dashboard/AdminDashboard
-   themselves. Same principle throughout: dark surface -> light surface,
-   bright-on-black text -> dark-on-white text, hue preserved. -- */
-
-html.light-mode .dash-scope .bg-black\/30 { background-color: rgba(20,18,12,0.04) !important; }
-html.light-mode .dash-scope .bg-black\/40 { background-color: rgba(20,18,12,0.05) !important; }
-html.light-mode .dash-scope .text-black\/70 { color: rgba(20,18,12,0.7) !important; }
-
-html.light-mode .dash-scope .border-gray-400 { border-color: #c9c0a8 !important; }
-html.light-mode .dash-scope .border-gray-500 { border-color: #b0a688 !important; }
-
-/* Gold family: solid/vivid golds (500-800) already read fine on white and
-   are left unchanged; only the very dark yellow-900 solid fill and its
-   hairlines shift to the visible mid-gold used elsewhere in this file. */
-html.light-mode .dash-scope .bg-yellow-900 { background-color: rgba(169,121,26,0.55) !important; }
-html.light-mode .dash-scope .bg-yellow-900\/30 { background-color: rgba(169,121,26,0.30) !important; }
-html.light-mode .dash-scope .divide-yellow-900\/10 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(169,121,26,0.10) !important; }
-html.light-mode .dash-scope .divide-yellow-900\/20 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(169,121,26,0.20) !important; }
-html.light-mode .dash-scope .text-yellow-200\/70 { color: rgba(138,97,24,0.7) !important; }
-
-html.light-mode .dash-scope .bg-green-900\/10 { background-color: rgba(21,128,61,0.05) !important; }
-html.light-mode .dash-scope .bg-green-900\/30 { background-color: rgba(21,128,61,0.10) !important; }
-html.light-mode .dash-scope .bg-green-950\/40 { background-color: rgba(21,128,61,0.12) !important; }
-html.light-mode .dash-scope .border-green-600,
-html.light-mode .dash-scope .border-green-800\/40,
-html.light-mode .dash-scope .border-green-800\/50,
-html.light-mode .dash-scope .border-green-900\/30,
-html.light-mode .dash-scope .border-green-900\/40 { border-color: rgba(34,197,94,0.4) !important; }
-html.light-mode .dash-scope .border-green-500\/60 { border-color: rgba(34,197,94,0.6) !important; }
-html.light-mode .dash-scope .text-green-600 { color: #15803d !important; }
-
-html.light-mode .dash-scope .bg-red-900\/30 { background-color: rgba(220,38,38,0.10) !important; }
-html.light-mode .dash-scope .bg-red-950\/20 { background-color: rgba(220,38,38,0.06) !important; }
-html.light-mode .dash-scope .bg-red-950\/30 { background-color: rgba(220,38,38,0.10) !important; }
-html.light-mode .dash-scope .bg-red-950\/40 { background-color: rgba(220,38,38,0.12) !important; }
-html.light-mode .dash-scope .bg-red-950\/50 { background-color: rgba(220,38,38,0.15) !important; }
-html.light-mode .dash-scope .border-red-800\/40,
-html.light-mode .dash-scope .border-red-800\/50 { border-color: rgba(239,68,68,0.4) !important; }
-html.light-mode .dash-scope .text-red-500\/80 { color: rgba(220,38,38,0.8) !important; }
-
-html.light-mode .dash-scope .bg-blue-900\/30 { background-color: rgba(29,78,216,0.10) !important; }
-html.light-mode .dash-scope .bg-blue-950\/10 { background-color: rgba(29,78,216,0.05) !important; }
-html.light-mode .dash-scope .bg-blue-950\/30 { background-color: rgba(29,78,216,0.10) !important; }
-html.light-mode .dash-scope .border-blue-700,
-html.light-mode .dash-scope .border-blue-800\/30,
-html.light-mode .dash-scope .border-blue-800\/40,
-html.light-mode .dash-scope .border-blue-900\/30 { border-color: rgba(59,130,246,0.4) !important; }
-html.light-mode .dash-scope .border-blue-700\/50,
-html.light-mode .dash-scope .border-blue-500\/50 { border-color: rgba(59,130,246,0.5) !important; }
-html.light-mode .dash-scope .text-blue-500 { color: #1d4ed8 !important; }
-
-html.light-mode .dash-scope .border-purple-500\/50 { border-color: rgba(168,85,247,0.5) !important; }
-
-/* Gradient combos beyond from-gray-900/to-black used in tab pages. */
-html.light-mode .dash-scope [class*="from-gray-700"][class*="to-gray-800"] {
-  background-image: linear-gradient(to bottom right, #e5e0d3, #f0ede4) !important;
-}
-html.light-mode .dash-scope [class*="from-blue-950"] { --tw-gradient-from: rgba(29,78,216,0.08) !important; }
-html.light-mode .dash-scope [class*="from-green-950"] { --tw-gradient-from: rgba(21,128,61,0.08) !important; }
 
 @keyframes gradient {
   0% { background-position: 0% 50%; }
@@ -635,6 +448,33 @@ html.light-mode .imc-badge {
 .lux-chip:hover { color: var(--lux-text); border-color: rgba(148, 163, 184, 0.4); }
 .lux-chip.is-active { color: #fff; background: var(--lux-blue); border-color: var(--lux-blue); }
 
+
+@keyframes tabIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-tabIn { animation: tabIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes growX {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.animate-growX { transform-origin: left center; animation: growX 1.1s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.25s; }
+
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45); }
+  70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+.animate-pulseRing { animation: pulseRing 2.4s ease-out infinite; }
+
+.lux-lift { transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.15s ease; }
+.lux-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.45); }
+.lux-lift:active { transform: translateY(0) scale(0.98); }
+.lux-btn-gold, .lux-btn-amber { transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease; }
+.lux-btn-gold:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 20px -10px rgba(37, 99, 235, 0.8); }
+.lux-btn-amber:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -10px rgba(245, 158, 11, 0.8); }
+
 @keyframes luxMarquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -648,6 +488,66 @@ html.light-mode .imc-badge {
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--lux-line);
 }
+
+
+/* ── Light mode ──────────────────────────────────────────────────────
+   Pages are written dark-first with a fixed palette of hex utilities;
+   this block remaps that palette (and the design-system classes) when
+   <html> carries .light-mode. Text on coloured buttons/chips keeps its
+   own colour: anything with a bg- class is excluded from the text flips. */
+html.light-mode {
+  --lux-bg: #f3f5f9;
+  --lux-surface: #ffffff;
+  --lux-surface-2: #f7f9fc;
+  --lux-line: rgba(15, 23, 42, 0.09);
+  --lux-line-strong: rgba(15, 23, 42, 0.22);
+  --lux-text: #0f172a;
+  --lux-muted: #475569;
+  --lux-faint: #64748b;
+}
+html.light-mode .lux-card-gold { background: linear-gradient(140deg, #ffffff 0%, #eef3fb 100%); border-color: rgba(15, 23, 42, 0.1); }
+html.light-mode .lux-card { box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04); }
+html.light-mode .lux-btn-ghost { background: #e8edf5; color: #0f172a; }
+html.light-mode .lux-btn-ghost:hover { background: #dce3ee; }
+html.light-mode .lux-input { background: #ffffff; border-color: rgba(15, 23, 42, 0.15); color: #0f172a; }
+html.light-mode .lux-input::placeholder { color: #94a3b8; }
+html.light-mode .lux-nav-item:hover { background: rgba(15, 23, 42, 0.05); }
+html.light-mode .lux-nav-item.is-active { background: rgba(37, 99, 235, 0.1); color: #1d4ed8; }
+html.light-mode .lux-nav-item.is-active span { color: #2563eb !important; }
+html.light-mode .lux-icon-chip { background: rgba(15, 23, 42, 0.06); color: #334155; }
+html.light-mode .lux-chip { border-color: rgba(15, 23, 42, 0.15); }
+html.light-mode .lux-header { background: rgba(255, 255, 255, 0.9); }
+html.light-mode .lux-gold-text { color: #b45309; }
+html.light-mode .lux-table tbody tr:hover { background: rgba(15, 23, 42, 0.03); }
+
+/* Hard-coded surfaces */
+html.light-mode .bg-\[\#0b1018\] { background-color: #f3f5f9 !important; }
+html.light-mode .bg-\[\#141b26\], html.light-mode [class^="bg-[#141b26]/"], html.light-mode [class*=" bg-[#141b26]/"],
+html.light-mode .bg-\[\#0f151f\], html.light-mode [class^="bg-[#0f151f]/"], html.light-mode [class*=" bg-[#0f151f]/"] { background-color: #ffffff !important; }
+html.light-mode .bg-\[\#2a3446\], html.light-mode .bg-\[\#253043\] { background-color: #e8edf5 !important; color: #0f172a !important; }
+html.light-mode .hover\:bg-\[\#334058\]:hover { background-color: #dce3ee !important; }
+html.light-mode .border-\[\#253043\] { border-color: #e2e8f0 !important; }
+html.light-mode [class^="bg-white/"], html.light-mode [class*=" bg-white/"] { background-color: rgba(15, 23, 42, 0.05) !important; }
+html.light-mode [class^="border-white/"], html.light-mode [class*=" border-white/"] { border-color: rgba(15, 23, 42, 0.1) !important; }
+html.light-mode [class^="divide-white/"] > * + *, html.light-mode [class*=" divide-white/"] > * + * { border-color: rgba(15, 23, 42, 0.08) !important; }
+
+/* Hard-coded text (skipped when the element paints its own background) */
+html.light-mode .bg-transparent.text-\[\#e7ebf2\] { color: #0f172a !important; }
+html.light-mode .bg-transparent[class*=" text-[#e7ebf2]/"] { color: #475569 !important; }
+html.light-mode .text-\[\#e7ebf2\]:not([class*="bg-"]) { color: #0f172a !important; }
+html.light-mode [class^="text-[#e7ebf2]/"]:not([class*="bg-"]), html.light-mode [class*=" text-[#e7ebf2]/"]:not([class*="bg-"]) { color: #475569 !important; }
+html.light-mode .text-\[\#9aa6b8\] { color: #475569 !important; }
+html.light-mode .text-\[\#6f7c90\] { color: #64748b !important; }
+html.light-mode .lux-page .text-white:not([class*="bg-"]):not(button):not(button *) { color: #0f172a !important; }
+html.light-mode .text-\[\#7aa2ff\], html.light-mode .text-\[\#5b8cff\], html.light-mode .text-\[\#93b4ff\] { color: #2563eb !important; }
+html.light-mode .text-\[\#fbbf24\], html.light-mode [class^="text-[#fbbf24]/"], html.light-mode [class*=" text-[#fbbf24]/"] { color: #b45309 !important; }
+html.light-mode .text-emerald-300:not([class*="bg-emerald-6"]), html.light-mode .text-emerald-400, html.light-mode .text-green-400 { color: #047857 !important; }
+html.light-mode .text-amber-300, html.light-mode .text-amber-400, html.light-mode .text-yellow-400, html.light-mode .text-yellow-500 { color: #b45309 !important; }
+html.light-mode .text-blue-300, html.light-mode .text-blue-400, html.light-mode .text-sky-300 { color: #1d4ed8 !important; }
+html.light-mode .text-violet-300 { color: #6d28d9 !important; }
+html.light-mode .text-rose-300, html.light-mode .text-rose-400, html.light-mode .text-red-400 { color: #be123c !important; }
+html.light-mode .text-slate-300 { color: #334155 !important; }
+html.light-mode .text-emerald-200, html.light-mode .text-rose-200, html.light-mode .text-sky-200 { color: #0f172a !important; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
