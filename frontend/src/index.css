@@ -679,6 +679,13 @@ html.light-mode .imc-badge {
   box-shadow: 0 6px 16px -8px rgba(212, 175, 55, 0.7);
 }
 
+@keyframes luxMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.lux-marquee { animation: luxMarquee 40s linear infinite; }
+.lux-marquee:hover { animation-play-state: paused; }
+
 .lux-header {
   background: rgba(7, 7, 10, 0.72);
   backdrop-filter: blur(16px) saturate(140%);
