@@ -66,23 +66,23 @@ export default function NotificationBell({ onNavigate }) {
         type="button"
         onClick={() => setOpen(o => !o)}
         aria-label="Notifications"
-        className="relative w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-yellow-900/40 text-yellow-500 hover:bg-yellow-900/20 transition-all bg-transparent cursor-pointer"
+        className="relative w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-white/10 text-yellow-500 hover:bg-yellow-900/20 transition-all bg-transparent cursor-pointer"
       >
         <svg className="w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none">
           <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] sm:min-w-[18px] sm:h-[18px] px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] sm:text-[10px] font-black">
+          <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] sm:min-w-[18px] sm:h-[18px] px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[9px] sm:text-[10px] font-semibold">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 max-w-[90vw] bg-black border border-yellow-900/40 rounded-lg shadow-2xl z-50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-yellow-900/20">
-            <span className="font-black text-sm text-white">Notifications</span>
+        <div className="absolute right-0 mt-2 w-80 max-w-[90vw] bg-black border border-white/10 rounded-lg shadow-2xl z-50 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+            <span className="font-semibold text-sm text-white">Notifications</span>
             {unreadCount > 0 && (
               <button onClick={markAllRead} className="text-[11px] text-yellow-500 font-bold hover:text-yellow-400 bg-transparent border-none cursor-pointer">
                 TOUT MARQUER LU
@@ -91,20 +91,20 @@ export default function NotificationBell({ onNavigate }) {
           </div>
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="text-center py-8 text-gray-500 text-sm">Aucune notification</p>
+              <p className="text-center py-8 text-[#e7ebf2]/50 text-sm">Aucune notification</p>
             ) : (
               notifications.map(notif => (
                 <button
                   key={notif._id}
                   onClick={() => handleClick(notif)}
-                  className={`w-full text-left px-4 py-3 border-b border-yellow-900/10 hover:bg-yellow-900/10 transition-colors bg-transparent cursor-pointer ${!notif.read ? 'bg-yellow-900/5' : ''}`}
+                  className={`w-full text-left px-4 py-3 border-b border-white/10 hover:bg-yellow-900/10 transition-colors bg-transparent cursor-pointer ${!notif.read ? 'bg-yellow-900/5' : ''}`}
                 >
                   <div className="flex items-start gap-2">
                     {!notif.read && <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-yellow-500 shrink-0" />}
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-white truncate">{notif.title}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{notif.message}</p>
-                      <p className="text-[10px] text-gray-600 mt-1">{timeAgo(notif.createdAt)}</p>
+                      <p className="text-xs text-[#e7ebf2]/60 mt-0.5">{notif.message}</p>
+                      <p className="text-[10px] text-[#e7ebf2]/35 mt-1">{timeAgo(notif.createdAt)}</p>
                     </div>
                   </div>
                 </button>

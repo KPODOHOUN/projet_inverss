@@ -13,7 +13,7 @@ export default function ThemeToggle({ className = '' }) {
       className={`relative w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border transition-all bg-transparent cursor-pointer ${
         isLight
           ? 'border-gray-300 text-gray-700 hover:bg-gray-100'
-          : 'border-yellow-900/40 text-yellow-500 hover:bg-yellow-900/20'
+          : 'border-white/10 text-yellow-500 hover:bg-yellow-900/20'
       } ${className}`}
     >
       {isLight ? (

@@ -58,10 +58,10 @@ export default function CityAutocomplete({ value, onChange, countryIso2, placeho
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         disabled={!countryIso2}
         placeholder={countryIso2 ? (placeholder || 'Commencez à écrire…') : "Sélectionnez d'abord un pays"}
-        className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="lux-input disabled:opacity-50 disabled:cursor-not-allowed"
       />
       {open && countryIso2 && (loading || suggestions.length > 0) && (
-        <div className="absolute z-20 mt-1 w-full bg-black border-2 border-yellow-900/30 rounded max-h-48 overflow-y-auto">
+        <div className="absolute z-20 mt-1.5 w-full bg-[#141b26] border border-white/10 rounded-xl shadow-2xl max-h-56 overflow-y-auto py-1">
           {loading && <div className="px-4 py-2 text-xs text-gray-500">Recherche…</div>}
           {!loading && suggestions.map((s, i) => (
             <button

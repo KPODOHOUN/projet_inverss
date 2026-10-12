@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { getApiUrl } from '../utils/apiUrl';
+import AuthShell from '../components/auth/AuthShell';
 
 
 export default function ResetPassword() {
@@ -82,22 +83,17 @@ export default function ResetPassword() {
   const strength = getStrength();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050505] px-4 relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 70%)' }} />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full" style={{ background: 'radial-gradient(circle, rgba(184,134,11,0.08) 0%, transparent 70%)' }} />
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(212,175,55,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.5) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-      </div>
+    <AuthShell>
 
       <div className={`w-full max-w-md relative z-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="mb-8">
           <div className="mb-5">
-            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto object-contain drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
+            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-12 w-auto object-contain drop-" />
           </div>
-          <h1 className="text-2xl font-black text-white leading-none mb-2">
+          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none mb-3">
             {success ? 'Mot de passe modifié' : 'Nouveau mot de passe'}
           </h1>
-          <p className="text-gray-500 text-sm">
+          <p className="text-[#e7ebf2]/50 text-sm">
             {success
               ? 'Redirection vers la connexion...'
               : otpMode
@@ -107,11 +103,10 @@ export default function ResetPassword() {
         </div>
 
         <div className="relative">
-          <div className="relative bg-[#0d0d0d] border border-yellow-900/20 rounded-lg p-6">
-            <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.6), transparent)' }} />
+          <div className="relative lux-card p-6 sm:p-8">
 
             {error && (
-              <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/50 border border-red-800/50 rounded">
+              <div className="mb-6 flex items-start gap-3 p-4 bg-rose-500/10 border border-rose-400/20 rounded-xl">
                 <span className="text-red-400 mt-0.5 text-sm">⚠</span>
                 <p className="text-red-300 text-sm">{error}</p>
               </div>
@@ -129,13 +124,13 @@ export default function ResetPassword() {
             {success ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-6">✅</div>
-                <p className="text-gray-400 text-sm">Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
+                <p className="text-[#e7ebf2]/60 text-sm">Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 {otpMode && (
                   <div>
-                    <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase">
+                    <label className="block lux-label mb-2">
                       Code reçu par email
                     </label>
                     <input
@@ -143,7 +138,7 @@ export default function ResetPassword() {
                       required
                       value={otp}
                       onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setError(''); }}
-                      className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 rounded text-white focus:border-yellow-500/60 focus:outline-none text-center text-xl font-mono tracking-[0.5em]"
+                      className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded text-white focus:border-yellow-500/60 focus:outline-none text-center text-xl font-mono tracking-[0.5em]"
                       placeholder="000000"
                       maxLength={6}
                       inputMode="numeric"
@@ -161,7 +156,7 @@ export default function ResetPassword() {
                 )}
 
                 <div>
-                  <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase">
+                  <label className="block lux-label mb-2">
                     Mot de passe
                   </label>
                   <div className="relative">
@@ -169,10 +164,10 @@ export default function ResetPassword() {
                       type={showPassword ? 'text' : 'password'}
                       required value={password}
                       onChange={e => { setPassword(e.target.value); setError(''); }}
-                      className="w-full px-4 py-3 pr-12 bg-black/50 border border-yellow-900/30 rounded text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none text-sm"
+                      className="w-full px-4 py-3 pr-12 bg-black/50 border border-white/10 rounded text-white placeholder-gray-700 focus:border-yellow-500/60 focus:outline-none text-sm"
                       placeholder="••••••••"
                     />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-yellow-500 transition-colors p-1">
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#e7ebf2]/40 hover:text-yellow-500 transition-colors p-1">
                       {showPassword ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                       ) : (
@@ -193,22 +188,21 @@ export default function ResetPassword() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-yellow-600 mb-2 tracking-widest uppercase">
+                  <label className="block lux-label mb-2">
                     Confirmer
                   </label>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required value={confirmPassword}
                     onChange={e => { setConfirmPassword(e.target.value); setError(''); }}
-                    className={`w-full px-4 py-3 bg-black/50 border rounded text-white placeholder-gray-700 focus:outline-none text-sm transition-colors ${confirmPassword && password !== confirmPassword ? 'border-red-800/60 focus:border-red-700' : 'border-yellow-900/30 focus:border-yellow-500/60'}`}
+                    className={`w-full px-4 py-3 bg-black/50 border rounded text-white placeholder-gray-700 focus:outline-none text-sm transition-colors ${confirmPassword && password !== confirmPassword ? 'border-red-800/60 focus:border-red-700' : 'border-white/10 focus:border-yellow-500/60'}`}
                     placeholder="••••••••"
                   />
                 </div>
 
                 <button
                   type="submit" disabled={loading}
-                  className="relative w-full py-3.5 overflow-hidden font-black text-black text-sm tracking-widest uppercase transition-all disabled:opacity-50 group"
-                  style={{ background: 'linear-gradient(135deg, #D4AF37, #B8860B, #D4AF37)' }}
+                  className="lux-btn-gold w-full !py-3.5 !text-sm"
                 >
                   <span className="relative z-10">
                     {loading ? (
@@ -218,7 +212,6 @@ export default function ResetPassword() {
                       </span>
                     ) : 'RÉINITIALISER'}
                   </span>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'linear-gradient(135deg, #F0CC5A, #D4AF37, #F0CC5A)' }} />
                 </button>
               </form>
             )}
@@ -228,11 +221,9 @@ export default function ResetPassword() {
                 ← Retour à la connexion
               </Link>
             </div>
-
-            <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)' }} />
           </div>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 }

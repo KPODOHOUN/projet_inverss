@@ -62,119 +62,89 @@ export default function Referral({ onNavigate }) {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
-          <p className="mt-4 text-gray-400 font-semibold">Chargement...</p>
+          <p className="mt-4 text-[#e7ebf2]/60 font-semibold">Chargement...</p>
         </div>
       </div>
     );
   }
 
+  const rate = referralData?.commissionRate ?? 10;
+  const shareBtns = [
+    ['whatsapp', 'WhatsApp', '#25D366'],
+    ['telegram', 'Telegram', '#2AABEE'],
+    ['twitter', 'X / Twitter', '#e7e9ea'],
+    ['facebook', 'Facebook', '#1877F2'],
+  ];
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      {}
-      <div className="text-center mb-12">
-        <h1 className="text-3xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
-          PROGRAMME DE PARRAINAGE
+    <div className="space-y-8">
+      <div className="animate-cardIn">
+        <p className="lux-label mb-2">Programme de parrainage</p>
+        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">
+          Invitez, <span className="lux-gold-text italic">gagnez</span>
         </h1>
-        <p className="text-xl text-gray-400">
-          Invitez vos amis et gagnez des commissions à vie
-        </p>
+        <p className="mt-2 text-sm text-[#e7ebf2]/50">Gagnez {rate}% sur chaque investissement de vos filleuls.</p>
       </div>
 
-      {}
-      <div className="grid md:grid-cols-3 gap-6 mb-12">
-        <div className="bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 text-black shadow-2xl shadow-yellow-500/30">
-          <p className="text-sm font-semibold mb-2">TOTAL FILLEULS</p>
-          <h3 className="text-2xl font-black mb-2">{referralData?.totalReferrals || 0}</h3>
-          <p className="text-sm opacity-80">Utilisateurs parrainés</p>
-        </div>
-
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 text-white">
-          <p className="text-sm font-semibold mb-2 text-yellow-500">FILLEULS ACTIFS</p>
-          <h3 className="text-2xl font-black mb-2">{referralData?.activeReferrals || 0}</h3>
-          <p className="text-sm text-gray-400">Avec investissements actifs</p>
-        </div>
-
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-blue-900/30 rounded-lg p-6 text-white">
-          <p className="text-sm font-semibold mb-2 text-blue-500">COMMISSIONS</p>
-          <h3 className="text-2xl font-black mb-2">${referralData?.totalCommissionsUSD?.toFixed(2) || 0}</h3>
-          <p className="text-sm text-gray-400">Revenus passifs</p>
-        </div>
-      </div>
-
-      {}
-      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-500 rounded-lg p-6 mb-12">
-        <h2 className="text-2xl font-black text-yellow-500 mb-6">VOTRE LIEN DE PARRAINAGE</h2>
-        
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <input
-            type="text"
-            value={referralLink}
-            readOnly
-            className="flex-1 min-w-0 px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white font-mono text-sm"
-          />
-          <button
-            onClick={copyToClipboard}
-            className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold hover:from-yellow-600 hover:to-yellow-700 transition-all whitespace-nowrap"
-          >
-            {copied ? '✓ COPIÉ' : 'COPIER'}
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <button
-            onClick={() => shareOnSocial('whatsapp')}
-            className="px-4 py-3 bg-green-600 text-white font-bold hover:bg-green-700 transition-all"
-          >
-            WhatsApp
-          </button>
-          <button
-            onClick={() => shareOnSocial('telegram')}
-            className="px-4 py-3 bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all"
-          >
-            Telegram
-          </button>
-          <button
-            onClick={() => shareOnSocial('twitter')}
-            className="px-4 py-3 bg-sky-500 text-white font-bold hover:bg-sky-600 transition-all"
-          >
-            Twitter
-          </button>
-          <button
-            onClick={() => shareOnSocial('facebook')}
-            className="px-4 py-3 bg-blue-700 text-white font-bold hover:bg-blue-800 transition-all"
-          >
-            Facebook
-          </button>
-        </div>
-      </div>
-
-      {}
-      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 mb-12">
-        <h3 className="text-2xl font-black text-yellow-500 mb-6">COMMENT SONT CALCULÉES VOS COMMISSIONS</h3>
-        <div className="p-4 bg-yellow-900/20 border border-yellow-500 rounded">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-white font-bold">Filleul direct</span>
-            <span className="px-3 py-1 bg-yellow-500 text-black text-sm font-black">{referralData?.commissionRate ?? 10}%</span>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+        {[
+          ['Total filleuls', referralData?.totalReferrals || 0, 'Utilisateurs parrainés', 'text-[#e7ebf2]'],
+          ['Filleuls actifs', referralData?.activeReferrals || 0, 'Avec un investissement actif', 'text-[#e7ebf2]'],
+          ['Commissions', `$${referralData?.totalCommissionsUSD?.toFixed(2) || '0.00'}`, 'Revenus passifs cumulés', 'lux-gold-text'],
+        ].map(([label, value, hint, cls], i) => (
+          <div key={label} style={{ animationDelay: `${i * 70}ms` }} className={`lux-card lux-card-hover animate-cardIn p-6 ${i === 2 ? '!border-yellow-500/30' : ''}`}>
+            <p className="lux-label mb-3">{label}</p>
+            <p className={`lux-num text-3xl font-light ${cls}`}>{value}</p>
+            <p className="text-xs text-[#e7ebf2]/40 mt-2">{hint}</p>
           </div>
-          <p className="text-sm text-gray-400">
-            Dès qu'un investissement de votre filleul direct est validé, vous recevez {referralData?.commissionRate ?? 10}% du
-            montant investi, crédité directement sur votre solde.
+        ))}
+      </div>
+
+      <div className="lux-card-gold p-6 sm:p-8">
+        <div className="relative">
+          <p className="lux-label !text-[#fbbf24]/70 mb-1">À partager</p>
+          <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2] mb-6">Votre lien de parrainage</h2>
+
+          <div className="flex flex-col sm:flex-row gap-3 mb-5">
+            <input type="text" value={referralLink} readOnly className="lux-input flex-1 min-w-0 font-mono !text-xs" />
+            <button onClick={copyToClipboard} className="lux-btn-gold !px-7 whitespace-nowrap">
+              {copied ? '✓ Copié' : 'Copier le lien'}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {shareBtns.map(([key, label, color]) => (
+              <button key={key} onClick={() => shareOnSocial(key)} className="lux-btn-ghost !py-3 !justify-start gap-2.5">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color, boxShadow: `0 0 10px ${color}` }} />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="lux-card p-6 sm:p-7 flex flex-wrap items-center gap-6">
+        <div className="shrink-0 w-20 h-20 rounded-2xl flex items-center justify-center bg-yellow-500/5 border border-yellow-500/25">
+          <span className="lux-num text-3xl font-light lux-gold-text">{rate}%</span>
+        </div>
+        <div className="flex-1 min-w-[220px]">
+          <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-1">Comment sont calculées vos commissions</h3>
+          <p className="text-sm text-[#e7ebf2]/55 leading-relaxed">
+            Dès qu'un investissement de votre filleul direct est validé, vous recevez {rate}% du montant investi, crédité directement sur votre solde.
           </p>
         </div>
       </div>
 
-      {}
-      <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 mb-12">
-        <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
-          <h3 className="text-2xl font-black text-yellow-500">VOS FILLEULS</h3>
+      <div className="lux-card p-6 sm:p-7">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
+          <div>
+            <p className="lux-label mb-1">Votre réseau</p>
+            <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2]">Vos filleuls</h3>
+          </div>
           {referralData?.referrals?.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {PERIOD_OPTIONS.map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => setPeriodFilter(value)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
-                >
+                <button key={value} onClick={() => setPeriodFilter(value)} className={`lux-chip ${periodFilter === value ? 'is-active' : ''}`}>
                   {label}
                 </button>
               ))}
@@ -186,49 +156,35 @@ export default function Referral({ onNavigate }) {
           const filteredReferrals = (referralData?.referrals || []).filter(r => withinPeriod(r.joinedAt, periodFilter));
           if (filteredReferrals.length === 0) {
             return (
-              <div className="text-center py-12">
-                <div className="text-4xl mb-4">👥</div>
+              <div className="text-center py-12 rounded-xl border border-dashed border-white/10">
                 {referralData?.referrals?.length > 0 ? (
-                  <p className="text-gray-400">Aucun filleul sur cette période</p>
+                  <p className="text-sm text-[#e7ebf2]/50">Aucun filleul sur cette période</p>
                 ) : (
                   <>
-                    <p className="text-gray-400 mb-6">Vous n'avez pas encore de filleuls</p>
-                    <p className="text-white">Partagez votre lien pour commencer à gagner !</p>
+                    <p className="text-sm text-[#e7ebf2]/60 mb-1">Vous n'avez pas encore de filleuls</p>
+                    <p className="text-xs text-[#e7ebf2]/35">Partagez votre lien pour commencer à gagner.</p>
                   </>
                 )}
               </div>
             );
           }
           return (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-black">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Utilisateur</th>
-                  <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Statut</th>
-                  <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Commissions</th>
-                </tr>
+          <div className="overflow-x-auto -mx-6 sm:-mx-7">
+            <table className="w-full lux-table">
+              <thead>
+                <tr><th>Utilisateur</th><th>Date</th><th>Statut</th><th>Commissions</th></tr>
               </thead>
-              <tbody className="divide-y divide-yellow-900/20">
+              <tbody>
                 {filteredReferrals.map((referral, index) => (
-                  <tr key={index} className="hover:bg-yellow-900/10">
-                    <td className="px-6 py-4 text-white">{referral.name}</td>
-                    <td className="px-6 py-4 text-gray-400">
-                      {new Date(referral.joinedAt).toLocaleDateString('fr-FR')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 text-xs font-bold ${
-                        referral.isActive 
-                          ? 'bg-green-900/50 text-green-400' 
-                          : 'bg-gray-800 text-gray-400'
-                      }`}>
-                        {referral.isActive ? 'ACTIF' : 'INACTIF'}
+                  <tr key={index}>
+                    <td className="text-sm text-[#e7ebf2]">{referral.name}</td>
+                    <td className="text-sm text-[#e7ebf2]/55">{new Date(referral.joinedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td>
+                      <span className={`lux-pill ${referral.isActive ? 'bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20' : 'bg-white/5 text-[#e7ebf2]/50 ring-1 ring-inset ring-white/10'}`}>
+                        {referral.isActive ? 'Actif' : 'Inactif'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-bold text-yellow-500">
-                      ${referral.commissionsEarned?.toFixed(2) || 0}
-                    </td>
+                    <td className="lux-num text-sm font-medium text-[#fbbf24]">${referral.commissionsEarned?.toFixed(2) || '0.00'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -238,15 +194,12 @@ export default function Referral({ onNavigate }) {
         })()}
       </div>
 
-      {/* Detailed "how it works" / commission explanations now live in the
-          Centre d'aide (FAQ), reachable from any page — not duplicated here. */}
-      <button
-        type="button"
-        onClick={() => onNavigate?.('faq')}
-        className="w-full text-left p-5 bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 hover:border-yellow-600/60 transition-colors rounded-lg"
-      >
-        <p className="font-bold text-white text-sm">Comment fonctionne le parrainage ?</p>
-        <p className="text-xs text-gray-500 mt-1">Voir les réponses détaillées dans le Centre d'aide →</p>
+      <button type="button" onClick={() => onNavigate?.('faq')} className="w-full text-left p-5 lux-card lux-card-hover flex items-center justify-between gap-4 group">
+        <span>
+          <span className="block font-medium text-[#e7ebf2] text-sm">Comment fonctionne le parrainage ?</span>
+          <span className="block text-xs text-[#e7ebf2]/45 mt-1">Réponses détaillées dans le Centre d'aide</span>
+        </span>
+        <span className="text-[#e7ebf2]/30 group-hover:text-[#f59e0b] transition-colors">→</span>
       </button>
     </div>
   );
