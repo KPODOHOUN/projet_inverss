@@ -91,78 +91,69 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="dash-scope min-h-screen bg-black text-white" style={{ fontFamily: "'Courier New', monospace" }}>
-      
-      {}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b-2 border-yellow-500 h-12 sm:h-14 flex items-center px-3 sm:px-4 justify-between">
+    <div className="dash-scope lux-page min-h-screen">
+      <header className="lux-header fixed top-0 left-0 right-0 z-50 h-14 sm:h-16 flex items-center px-3 sm:px-6 justify-between">
         <div className="flex items-center gap-2 sm:gap-3">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden text-yellow-500 hover:text-white transition-colors">
-            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 rounded-lg text-[#f3d58a] hover:bg-yellow-500/10 transition-colors" aria-label="Menu">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-5 sm:h-7 w-auto object-contain" />
-            <span className="px-1.5 sm:px-2 py-0.5 bg-yellow-500 text-black text-[10px] sm:text-xs font-black tracking-widest rounded-full">ADMIN</span>
-          </div>
+          <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-7 sm:h-8 w-auto object-contain" />
+          <span className="lux-pill bg-yellow-400/10 text-[#f3d58a] ring-1 ring-inset ring-yellow-400/25">Administration</span>
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
-          <div className="hidden sm:flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs text-gray-400">Système opérationnel</span>
+          <div className="hidden md:flex items-center gap-2 text-xs text-[#f4efe2]/50">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+            Système opérationnel
           </div>
-          <div className="text-right hidden sm:block">
-            <p className="text-xs font-bold text-white">{user?.firstName} {user?.lastName}</p>
-            <p className="text-xs text-yellow-500 uppercase tracking-widest">{user?.role || 'Admin'}</p>
+          <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-yellow-900/30">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-[#17130a] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a]">
+              {`${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase()}
+            </div>
+            <div className="leading-tight">
+              <p className="text-sm font-medium text-[#f4efe2]">{user?.firstName} {user?.lastName}</p>
+              <p className="text-[11px] lux-gold-text capitalize">{user?.role || 'admin'}</p>
+            </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="px-2.5 sm:px-3 py-1 sm:py-1.5 border border-yellow-500 rounded text-yellow-500 text-[10px] sm:text-xs font-bold hover:bg-yellow-500 hover:text-black transition-all tracking-widest"
-          >
-            SORTIR
-          </button>
+          <button onClick={handleLogout} className="lux-btn-ghost !py-1.5 !px-3 !text-xs">Déconnexion</button>
         </div>
       </header>
 
-      {}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/80 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div className="flex pt-12 sm:pt-14">
-        {}
+      <div className="flex pt-14 sm:pt-16">
         <aside className={`
-          fixed lg:static top-12 sm:top-14 left-0 h-[calc(100vh-3rem)] sm:h-[calc(100vh-3.5rem)] w-60 z-40 lg:z-auto
-          bg-black border-r border-yellow-900/40
+          fixed lg:sticky top-14 sm:top-16 left-0 h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] w-64 z-40 lg:z-auto
+          bg-[#08080b]/95 lg:bg-transparent border-r border-yellow-900/20
           transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
-          transition-transform duration-200
+          transition-transform duration-300
           overflow-y-auto flex-shrink-0
         `}>
-          <nav className="p-3 space-y-4">
+          <nav className="p-4 space-y-6">
             {navSections.map(section => (
               <div key={section.label}>
-                <p className="text-xs text-yellow-900 font-black tracking-widest mb-1 px-2">{section.label}</p>
-                {section.items.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
-                    className={`w-full text-left px-3 py-2 text-xs font-bold tracking-wide transition-all flex items-center gap-2 ${
-                      activeTab === item.id
-                        ? 'bg-yellow-500 text-black'
-                        : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-900/10'
-                    }`}
-                  >
-                    <span className="text-sm">{item.icon}</span>
-                    {item.label}
-                  </button>
-                ))}
+                <p className="lux-label !text-[10px] mb-2 px-3">{section.label}</p>
+                <div className="space-y-0.5">
+                  {section.items.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
+                      className={`lux-nav-item !py-2 !text-[13px] ${activeTab === item.id ? 'is-active' : ''}`}
+                    >
+                      <span className="text-sm w-5 text-center opacity-80">{item.icon}</span>
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             ))}
           </nav>
         </aside>
 
-        {}
-        <main className="flex-1 min-w-0 p-4 sm:p-6 overflow-auto min-h-[calc(100vh-3.5rem)]">
+        <main className="flex-1 min-w-0 p-4 sm:p-8 overflow-auto min-h-[calc(100vh-4rem)]">
           {renderContent()}
         </main>
       </div>
@@ -171,33 +162,36 @@ export default function AdminDashboard() {
 }
 
 function PageHeader({ title, subtitle, actions }) {
+  const pretty = typeof title === 'string' && title === title.toUpperCase()
+    ? title.charAt(0) + title.slice(1).toLowerCase()
+    : title;
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
       <div>
-        <h1 className="text-lg sm:text-2xl font-black tracking-wider text-white">{title}</h1>
-        {subtitle && <p className="text-xs text-gray-500 mt-1 tracking-wide">{subtitle}</p>}
+        <h1 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#f4efe2] leading-none">{pretty}</h1>
+        {subtitle && <p className="text-sm text-[#f4efe2]/50 mt-2">{subtitle}</p>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
   );
 }
 
 function KPICard({ label, value, sub, color = 'yellow', icon, trend }) {
-  const colors = {
-    yellow: 'border-yellow-500 text-yellow-400',
-    green:  'border-green-500 text-green-400',
-    blue:   'border-blue-500 text-blue-400',
-    red:    'border-red-500 text-red-400',
-    purple: 'border-purple-500 text-purple-400',
+  const text = {
+    yellow: 'lux-gold-text',
+    green:  'text-emerald-300',
+    blue:   'text-sky-300',
+    red:    'text-rose-300',
+    purple: 'text-violet-300',
   };
   return (
-    <div className={`bg-black border ${colors[color]} rounded-lg p-4 relative overflow-hidden`}>
-      <div className="absolute top-2 right-3 text-2xl opacity-20">{icon}</div>
-      <p className="text-xs text-gray-500 tracking-widest uppercase mb-1">{label}</p>
-      <p className={`text-xl font-black tracking-tight ${colors[color]}`}>{value}</p>
-      {sub && <p className="text-xs text-gray-600 mt-1">{sub}</p>}
+    <div className="lux-card lux-card-hover p-5 relative overflow-hidden">
+      <span className="absolute top-4 right-4 lux-icon-chip !w-8 !h-8 text-sm">{icon}</span>
+      <p className="lux-label !text-[10px] mb-3 pr-10">{label}</p>
+      <p className={`lux-num text-2xl font-light ${text[color] || text.yellow}`}>{value}</p>
+      {sub && <p className="text-xs text-[#f4efe2]/40 mt-1.5">{sub}</p>}
       {trend !== undefined && (
-        <p className={`text-xs font-bold mt-2 ${trend >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+        <p className={`text-xs font-medium mt-2 ${trend >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
           {trend >= 0 ? '▲' : '▼'} {Math.abs(trend)}% vs mois dernier
         </p>
       )}
@@ -208,28 +202,24 @@ function KPICard({ label, value, sub, color = 'yellow', icon, trend }) {
 function AdminTable({ columns, data, onAction, emptyMsg = 'Aucune donnée' }) {
   if (!data || data.length === 0) {
     return (
-      <div className="border border-yellow-900/30 rounded-lg p-6 text-center">
-        <p className="text-gray-600 text-sm tracking-wide">{emptyMsg}</p>
+      <div className="lux-card p-8 text-center">
+        <p className="text-[#f4efe2]/45 text-sm">{emptyMsg}</p>
       </div>
     );
   }
   return (
-    <div className="border border-yellow-900/30 rounded-lg overflow-x-auto">
-      <table className="w-full text-xs">
+    <div className="lux-card overflow-x-auto">
+      <table className="w-full lux-table text-[13px]">
         <thead>
-          <tr className="bg-yellow-500/10 border-b border-yellow-900/30">
-            {columns.map(col => (
-              <th key={col.key} className="px-4 py-3 text-left text-yellow-500 font-black tracking-widest uppercase">
-                {col.label}
-              </th>
-            ))}
+          <tr>
+            {columns.map(col => <th key={col.key} className="!py-3 !px-4">{col.label}</th>)}
           </tr>
         </thead>
         <tbody>
           {data.map((row, i) => (
-            <tr key={i} className="border-b border-yellow-900/10 hover:bg-yellow-900/5 transition-colors">
+            <tr key={i}>
               {columns.map(col => (
-                <td key={col.key} className="px-4 py-3 text-gray-300">
+                <td key={col.key} className="!py-3 !px-4 text-[#f4efe2]/80">
                   {col.render ? col.render(row[col.key], row) : row[col.key]}
                 </td>
               ))}
@@ -243,34 +233,31 @@ function AdminTable({ columns, data, onAction, emptyMsg = 'Aucune donnée' }) {
 
 function Badge({ label, color = 'yellow' }) {
   const c = {
-    yellow: 'bg-yellow-900/40 text-yellow-400 border-yellow-800',
-    green:  'bg-green-900/40 text-green-400 border-green-800',
-    red:    'bg-red-900/40 text-red-400 border-red-800',
-    blue:   'bg-blue-900/40 text-blue-400 border-blue-800',
-    gray:   'bg-gray-800 text-gray-400 border-gray-700',
-    purple: 'bg-purple-900/40 text-purple-400 border-purple-800',
+    yellow: 'bg-yellow-400/10 text-[#f3d58a] ring-yellow-400/25',
+    green:  'bg-emerald-400/10 text-emerald-300 ring-emerald-400/20',
+    red:    'bg-rose-400/10 text-rose-300 ring-rose-400/20',
+    blue:   'bg-sky-400/10 text-sky-300 ring-sky-400/20',
+    gray:   'bg-white/5 text-[#f4efe2]/55 ring-white/10',
+    purple: 'bg-violet-400/10 text-violet-300 ring-violet-400/20',
   };
-  return (
-    <span className={`px-2 py-0.5 border rounded-full text-xs font-black tracking-widest uppercase ${c[color]}`}>
-      {label}
-    </span>
-  );
+  const text = typeof label === 'string' && label === label.toUpperCase() ? label.charAt(0) + label.slice(1).toLowerCase() : label;
+  return <span className={`lux-pill ring-1 ring-inset ${c[color] || c.gray}`}>{text}</span>;
 }
 
 function AdminBtn({ children, onClick, color = 'yellow', size = 'sm', disabled }) {
   const c = {
-    yellow: 'border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black',
-    green:  'border-green-500 text-green-500 hover:bg-green-500 hover:text-black',
-    red:    'border-red-500 text-red-500 hover:bg-red-500 hover:text-white',
-    gray:   'border-gray-600 text-gray-400 hover:bg-gray-700 hover:text-white',
-    blue:   'border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white',
+    yellow: 'text-[#17130a] bg-gradient-to-br from-[#f3d58a] via-[#d4af37] to-[#a8832a] shadow-[0_6px_18px_-8px_rgba(212,175,55,0.7)] hover:brightness-110',
+    green:  'text-emerald-200 bg-emerald-400/10 ring-1 ring-inset ring-emerald-400/30 hover:bg-emerald-400/20',
+    red:    'text-rose-200 bg-rose-400/10 ring-1 ring-inset ring-rose-400/30 hover:bg-rose-400/20',
+    gray:   'text-[#f4efe2]/70 bg-white/[0.03] ring-1 ring-inset ring-white/10 hover:ring-yellow-500/30 hover:text-[#f3d58a]',
+    blue:   'text-sky-200 bg-sky-400/10 ring-1 ring-inset ring-sky-400/30 hover:bg-sky-400/20',
   };
-  const s = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-sm', lg: 'px-6 py-3 text-sm' };
+  const s = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-[13px]', lg: 'px-6 py-3 text-sm' };
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`border rounded font-black tracking-widest transition-all ${c[color]} ${s[size]} disabled:opacity-40 disabled:cursor-not-allowed`}
+      className={`rounded-lg font-medium transition-all whitespace-nowrap ${c[color] || c.yellow} ${s[size]} disabled:opacity-40 disabled:cursor-not-allowed`}
     >
       {children}
     </button>
@@ -279,16 +266,17 @@ function AdminBtn({ children, onClick, color = 'yellow', size = 'sm', disabled }
 
 function Modal({ open, onClose, title, children }) {
   if (!open) return null;
+  const pretty = typeof title === 'string' && title === title.toUpperCase() ? title.charAt(0) + title.slice(1).toLowerCase() : title;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/90" />
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
       <div
-        className="relative bg-black border-2 border-yellow-500 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        className="relative lux-card !bg-[#0c0b09] p-6 sm:p-7 w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-cardIn"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-black tracking-wider text-yellow-500">{title}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-white text-xl">×</button>
+          <h2 className="lux-serif text-2xl font-semibold text-[#f4efe2]">{pretty}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-[#f4efe2]/50 hover:text-[#f4efe2] hover:bg-white/5 text-xl" aria-label="Fermer">×</button>
         </div>
         {children}
       </div>
@@ -299,10 +287,10 @@ function Modal({ open, onClose, title, children }) {
 function ConfirmModal({ open, onClose, onConfirm, title, message, danger }) {
   return (
     <Modal open={open} onClose={onClose} title={title}>
-      <p className="text-gray-400 text-sm mb-6">{message}</p>
+      <p className="text-[#f4efe2]/60 text-sm mb-6">{message}</p>
       <div className="flex gap-3">
-        <AdminBtn color={danger ? 'red' : 'yellow'} size="md" onClick={onConfirm}>CONFIRMER</AdminBtn>
-        <AdminBtn color="gray" size="md" onClick={onClose}>ANNULER</AdminBtn>
+        <AdminBtn color={danger ? 'red' : 'yellow'} size="md" onClick={onConfirm}>Confirmer</AdminBtn>
+        <AdminBtn color="gray" size="md" onClick={onClose}>Annuler</AdminBtn>
       </div>
     </Modal>
   );
@@ -311,16 +299,16 @@ function ConfirmModal({ open, onClose, onConfirm, title, message, danger }) {
 function Input({ label, value, onChange, type = 'text', placeholder, disabled, hint }) {
   return (
     <div>
-      {label && <label className="block text-xs font-black text-yellow-500 tracking-widest mb-1">{label}</label>}
+      {label && <label className="block lux-label !text-[10px] mb-1.5">{label}</label>}
       <input
         type={type}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full px-3 py-2 bg-black border border-yellow-900/40 rounded text-white text-sm focus:border-yellow-500 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+        className="lux-input !py-2.5 disabled:opacity-40 disabled:cursor-not-allowed"
       />
-      {hint && <p className="text-xs text-gray-600 mt-1">{hint}</p>}
+      {hint && <p className="text-xs text-[#f4efe2]/40 mt-1.5">{hint}</p>}
     </div>
   );
 }
@@ -328,12 +316,8 @@ function Input({ label, value, onChange, type = 'text', placeholder, disabled, h
 function Select({ label, value, onChange, options }) {
   return (
     <div>
-      {label && <label className="block text-xs font-black text-yellow-500 tracking-widest mb-1">{label}</label>}
-      <select
-        value={value}
-        onChange={onChange}
-        className="w-full px-3 py-2 bg-black border border-yellow-900/40 rounded text-white text-sm focus:border-yellow-500 focus:outline-none"
-      >
+      {label && <label className="block lux-label !text-[10px] mb-1.5">{label}</label>}
+      <select value={value} onChange={onChange} className="lux-input !py-2.5 !pr-8">
         {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
     </div>
@@ -343,34 +327,26 @@ function Select({ label, value, onChange, options }) {
 function Textarea({ label, value, onChange, rows = 4, placeholder }) {
   return (
     <div>
-      {label && <label className="block text-xs font-black text-yellow-500 tracking-widest mb-1">{label}</label>}
-      <textarea
-        value={value}
-        onChange={onChange}
-        rows={rows}
-        placeholder={placeholder}
-        className="w-full px-3 py-2 bg-black border border-yellow-900/40 rounded text-white text-sm focus:border-yellow-500 focus:outline-none resize-none"
-      />
+      {label && <label className="block lux-label !text-[10px] mb-1.5">{label}</label>}
+      <textarea value={value} onChange={onChange} rows={rows} placeholder={placeholder} className="lux-input resize-none" />
     </div>
   );
 }
 
 function Alert({ type = 'info', children }) {
   const c = {
-    info:    'border-blue-800 bg-blue-900/20 text-blue-300',
-    success: 'border-green-800 bg-green-900/20 text-green-300',
-    warning: 'border-yellow-800 bg-yellow-900/20 text-yellow-300',
-    error:   'border-red-800 bg-red-900/20 text-red-300',
+    info:    'border-sky-400/20 bg-sky-400/5 text-sky-200',
+    success: 'border-emerald-400/20 bg-emerald-400/5 text-emerald-200',
+    warning: 'border-yellow-400/25 bg-yellow-400/5 text-[#f3d58a]',
+    error:   'border-rose-400/20 bg-rose-400/5 text-rose-200',
   };
-  return (
-    <div className={`border rounded p-3 text-xs ${c[type]}`}>{children}</div>
-  );
+  return <div className={`border rounded-xl px-4 py-3 text-[13px] ${c[type]}`}>{children}</div>;
 }
 
 function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center py-16">
-      <div className="border-2 border-yellow-500 border-t-transparent w-8 h-8 rounded-full animate-spin" />
+    <div className="flex items-center justify-center py-20">
+      <div className="w-10 h-10 rounded-full border-2 border-transparent border-t-[#d4af37] animate-spin" />
     </div>
   );
 }
@@ -378,7 +354,7 @@ function LoadingSpinner() {
 function PaginationBar({ page, pages, total, onPage }) {
   if (pages <= 1) return null;
   return (
-    <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+    <div className="flex items-center justify-between mt-4 text-xs text-[#f4efe2]/50">
       <span>{total.toLocaleString('fr-FR')} résultat{total > 1 ? 's' : ''} — page {page}/{pages}</span>
       <div className="flex gap-2">
         <AdminBtn size="sm" color="gray" disabled={page <= 1} onClick={() => onPage(page - 1)}>← Précédent</AdminBtn>
@@ -389,13 +365,14 @@ function PaginationBar({ page, pages, total, onPage }) {
 }
 
 function SectionBox({ title, children, action }) {
+  const pretty = typeof title === 'string' && title === title.toUpperCase() ? title.charAt(0) + title.slice(1).toLowerCase() : title;
   return (
-    <div className="border border-yellow-900/30 rounded-lg mb-6">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-yellow-900/30 bg-yellow-500/5">
-        <h3 className="text-xs font-black text-yellow-500 tracking-widest uppercase">{title}</h3>
+    <div className="lux-card mb-6">
+      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-white/5">
+        <h3 className="lux-serif text-xl font-semibold text-[#f4efe2]">{pretty}</h3>
         {action && <div>{action}</div>}
       </div>
-      <div className="p-4">{children}</div>
+      <div className="p-5">{children}</div>
     </div>
   );
 }
@@ -403,15 +380,15 @@ function SectionBox({ title, children, action }) {
 function BarChart({ data, height = 120 }) {
   const max = Math.max(...data.map(d => d.value), 1);
   return (
-    <div className="flex items-end gap-1" style={{ height }}>
+    <div className="flex items-end gap-1.5" style={{ height }}>
       {data.map((d, i) => (
-        <div key={i} className="flex-1 flex flex-col items-center gap-1">
+        <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
           <div
-            className="w-full bg-yellow-500/60 hover:bg-yellow-500 transition-all"
+            className="w-full rounded-t-md bg-gradient-to-t from-[#a8832a]/50 to-[#f3d58a] opacity-80 hover:opacity-100 transition-opacity"
             style={{ height: `${(d.value / max) * (height - 20)}px` }}
             title={`${d.label}: ${d.value}`}
           />
-          <span className="text-xs text-gray-600 truncate w-full text-center" style={{ fontSize: '9px' }}>{d.label}</span>
+          <span className="text-[#f4efe2]/40 truncate w-full text-center" style={{ fontSize: '9px' }}>{d.label}</span>
         </div>
       ))}
     </div>
@@ -532,7 +509,7 @@ function OverviewTab({ api, onNavigate }) {
           {s.signups7d.length > 0 ? (
             <BarChart data={s.signups7d} />
           ) : (
-            <p className="text-gray-600 text-xs text-center py-8">Aucune donnée</p>
+            <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune donnée</p>
           )}
         </SectionBox>
 
@@ -542,7 +519,7 @@ function OverviewTab({ api, onNavigate }) {
             <div className="space-y-2">
               {s.packDistribution.map(p => (
                 <div key={p.pack}>
-                  <div className="flex justify-between text-xs text-gray-400 mb-0.5">
+                  <div className="flex justify-between text-xs text-[#f4efe2]/60 mb-0.5">
                     <span>{packDisplayName(p.pack)}</span><span className="text-yellow-500 font-bold">{p.pct}%</span>
                   </div>
                   <div className="h-1.5 bg-gray-900">
@@ -552,22 +529,22 @@ function OverviewTab({ api, onNavigate }) {
               ))}
             </div>
           ) : (
-            <p className="text-gray-600 text-xs text-center py-8">Aucune donnée</p>
+            <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune donnée</p>
           )}
         </SectionBox>
 
         {}
         <SectionBox title="Activité Récente">
           {recentActivity.length === 0 ? (
-            <p className="text-gray-600 text-xs text-center py-8">Aucune activité récente</p>
+            <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune activité récente</p>
           ) : (
             <div className="space-y-2">
               {recentActivity.slice(0, 10).map((a, i) => (
                 <div key={i} className="flex items-start gap-2 text-xs">
                   <Badge label={(a.level || 'info').toUpperCase()} color={levelColors[a.level] || 'gray'} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-gray-300 truncate">{a.action}</p>
-                    <p className="text-gray-600">{a.target} · {a.createdAt ? new Date(a.createdAt).toLocaleString('fr-FR') : ''}</p>
+                    <p className="text-[#f4efe2]/80 truncate">{a.action}</p>
+                    <p className="text-[#f4efe2]/40">{a.target} · {a.createdAt ? new Date(a.createdAt).toLocaleString('fr-FR') : ''}</p>
                   </div>
                 </div>
               ))}
@@ -577,22 +554,23 @@ function OverviewTab({ api, onNavigate }) {
       </div>
 
       {}
-      <SectionBox title="Actions Rapides" >
+      <SectionBox title="Actions rapides">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'VÉRIFIER KYC', tab: 'kyc', color: 'yellow', badge: s.pendingKyc },
-            { label: 'RETRAITS', tab: 'transactions', color: 'green', badge: s.pendingWithdrawals },
-            { label: 'AJOUTER UTILISATEUR', tab: 'users', color: 'blue' },
-            { label: 'RAPPORT', tab: 'reports', color: 'gray' },
+            { label: 'Vérifier les KYC', tab: 'kyc', icon: '🆔', badge: s.pendingKyc },
+            { label: 'Traiter les retraits', tab: 'transactions', icon: '💳', badge: s.pendingWithdrawals },
+            { label: 'Ajouter un utilisateur', tab: 'users', icon: '👥' },
+            { label: 'Générer un rapport', tab: 'reports', icon: '📋' },
           ].map(a => (
             <button
               key={a.tab}
               onClick={() => onNavigate(a.tab)}
-              className={`relative border border-${a.color}-500/50 hover:border-${a.color}-500 rounded p-3 text-xs font-black tracking-widest text-${a.color}-400 hover:bg-${a.color}-900/20 transition-all text-left`}
+              className="relative lux-card lux-card-hover p-4 text-left flex items-center gap-3 text-sm text-[#f4efe2]"
             >
+              <span className="lux-icon-chip !w-9 !h-9 shrink-0">{a.icon}</span>
               {a.label}
               {a.badge > 0 && (
-                <span className="absolute top-2 right-2 w-5 h-5 bg-red-500 text-white text-xs flex items-center justify-center font-black rounded-full">
+                <span className="absolute top-2.5 right-2.5 min-w-[20px] h-5 px-1.5 bg-rose-500 text-white text-[11px] flex items-center justify-center font-semibold rounded-full shadow-[0_0_10px_rgba(244,63,94,0.6)]">
                   {a.badge}
                 </span>
               )}
@@ -643,7 +621,7 @@ function AnalyticsTab({ api }) {
         <SectionBox title="Inscriptions — 7 jours">
           {(s.signups7d || []).length > 0 ? (
             <BarChart data={s.signups7d} height={150} />
-          ) : <p className="text-gray-600 text-xs text-center py-8">Aucune donnée</p>}
+          ) : <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune donnée</p>}
         </SectionBox>
         <SectionBox title="Répartition des Packs">
           {(s.packDistribution || []).length > 0 ? (
@@ -651,7 +629,7 @@ function AnalyticsTab({ api }) {
               {s.packDistribution.map(p => (
                 <div key={p.pack}>
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-gray-400">{packDisplayName(p.pack)}</span>
+                    <span className="text-[#f4efe2]/60">{packDisplayName(p.pack)}</span>
                     <span className="text-yellow-400 font-bold">{p.count} ({p.pct}%)</span>
                   </div>
                   <div className="h-1 bg-gray-900">
@@ -660,7 +638,7 @@ function AnalyticsTab({ api }) {
                 </div>
               ))}
             </div>
-          ) : <p className="text-gray-600 text-xs text-center py-8">Aucune donnée</p>}
+          ) : <p className="text-[#f4efe2]/40 text-xs text-center py-8">Aucune donnée</p>}
         </SectionBox>
       </div>
 
@@ -668,11 +646,11 @@ function AnalyticsTab({ api }) {
         <SectionBox title="Revenus">
           <div className="space-y-3">
             <div className="flex justify-between text-xs border-b border-yellow-900/10 pb-2">
-              <span className="text-gray-500">Revenus (frais collectés)</span>
+              <span className="text-[#f4efe2]/50">Revenus (frais collectés)</span>
               <span className="font-bold text-green-400">${(s.revenue || 0).toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-xs border-b border-yellow-900/10 pb-2">
-              <span className="text-gray-500">Variation vs mois dernier</span>
+              <span className="text-[#f4efe2]/50">Variation vs mois dernier</span>
               <span className={`font-bold ${(s.revenueChange || 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>{s.revenueChange || 0}%</span>
             </div>
           </div>
@@ -680,7 +658,7 @@ function AnalyticsTab({ api }) {
 
         <SectionBox title="Analytics Avancées">
           {/* TODO backend: comptes KYC vérifiés (User.countDocuments({kycStatus:'verified'})) et comptes 2FA (User.countDocuments({twoFactorEnabled:true})) nécessiteraient un petit ajout côté backend */}
-          <p className="text-gray-600 text-xs">Analytics avancées (rétention, géographie, session) à venir — non trackées actuellement côté plateforme.</p>
+          <p className="text-[#f4efe2]/40 text-xs">Analytics avancées (rétention, géographie, session) à venir — non trackées actuellement côté plateforme.</p>
         </SectionBox>
       </div>
     </div>
@@ -786,7 +764,7 @@ function UsersTab({ api }) {
           { value: 'week', label: 'Cette semaine' },
           { value: 'month', label: 'Ce mois' },
         ]} />
-        <div className="text-xs text-gray-500 flex items-center">{total.toLocaleString('fr-FR')} résultat(s)</div>
+        <div className="text-xs text-[#f4efe2]/50 flex items-center">{total.toLocaleString('fr-FR')} résultat(s)</div>
       </div>
 
       <AdminTable
@@ -794,8 +772,8 @@ function UsersTab({ api }) {
           { key: 'name', label: 'Utilisateur', render: (_, r) => (
             <div>
               <p className="font-bold text-white">{r.firstName} {r.lastName}</p>
-              <p className="text-gray-600">{r.email}</p>
-              {r.userId && <p className="text-gray-700 font-mono text-[11px] mt-0.5">{r.userId}</p>}
+              <p className="text-[#f4efe2]/40">{r.email}</p>
+              {r.userId && <p className="text-[#f4efe2]/30 font-mono text-[11px] mt-0.5">{r.userId}</p>}
             </div>
           )},
           { key: 'kycStatus', label: 'KYC', render: v => <Badge label={kycLabels[v] || v} color={kycColors[v] || 'gray'} /> },
@@ -940,7 +918,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
           ['Statut', user.status],
         ].map(([k, v]) => (
           <div key={k} className="border border-yellow-900/20 rounded p-2">
-            <p className="text-gray-600">{k}</p>
+            <p className="text-[#f4efe2]/40">{k}</p>
             <p className="text-white font-bold">{v}</p>
           </div>
         ))}
@@ -956,7 +934,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
 
       {user.status !== 'deleted' && user.kycStatus !== 'verified' && (
         <SectionBox title="Valider le KYC manuellement">
-          <p className="text-xs text-gray-500 mb-2">
+          <p className="text-xs text-[#f4efe2]/50 mb-2">
             Marque ce compte comme vérifié même sans document déposé — à utiliser seulement si l'identité a été confirmée autrement (appel vidéo, pièce fournie hors plateforme, etc.). Action tracée dans les logs.
           </p>
           <div className="space-y-2">
@@ -980,7 +958,7 @@ function UserDetailPanel({ user, api, onClose, onRefresh }) {
 
       {user.status === 'deleted' ? (
         <SectionBox title="Zone de danger">
-          <p className="text-xs text-gray-500">Ce compte a déjà été supprimé.</p>
+          <p className="text-xs text-[#f4efe2]/50">Ce compte a déjà été supprimé.</p>
         </SectionBox>
       ) : (
         <SectionBox title="Zone de danger">
@@ -1172,8 +1150,8 @@ function KYCTab({ api }) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-bold text-white text-sm">{userName(item)}</p>
-                  <p className="text-xs text-gray-500">{item.userId?.email}</p>
-                  <p className="text-xs text-gray-600 mt-1">
+                  <p className="text-xs text-[#f4efe2]/50">{item.userId?.email}</p>
+                  <p className="text-xs text-[#f4efe2]/40 mt-1">
                     Soumis le {new Date(item.submittedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -1200,10 +1178,10 @@ function KYCTab({ api }) {
                       <img src={idDocSrc} alt="ID Doc" className="max-h-32 mx-auto" />
                     ) : (
                       <div className="h-24 flex items-center justify-center bg-gray-900">
-                        <p className="text-gray-600 text-xs">Pièce d'identité</p>
+                        <p className="text-[#f4efe2]/40 text-xs">Pièce d'identité</p>
                       </div>
                     )}
-                    <p className="text-xs text-gray-500 mt-2">PIÈCE D'IDENTITÉ</p>
+                    <p className="text-xs text-[#f4efe2]/50 mt-2">PIÈCE D'IDENTITÉ</p>
                     {idDocSrc && (
                       <a href={idDocSrc} target="_blank" rel="noreferrer" className="text-xs text-yellow-500 hover:underline">Ouvrir</a>
                     )}
@@ -1213,10 +1191,10 @@ function KYCTab({ api }) {
                       <img src={selfieSrc} alt="Selfie" className="max-h-32 mx-auto" />
                     ) : (
                       <div className="h-24 flex items-center justify-center bg-gray-900">
-                        <p className="text-gray-600 text-xs">Selfie</p>
+                        <p className="text-[#f4efe2]/40 text-xs">Selfie</p>
                       </div>
                     )}
-                    <p className="text-xs text-gray-500 mt-2">SELFIE</p>
+                    <p className="text-xs text-[#f4efe2]/50 mt-2">SELFIE</p>
                     {selfieSrc && (
                       <a href={selfieSrc} target="_blank" rel="noreferrer" className="text-xs text-yellow-500 hover:underline">Ouvrir</a>
                     )}
@@ -1257,7 +1235,7 @@ function KYCTab({ api }) {
             </SectionBox>
           ) : (
             <div className="border border-yellow-900/20 rounded-lg p-6 text-center">
-              <p className="text-gray-600 text-sm">Sélectionnez une vérification KYC</p>
+              <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une vérification KYC</p>
             </div>
           )}
         </div>
@@ -1349,8 +1327,8 @@ function AccountDeletionsTab({ api }) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-bold text-white text-sm">{userName(item)}</p>
-                  <p className="text-xs text-gray-500">{item.userId?.email}</p>
-                  <p className="text-xs text-gray-600 mt-1">
+                  <p className="text-xs text-[#f4efe2]/50">{item.userId?.email}</p>
+                  <p className="text-xs text-[#f4efe2]/40 mt-1">
                     Demandé le {new Date(item.requestedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -1368,8 +1346,8 @@ function AccountDeletionsTab({ api }) {
             <SectionBox title={`Demande — ${userName(selected)}`}>
               <div className="space-y-4">
                 <div className="border border-yellow-900/30 rounded p-3">
-                  <p className="text-xs text-gray-600 mb-1">Motif donné par l'utilisateur</p>
-                  <p className="text-sm text-white">{selected.reason || <span className="text-gray-600">Aucun motif fourni</span>}</p>
+                  <p className="text-xs text-[#f4efe2]/40 mb-1">Motif donné par l'utilisateur</p>
+                  <p className="text-sm text-white">{selected.reason || <span className="text-[#f4efe2]/40">Aucun motif fourni</span>}</p>
                 </div>
 
                 {selected.status === 'pending' && (
@@ -1400,7 +1378,7 @@ function AccountDeletionsTab({ api }) {
             </SectionBox>
           ) : (
             <div className="border border-yellow-900/20 rounded-lg p-6 text-center">
-              <p className="text-gray-600 text-sm">Sélectionnez une demande</p>
+              <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une demande</p>
             </div>
           )}
         </div>
@@ -1488,7 +1466,7 @@ function ReferralsTab({ api }) {
         <SectionBox title="Top Affiliés">
           <AdminTable
             columns={[
-              { key: 'rank', label: '#', render: (_, __, i) => <span className="text-yellow-500 font-black">#{i + 1}</span> },
+              { key: 'rank', label: '#', render: (_, __, i) => <span className="text-yellow-500 font-semibold">#{i + 1}</span> },
               { key: 'name', label: 'Utilisateur' },
               { key: 'referrals', label: 'Filleuls' },
               { key: 'commissions', label: 'Commissions', render: v => <span className="text-yellow-400 font-bold">${v?.toFixed(2)}</span> },
@@ -1661,7 +1639,7 @@ function AmbassadorsTab({ api }) {
               <KPICard label="Filleuls" value={detail.totalReferred} color="yellow" icon="👥" />
               <KPICard label="Commissions" value={`$${detail.totalCommissions?.toFixed(2)}`} color="green" icon="💰" />
             </div>
-            <h3 className="text-xs font-black text-yellow-500 tracking-widest mb-2">FILLEULS</h3>
+            <h3 className="text-xs font-semibold text-yellow-500 tracking-widest mb-2">FILLEULS</h3>
             <AdminTable
               columns={[
                 { key: 'name', label: 'Nom' },
@@ -1672,7 +1650,7 @@ function AmbassadorsTab({ api }) {
               data={detail.referrals}
               emptyMsg="Aucun filleul"
             />
-            <h3 className="text-xs font-black text-yellow-500 tracking-widest mb-2 mt-6">HISTORIQUE DES COMMISSIONS</h3>
+            <h3 className="text-xs font-semibold text-yellow-500 tracking-widest mb-2 mt-6">HISTORIQUE DES COMMISSIONS</h3>
             <AdminTable
               columns={[
                 { key: 'createdAt', label: 'Date', render: v => new Date(v).toLocaleDateString('fr-FR') },
@@ -1774,12 +1752,12 @@ function InvestmentsTab({ api }) {
       {msg && <div className="mb-4"><Alert type={msg.includes('Erreur') ? 'error' : 'success'}>{msg}</Alert></div>}
 
       {}
-      <p className="text-xs text-gray-600 mb-1">Répartition par pack — page actuelle uniquement</p>
+      <p className="text-xs text-[#f4efe2]/40 mb-1">Répartition par pack — page actuelle uniquement</p>
       <div className="grid grid-cols-3 lg:grid-cols-6 gap-2 mb-4">
         {INVESTMENT_PACK_KEYS.map(p => (
           <div key={p} className={`border border-${packColors[p]}-500/30 rounded p-3 text-center`}>
-            <p className="text-xs text-gray-500 uppercase tracking-widest">{packDisplayName(p)}</p>
-            <p className="text-xl font-black text-yellow-400">{investments.filter(i => i.pack === p).length}</p>
+            <p className="text-xs text-[#f4efe2]/50 uppercase tracking-widest">{packDisplayName(p)}</p>
+            <p className="text-xl font-semibold text-yellow-400">{investments.filter(i => i.pack === p).length}</p>
           </div>
         ))}
       </div>
@@ -1799,7 +1777,7 @@ function InvestmentsTab({ api }) {
           <div className="grid lg:grid-cols-3 gap-3">
             {packConfig.map((pack, i) => (
               <div key={pack.key} className="border border-yellow-900/20 rounded p-3 space-y-2">
-                <p className="text-xs font-black text-yellow-500 tracking-widest">{pack.name.toUpperCase()}</p>
+                <p className="text-xs font-semibold text-yellow-500 tracking-widest">{pack.name.toUpperCase()}</p>
                 <Input label="Min $" type="number" value={pack.minAmount} onChange={e => {
                   const u = [...packConfig]; u[i] = { ...u[i], minAmount: parseFloat(e.target.value) }; setPackConfig(u);
                 }} />
@@ -1842,7 +1820,7 @@ function InvestmentsTab({ api }) {
           { key: 'amount', label: 'Montant', render: v => <span className="text-yellow-400 font-bold">${v?.toLocaleString()}</span> },
           { key: 'roi', label: 'ROI', render: v => <span className="text-green-400 font-bold">+{v}%</span> },
           { key: 'earnings', label: 'Gains', render: v => <span className="text-blue-400">${v?.toFixed(2)}</span> },
-          { key: 'endDate', label: 'Fin', render: v => <span className="text-gray-400">{new Date(v).toLocaleDateString('fr-FR')}</span> },
+          { key: 'endDate', label: 'Fin', render: v => <span className="text-[#f4efe2]/60">{new Date(v).toLocaleDateString('fr-FR')}</span> },
           { key: 'actions', label: '', render: (_, r) => (
             <div className="flex gap-1">
               <AdminBtn size="sm" onClick={() => setSelected(r)}>VOIR</AdminBtn>
@@ -1876,7 +1854,7 @@ function InvestmentsTab({ api }) {
                 ['Fin le', new Date(selected.endDate).toLocaleDateString('fr-FR')],
               ].map(([k, v]) => (
                 <div key={k} className="border border-yellow-900/20 rounded p-2">
-                  <p className="text-gray-600">{k}</p>
+                  <p className="text-[#f4efe2]/40">{k}</p>
                   <p className="text-white font-bold">{v}</p>
                 </div>
               ))}
@@ -2059,7 +2037,7 @@ function TransactionsTab({ api }) {
                     ['Date', new Date(selected.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })],
                   ].map(([k, v]) => (
                     <div key={k} className="border border-yellow-900/20 rounded p-2">
-                      <p className="text-gray-600">{k}</p>
+                      <p className="text-[#f4efe2]/40">{k}</p>
                       <p className="text-white font-bold">{v}</p>
                     </div>
                   ))}
@@ -2069,11 +2047,11 @@ function TransactionsTab({ api }) {
                   /^https?:\/\/.*\.(png|jpe?g|gif|webp)$/i.test(selected.proof) ? (
                     <div className="border border-yellow-900/30 rounded p-3 text-center">
                       <img src={selected.proof} alt="Preuve de paiement" className="max-h-40 mx-auto" />
-                      <p className="text-xs text-gray-500 mt-2">Preuve de paiement</p>
+                      <p className="text-xs text-[#f4efe2]/50 mt-2">Preuve de paiement</p>
                     </div>
                   ) : (
                     <div className="border border-yellow-900/30 rounded p-3">
-                      <p className="text-xs text-gray-600 mb-1">
+                      <p className="text-xs text-[#f4efe2]/40 mb-1">
                         {selected.type === 'withdrawal' ? 'Adresse USDT de destination' : 'ID de transaction USDT'}
                       </p>
                       <code className="block text-yellow-300 text-xs break-all">{selected.proof}</code>
@@ -2145,7 +2123,7 @@ function TransactionsTab({ api }) {
             </SectionBox>
           ) : (
             <div className="border border-yellow-900/20 rounded-lg p-6 text-center">
-              <p className="text-gray-600 text-sm">Sélectionnez une transaction</p>
+              <p className="text-[#f4efe2]/40 text-sm">Sélectionnez une transaction</p>
             </div>
           )}
         </div>
@@ -2221,7 +2199,7 @@ function AcademyTab({ api }) {
                 <div className="flex gap-2 mt-1">
                   <Badge label={course.category?.toUpperCase()} color="gray" />
                   <Badge label={course.level?.toUpperCase()} color={levelColors[course.level] || 'gray'} />
-                  <span className="text-xs text-gray-500">{course.completions?.toLocaleString()} complétion(s)</span>
+                  <span className="text-xs text-[#f4efe2]/50">{course.completions?.toLocaleString()} complétion(s)</span>
                 </div>
               </div>
             </div>
@@ -2343,7 +2321,7 @@ function FAQAdminTab({ api }) {
               <p className="font-bold text-white text-sm">{f.question}</p>
               <div className="flex gap-2 mt-1 items-center">
                 <Badge label={(FAQ_CATEGORIES.find(c => c.value === f.category)?.label || f.category).toUpperCase()} color="gray" />
-                <span className="text-xs text-gray-600">ordre: {f.order}</span>
+                <span className="text-xs text-[#f4efe2]/40">ordre: {f.order}</span>
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">
@@ -2355,7 +2333,7 @@ function FAQAdminTab({ api }) {
             </div>
           </div>
         ))}
-        {faqs.length === 0 && <p className="text-gray-500 text-sm text-center py-8">Aucune question pour l'instant</p>}
+        {faqs.length === 0 && <p className="text-[#f4efe2]/50 text-sm text-center py-8">Aucune question pour l'instant</p>}
       </div>
 
       <Modal open={showModal} onClose={() => setShowModal(false)} title={editing ? 'MODIFIER LA QUESTION' : 'NOUVELLE QUESTION'}>
@@ -2476,7 +2454,7 @@ function TradingTab({ api }) {
 
       <div className="flex gap-2 mb-4 flex-wrap">
         {[['codes', 'Codes de scénario'], ['assets', 'Actifs'], ['positions', 'Positions'], ['settings', 'Trading libre']].map(([id, label]) => (
-          <button key={id} onClick={() => setTab(id)} className={`px-4 py-2 text-xs font-black tracking-widest border rounded transition-all ${tab === id ? 'bg-yellow-500 text-black border-yellow-500' : 'border-yellow-900/40 text-gray-400 hover:border-yellow-700'}`}>
+          <button key={id} onClick={() => setTab(id)} className={`px-4 py-2 text-xs font-semibold tracking-widest border rounded transition-all ${tab === id ? 'bg-yellow-500 text-black border-yellow-500' : 'border-yellow-900/40 text-[#f4efe2]/60 hover:border-yellow-700'}`}>
             {label.toUpperCase()}
           </button>
         ))}
@@ -2497,7 +2475,7 @@ function TradingTab({ api }) {
                   r.status === 'active'
                     ? <AdminBtn size="sm" color="red" onClick={() => toggleCodeStatus(r.id, 'disabled')}>DÉSACTIVER</AdminBtn>
                     : <AdminBtn size="sm" color="green" onClick={() => toggleCodeStatus(r.id, 'active')}>ACTIVER</AdminBtn>
-                ) : <span className="text-gray-600 text-xs">Verrouillé</span>
+                ) : <span className="text-[#f4efe2]/40 text-xs">Verrouillé</span>
               )},
             ]}
             data={codes}
@@ -2556,7 +2534,7 @@ function TradingTab({ api }) {
               { key: 'userId', label: 'Utilisateur', render: (_, r) => r.userId ? `${r.userId.firstName || ''} ${r.userId.lastName || ''}`.trim() : '' },
               { key: 'mode', label: 'Mode', render: v => <Badge label={v === 'code' ? 'CODE' : 'LIBRE'} color={v === 'code' ? 'blue' : 'purple'} /> },
               { key: 'asset', label: 'Actif' },
-              { key: 'type', label: 'Type', render: (v, r) => r.mode === 'code' ? <span className="text-gray-500">{r.code}</span> : <Badge label={v} color={v === 'BUY' ? 'green' : 'red'} /> },
+              { key: 'type', label: 'Type', render: (v, r) => r.mode === 'code' ? <span className="text-[#f4efe2]/50">{r.code}</span> : <Badge label={v} color={v === 'BUY' ? 'green' : 'red'} /> },
               { key: 'amount', label: 'Montant', render: v => `$${v.toFixed(2)}` },
               { key: 'status', label: 'Statut', render: v => <Badge label={v === 'open' ? 'EN COURS' : 'TERMINÉE'} color={v === 'open' ? 'yellow' : 'gray'} /> },
               { key: 'outcome', label: 'Issue', render: (v, r) => r.status === 'closed' ? <Badge label={v === 'win' ? 'GAGNÉE' : v === 'loss' ? 'PERDUE' : 'NEUTRE'} color={v === 'win' ? 'green' : v === 'loss' ? 'red' : 'gray'} /> : '—' },
@@ -2571,7 +2549,7 @@ function TradingTab({ api }) {
       {tab === 'settings' && (
         <SectionBox title="Réglages du trading libre (BUY/SELL)" action={<AdminBtn size="sm" color="green" onClick={saveSettings} disabled={savingSettings}>{savingSettings ? 'SAUVEGARDE...' : '💾 SAUVEGARDER'}</AdminBtn>}>
           <div className="space-y-3 max-w-md">
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-[#f4efe2]/50">
               S'applique uniquement aux positions ouvertes directement sur le graphe (BUY/SELL). Les codes de scénario gardent leur propre pourcentage et durée, définis par code.
             </p>
             <Input
@@ -2725,10 +2703,10 @@ function ConfigTab({ api }) {
         <SectionBox title="Mode Maintenance">
           <div className="space-y-3">
             <div className="flex items-center justify-between border border-yellow-900/20 rounded p-3">
-              <span className="text-sm text-gray-300">Mode Maintenance</span>
+              <span className="text-sm text-[#f4efe2]/80">Mode Maintenance</span>
               <button
                 onClick={() => setConfig({ ...config, maintenanceMode: !config.maintenanceMode })}
-                className={`px-4 py-1 text-xs font-black transition-all ${config.maintenanceMode ? 'bg-red-500 text-white' : 'bg-gray-800 text-gray-400'}`}
+                className={`px-4 py-1 text-xs font-semibold transition-all ${config.maintenanceMode ? 'bg-red-500 text-white' : 'bg-gray-800 text-[#f4efe2]/60'}`}
               >
                 {config.maintenanceMode ? 'ACTIVÉ' : 'DÉSACTIVÉ'}
               </button>
@@ -2764,7 +2742,7 @@ function ConfigTab({ api }) {
             {config.usdtWallets.map((w, i) => (
               <div key={i} className="flex items-center gap-3 border border-yellow-900/20 rounded p-3">
                 <Badge label={w.network} color="yellow" />
-                <code className="flex-1 text-xs text-gray-300 break-all">{w.address}</code>
+                <code className="flex-1 text-xs text-[#f4efe2]/80 break-all">{w.address}</code>
                 <button
                   type="button"
                   onClick={() => setConfig({ ...config, usdtWallets: config.usdtWallets.filter((_, idx) => idx !== i) })}
@@ -2810,7 +2788,7 @@ function ConfigTab({ api }) {
               </AdminBtn>
             </div>
             {config.usdtWallets.some(w => w.network === newWalletNetwork) && (
-              <p className="text-xs text-gray-600">Ce réseau a déjà une adresse configurée — supprimez-la d'abord pour la remplacer.</p>
+              <p className="text-xs text-[#f4efe2]/40">Ce réseau a déjà une adresse configurée — supprimez-la d'abord pour la remplacer.</p>
             )}
           </div>
         </SectionBox>
@@ -2822,10 +2800,10 @@ function ConfigTab({ api }) {
               const labels = { academy: '🎓 Académie', referral: '👥 Parrainage' };
               return (
                 <div key={key} className="flex items-center justify-between border border-yellow-900/20 rounded p-3">
-                  <span className="text-sm text-gray-300">{labels[key] || key}</span>
+                  <span className="text-sm text-[#f4efe2]/80">{labels[key] || key}</span>
                   <button
                     onClick={() => setConfig({ ...config, modules: { ...config.modules, [key]: !val } })}
-                    className={`px-4 py-1 text-xs font-black transition-all ${val ? 'bg-green-500 text-black' : 'bg-gray-800 text-gray-400'}`}
+                    className={`px-4 py-1 text-xs font-semibold transition-all ${val ? 'bg-green-500 text-black' : 'bg-gray-800 text-[#f4efe2]/60'}`}
                   >
                     {val ? 'ACTIVÉ' : 'DÉSACTIVÉ'}
                   </button>
@@ -2903,7 +2881,7 @@ function LogsTab({ api }) {
               <div key={i} className="flex items-center justify-between border border-yellow-900/20 rounded p-2">
                 <div>
                   <p className="text-white text-xs font-bold">{a.firstName} {a.lastName}</p>
-                  <p className="text-gray-600 text-xs">{a.email}</p>
+                  <p className="text-[#f4efe2]/40 text-xs">{a.email}</p>
                 </div>
                 <Badge label={a.role?.toUpperCase() || 'ADMIN'} color={a.role === 'superadmin' ? 'red' : 'yellow'} />
               </div>
@@ -2918,12 +2896,12 @@ function LogsTab({ api }) {
               <div key={i} className="border border-red-900/30 bg-red-900/10 rounded p-2 flex items-center justify-between">
                 <div>
                   <p className="text-red-400 font-bold text-xs font-mono">{b.ip}</p>
-                  <p className="text-gray-600 text-xs">{b.reason}</p>
+                  <p className="text-[#f4efe2]/40 text-xs">{b.reason}</p>
                 </div>
                 <AdminBtn size="sm" color="gray" onClick={() => unblockIP(b.ip)}>DÉBLOQUER</AdminBtn>
               </div>
             ))}
-            {blockedIPs.length === 0 && <p className="text-gray-600 text-xs">Aucune IP bloquée</p>}
+            {blockedIPs.length === 0 && <p className="text-[#f4efe2]/40 text-xs">Aucune IP bloquée</p>}
           </div>
           <div className="space-y-2">
             <input
@@ -2948,7 +2926,7 @@ function LogsTab({ api }) {
         <SectionBox title="Sécurité">
           <div className="space-y-2">
             <div className="flex justify-between text-xs border-b border-yellow-900/10 pb-2">
-              <span className="text-gray-500">IPs bloquées</span>
+              <span className="text-[#f4efe2]/50">IPs bloquées</span>
               <span className={`font-bold ${blockedIPs.length > 0 ? 'text-red-400' : 'text-green-400'}`}>{blockedIPs.length}</span>
             </div>
           </div>
@@ -2966,10 +2944,10 @@ function LogsTab({ api }) {
       }>
         <AdminTable
           columns={[
-            { key: 'createdAt', label: 'Heure', render: v => <span className="text-gray-500 font-mono text-xs">{v ? new Date(v).toLocaleString('fr-FR') : '—'}</span> },
+            { key: 'createdAt', label: 'Heure', render: v => <span className="text-[#f4efe2]/50 font-mono text-xs">{v ? new Date(v).toLocaleString('fr-FR') : '—'}</span> },
             { key: 'admin', label: 'Admin', render: v => <span className="text-yellow-400 font-bold">{v ? `${v.firstName} ${v.lastName}` : 'Système'}</span> },
             { key: 'action', label: 'Action' },
-            { key: 'target', label: 'Cible', render: v => <span className="font-mono text-gray-500">{v || '—'}</span> },
+            { key: 'target', label: 'Cible', render: v => <span className="font-mono text-[#f4efe2]/50">{v || '—'}</span> },
             { key: 'level', label: 'Niveau', render: v => <Badge label={v?.toUpperCase()} color={levelColors[v] || 'gray'} /> },
           ]}
           data={filteredLogs.slice(0, 20)}
@@ -3040,8 +3018,8 @@ function ReportsTab({ api }) {
             <div className="flex items-start gap-3">
               <span className="text-xl">{r.icon}</span>
               <div>
-                <h3 className={`font-black text-${r.color}-400 text-sm`}>{r.title}</h3>
-                <p className="text-xs text-gray-500 mt-1">{r.desc}</p>
+                <h3 className={`font-semibold text-${r.color}-400 text-sm`}>{r.title}</h3>
+                <p className="text-xs text-[#f4efe2]/50 mt-1">{r.desc}</p>
               </div>
             </div>
             <div className="flex gap-2 flex-shrink-0">
