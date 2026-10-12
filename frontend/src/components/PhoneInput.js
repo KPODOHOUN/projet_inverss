@@ -17,8 +17,8 @@ const splitPhone = (value) => {
 // Dial-code select + local-number input, combined into one "+229 90123456"
 // string via onChange — the rest of the app still just sees a single phone
 // string, no schema change needed.
-const DEFAULT_SELECT_CLASS = 'lux-input !w-28 shrink-0 !px-2';
-const DEFAULT_INPUT_CLASS = 'lux-input flex-1 min-w-0';
+const DEFAULT_SELECT_CLASS = 'w-28 shrink-0 px-2 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors';
+const DEFAULT_INPUT_CLASS = 'flex-1 min-w-0 px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors';
 
 export default function PhoneInput({ value, onChange, placeholder, selectClassName, inputClassName }) {
   const initial = useMemo(() => splitPhone(value), []); // eslint-disable-line react-hooks/exhaustive-deps

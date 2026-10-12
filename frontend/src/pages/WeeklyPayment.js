@@ -132,139 +132,136 @@ export default function WeeklyPayment({ onNavigate }) {
 
   const TYPE_LABEL = { deposit: 'Dépôt', investment: 'Investissement', withdrawal: 'Retrait', earning: 'Gain', reinvestment: 'Réinvestissement', commission: 'Commission', refund: 'Remboursement' };
   const STATUS_LABEL = { pending: 'En attente', approved: 'Approuvé', processing: 'En traitement', completed: 'Terminé', rejected: 'Refusé', cancelled: 'Annulé', failed: 'Échoué' };
-  const STATUS_COLOR = { pending: 'text-[#fbbf24]', approved: 'text-sky-300', processing: 'text-violet-300', completed: 'text-emerald-300', rejected: 'text-rose-300', cancelled: 'text-[#e7ebf2]/40', failed: 'text-rose-300' };
+  const STATUS_COLOR = { pending: 'text-yellow-500', approved: 'text-blue-400', processing: 'text-purple-400', completed: 'text-green-400', rejected: 'text-red-400', cancelled: 'text-gray-500', failed: 'text-red-400' };
 
   if (loading) return (
-    <div className="flex items-center justify-center py-20">
-      <div className="w-11 h-11 rounded-full border-2 border-transparent border-t-[#f59e0b] animate-spin" />
+    <div className="flex items-center justify-center py-14">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
     </div>
   );
 
-  const labelCls = 'block lux-label mb-2';
-  const blocked = referralGate && referralGate.count < referralGate.required;
-
   return (
-    <div className="space-y-8">
-      <div className="animate-cardIn">
-        <p className="lux-label mb-2">Portefeuille USDT</p>
-        <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">Mes gains</h1>
-        <p className="mt-2 text-sm text-[#e7ebf2]/50">Votre argent, en un coup d'œil.</p>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-2xl font-black text-white mb-1">Mes Gains</h1>
+        <p className="text-gray-500 text-sm">Votre argent, en un coup d'œil.</p>
       </div>
 
       {loadError && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-400/20 text-rose-200 text-sm">
+        <div className="mb-8 p-4 bg-red-900/20 border border-red-700 text-red-300 text-sm rounded">
           Impossible de charger vos données. Réessayez plus tard.
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+      {}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">
         {[
-          ['Déposé', summary.deposited, 'text-[#e7ebf2]'],
-          ['Investi', summary.invested, 'text-[#e7ebf2]'],
-          ['Valeur actuelle', summary.currentValue, 'lux-gold-text'],
-          ['Gagné', summary.earned, 'text-emerald-300'],
-          ['Disponible', summary.available, 'text-[#e7ebf2]'],
+          ['Déposé', summary.deposited, 'text-white'],
+          ['Investi', summary.invested, 'text-white'],
+          ['Valeur actuelle', summary.currentValue, 'text-yellow-400'],
+          ['Gagné', summary.earned, 'text-green-400'],
+          ['Disponible', summary.available, 'text-blue-400'],
         ].map(([label, value, color], i) => (
-          <div key={label} style={{ animationDelay: `${i * 60}ms` }} className={`lux-card animate-cardIn p-4 sm:p-5 ${label === 'Disponible' ? 'col-span-2 md:col-span-1 !border-yellow-500/30' : ''}`}>
-            <p className="lux-label !text-[10px] mb-2">{label}</p>
-            <p className={`lux-num text-lg sm:text-xl font-medium ${color}`}>$ <AnimatedNumber value={value} /></p>
+          <div key={label} style={{ animationDelay: `${i * 60}ms` }} className="animate-cardIn bg-[#0d0d0d] border border-yellow-900/20 p-4 rounded-lg">
+            <p className="text-[11px] text-gray-500 uppercase tracking-wider mb-1">{label}</p>
+            <p className={`text-lg font-black ${color}`}>$ <AnimatedNumber value={value} /></p>
           </div>
         ))}
       </div>
 
       <Confetti active={celebrate} />
 
-      <div className="grid md:grid-cols-2 gap-5">
-        <div className="lux-card p-6 sm:p-7">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="lux-icon-chip">↓</span>
-            <div>
-              <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Déposer</h3>
-              <p className="text-xs text-[#e7ebf2]/45 mt-1">Paiement sécurisé par NOWPayments</p>
-            </div>
-          </div>
+      <div className="grid md:grid-cols-2 gap-6 mb-10">
+        {}
+        <div className="bg-[#0d0d0d] border border-yellow-900/20 p-6 rounded-lg">
+          <h3 className="text-lg font-black text-yellow-500 mb-4">Déposer</h3>
 
           {user?.kycStatus !== 'verified' ? (
-            <div className="p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20 text-[#fbbf24] text-sm">
+            <div className="p-4 bg-yellow-900/10 border border-yellow-800/40 text-yellow-300 text-sm rounded">
               Vérification KYC requise avant tout dépôt.{' '}
-              <button onClick={() => onNavigate?.('kyc')} className="underline font-semibold">Compléter mon KYC →</button>
+              <button onClick={() => onNavigate?.('kyc')} className="underline font-bold">Compléter mon KYC →</button>
             </div>
           ) : (
             <>
-              {depositError && <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-400/20 text-rose-200 text-sm">{depositError}</div>}
-              <form onSubmit={handleDeposit} className="space-y-4">
+              {depositError && <div className="mb-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{depositError}</div>}
+
+              <form onSubmit={handleDeposit} className="space-y-3">
                 <div>
-                  <label className={labelCls}>Montant (USD)</label>
+                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Montant (USD)</label>
                   <input
                     type="number" step="0.01" min="1"
                     value={depositAmount} onChange={e => setDepositAmount(e.target.value)}
                     placeholder="0.00"
-                    className="lux-input lux-num !text-xl !font-medium"
+                    className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-lg font-bold rounded"
                   />
                 </div>
                 <div>
-                  <label className={labelCls}>Réseau USDT</label>
-                  <select value={depositNetwork} onChange={e => setDepositNetwork(e.target.value)} className="lux-input">
+                  <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Réseau USDT</label>
+                  <select
+                    value={depositNetwork} onChange={e => setDepositNetwork(e.target.value)}
+                    className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-sm font-bold rounded"
+                  >
                     <option value="TRC20">USDT — TRC20 (Tron)</option>
                     <option value="ERC20">USDT — ERC20 (Ethereum)</option>
                     <option value="BEP20">USDT — BEP20 (BNB Chain)</option>
                     <option value="POLYGON">USDT — Polygon</option>
                   </select>
-                  <p className="text-xs text-[#e7ebf2]/40 mt-2">Seul l'USDT est accepté sur la plateforme.</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Seul l'USDT est accepté sur la plateforme.
+                  </p>
                 </div>
-                <button type="submit" disabled={depositing} className="lux-btn-gold w-full !py-3.5 !text-sm">
-                  {depositing ? 'Redirection…' : 'Payer en USDT →'}
+                <button
+                  type="submit"
+                  disabled={depositing}
+                  className="w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-black disabled:opacity-50 disabled:cursor-not-allowed hover:from-yellow-600 hover:to-yellow-700 transition-all rounded"
+                >
+                  {depositing ? 'REDIRECTION...' : 'PAYER PAR CRYPTO →'}
                 </button>
               </form>
             </>
           )}
         </div>
 
-        <div className="lux-card p-6 sm:p-7">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="lux-icon-chip">↑</span>
-            <div>
-              <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Retirer</h3>
-              <p className="text-xs text-[#e7ebf2]/45 mt-1">Vers votre portefeuille USDT</p>
-            </div>
-          </div>
+        {}
+        <div className="bg-[#0d0d0d] border border-yellow-900/20 p-6 rounded-lg">
+          <h3 className="text-lg font-black text-yellow-500 mb-4">Retirer</h3>
 
-          {blocked && (
-            <div className="mb-4 p-4 rounded-xl bg-sky-400/5 border border-sky-400/20 text-sky-200 text-sm">
-              <p className="font-semibold mb-1">Premier retrait verrouillé</p>
-              <p className="text-sky-200/70">Parrainez encore {referralGate.required - referralGate.count} personne(s) ({referralGate.count}/{referralGate.required}).</p>
-              <div className="mt-3 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                <div className="h-full rounded-full bg-gradient-to-r from-sky-400 to-sky-300" style={{ width: `${Math.min(100, (referralGate.count / referralGate.required) * 100)}%` }} />
-              </div>
+          {referralGate && referralGate.count < referralGate.required && (
+            <div className="mb-4 p-3 bg-blue-950/30 border border-blue-800/40 text-blue-300 text-sm rounded">
+              <p className="font-bold mb-1">🔒 Premier retrait verrouillé</p>
+              <p>Parrainez encore {referralGate.required - referralGate.count} personne(s) ({referralGate.count}/{referralGate.required}).</p>
             </div>
           )}
-          {withdrawSuccess && <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-400/20 text-emerald-200 text-sm">{withdrawSuccess}</div>}
-          {withdrawError && <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-400/20 text-rose-200 text-sm">{withdrawError}</div>}
+          {withdrawSuccess && <div className="mb-4 p-3 bg-green-900/30 border border-green-600 text-green-400 text-sm rounded">{withdrawSuccess}</div>}
+          {withdrawError && <div className="mb-4 p-3 bg-red-900/30 border border-red-600 text-red-400 text-sm rounded">{withdrawError}</div>}
 
-          <form onSubmit={handleWithdraw} className="space-y-4">
+          <form onSubmit={handleWithdraw} className="space-y-3">
             <div>
-              <label className={labelCls}>Montant (USDT)</label>
+              <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Montant (USDT)</label>
               <div className="relative">
                 <input
                   type="number" step="0.01" min="1" max={summary.available}
                   value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}
                   placeholder="0.00"
-                  className="lux-input lux-num !text-xl !font-medium !pr-16"
+                  className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-lg font-bold rounded"
                 />
                 <button
                   type="button"
                   onClick={() => setWithdrawAmount(summary.available.toFixed(2))}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md text-[11px] font-semibold text-[#fbbf24] bg-yellow-500/10 hover:bg-yellow-500/20 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-yellow-500 font-bold hover:text-yellow-400"
                 >
                   MAX
                 </button>
               </div>
-              <p className="text-xs text-[#e7ebf2]/40 mt-2">Disponible : <span className="lux-num text-[#e7ebf2]/70">${summary.available.toFixed(2)}</span></p>
+              <p className="text-xs text-gray-500 mt-1">Disponible : ${summary.available.toFixed(2)}</p>
             </div>
 
             <div>
-              <label className={labelCls}>Réseau</label>
-              <select value={withdrawNetwork} onChange={e => setWithdrawNetwork(e.target.value)} className="lux-input">
+              <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Réseau</label>
+              <select
+                value={withdrawNetwork} onChange={e => setWithdrawNetwork(e.target.value)}
+                className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none rounded"
+              >
                 <option value="TRC20">USDT — TRC20 (Tron)</option>
                 <option value="ERC20">USDT — ERC20 (Ethereum)</option>
                 <option value="BEP20">USDT — BEP20 (BNB Chain)</option>
@@ -273,49 +270,51 @@ export default function WeeklyPayment({ onNavigate }) {
             </div>
 
             <div>
-              <label className={labelCls}>Votre adresse USDT</label>
+              <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Votre adresse USDT</label>
               <input
                 type="text"
                 value={withdrawAddress} onChange={e => setWithdrawAddress(e.target.value)}
                 placeholder="Collez votre adresse de portefeuille"
-                className="lux-input font-mono !text-xs"
+                className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-sm rounded"
               />
-              <p className="text-xs text-rose-300/80 mt-2">Un envoi sur le mauvais réseau est irrécupérable.</p>
+              <p className="text-xs text-red-400 mt-1">⚠️ Un envoi sur le mauvais réseau est irrécupérable.</p>
             </div>
 
             {needs2FA && (
               <div>
-                <label className={labelCls}>Code de vérification (2FA)</label>
+                <label className="block text-xs text-yellow-500 font-bold mb-1 uppercase tracking-wider">Code de vérification (2FA)</label>
                 <input
                   type="text" inputMode="numeric" maxLength={6}
                   value={twoFactorCode} onChange={e => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder="000000"
-                  className="lux-input text-center !text-xl font-mono tracking-[0.4em]"
+                  className="w-full px-4 py-3 bg-black border border-yellow-900/30 text-white focus:border-yellow-500 focus:outline-none text-center text-xl font-mono tracking-[0.4em] rounded"
                 />
               </div>
             )}
 
             <button
               type="submit"
-              disabled={withdrawing || summary.available < 1 || !withdrawAddress.trim() || blocked}
-              className="lux-btn-gold w-full !py-3.5 !text-sm"
+              disabled={withdrawing || summary.available < 1 || !withdrawAddress.trim() || (referralGate && referralGate.count < referralGate.required)}
+              className="w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-black disabled:opacity-50 disabled:cursor-not-allowed hover:from-yellow-600 hover:to-yellow-700 transition-all rounded"
             >
-              {withdrawing ? 'Traitement…' : 'Retirer →'}
+              {withdrawing ? 'TRAITEMENT...' : 'RETIRER →'}
             </button>
           </form>
         </div>
       </div>
 
-      <div className="lux-card p-6 sm:p-7">
-        <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
-          <div>
-            <p className="lux-label mb-1">Mouvements</p>
-            <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] leading-none">Historique récent</h3>
-          </div>
+      {}
+      <div className="bg-[#0d0d0d] border border-yellow-900/20 p-6 rounded-lg">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+          <h3 className="text-lg font-black text-yellow-500">Historique récent</h3>
           {transactions.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {PERIOD_OPTIONS.map(({ value, label }) => (
-                <button key={value} onClick={() => setPeriodFilter(value)} className={`lux-chip ${periodFilter === value ? 'is-active' : ''}`}>
+                <button
+                  key={value}
+                  onClick={() => setPeriodFilter(value)}
+                  className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
+                >
                   {label}
                 </button>
               ))}
@@ -326,29 +325,24 @@ export default function WeeklyPayment({ onNavigate }) {
           const filteredTx = transactions.filter(t => withinPeriod(t.createdAt, periodFilter));
           if (filteredTx.length === 0) {
             return (
-              <p className="text-center py-10 text-sm text-[#e7ebf2]/45">
+              <p className="text-center py-8 text-gray-500">
                 {transactions.length > 0 ? 'Aucune opération sur cette période' : 'Aucune opération encore effectuée'}
               </p>
             );
           }
           return (
-          <div className="divide-y divide-white/5">
+          <div className="space-y-2">
             {filteredTx.slice(0, 10).map((t) => (
-              <div key={t.id} className="flex items-center justify-between gap-4 py-3.5">
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-sm ${t.amount < 0 ? 'bg-rose-400/10 text-rose-300' : 'bg-emerald-400/10 text-emerald-300'}`}>
-                    {t.amount < 0 ? '↑' : '↓'}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-[#e7ebf2] font-medium text-sm">{TYPE_LABEL[t.type] || t.type}</p>
-                    <p className="text-xs text-[#e7ebf2]/40">{new Date(t.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-                  </div>
+              <div key={t.id} className="flex items-center justify-between p-3 bg-black/40 border border-yellow-900/10 rounded">
+                <div>
+                  <p className="text-white font-semibold text-sm">{TYPE_LABEL[t.type] || t.type}</p>
+                  <p className="text-xs text-gray-500">{new Date(t.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
                 </div>
                 <div className="text-right">
-                  <p className={`lux-num font-medium text-sm ${t.amount < 0 ? 'text-rose-300' : 'text-emerald-300'}`}>
-                    {t.amount < 0 ? '−' : '+'}${Math.abs(t.amount).toFixed(2)}
+                  <p className={`font-black text-sm ${t.amount < 0 ? 'text-red-400' : 'text-green-400'}`}>
+                    {t.amount < 0 ? '-' : '+'}${Math.abs(t.amount).toFixed(2)}
                   </p>
-                  <p className={`text-[11px] font-medium ${STATUS_COLOR[t.status] || 'text-[#e7ebf2]/45'}`}>{STATUS_LABEL[t.status] || t.status}</p>
+                  <p className={`text-xs font-bold ${STATUS_COLOR[t.status] || 'text-gray-500'}`}>{STATUS_LABEL[t.status] || t.status}</p>
                 </div>
               </div>
             ))}
@@ -356,7 +350,7 @@ export default function WeeklyPayment({ onNavigate }) {
           );
         })()}
         {transactions.length > 10 && (
-          <button onClick={() => onNavigate?.('transactions')} className="lux-btn-ghost w-full mt-5">
+          <button onClick={() => onNavigate?.('transactions')} className="mt-4 w-full text-center text-sm text-yellow-500 hover:text-yellow-400 font-bold">
             Voir tout l'historique →
           </button>
         )}

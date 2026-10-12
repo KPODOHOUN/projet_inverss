@@ -90,47 +90,53 @@ export default function Invest({ onNavigate }) {
 
   if (!packs) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-11 h-11 rounded-full border-2 border-transparent border-t-[#f59e0b] animate-spin" />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
+          <p className="mt-4 text-gray-400 font-semibold">Chargement...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap items-end justify-between gap-4 animate-cardIn">
-        <div>
-          <p className="lux-label mb-2">Catalogue</p>
-          <h1 className="lux-serif text-4xl sm:text-5xl font-semibold text-[#e7ebf2] leading-none">Investir</h1>
-          <p className="mt-2 text-sm text-[#e7ebf2]/50">Choisissez un pack adapté à vos objectifs.</p>
-        </div>
-        <div className="lux-card px-5 py-3.5">
-          <p className="lux-label !text-[10px] mb-1">Solde disponible</p>
-          <p className="lux-num text-xl font-medium lux-gold-text">${balance.toFixed(2)}</p>
-        </div>
+    <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="mb-8">
+        <h1 className="text-2xl font-black mb-2 text-white">Investir</h1>
+        <p className="text-gray-500">Solde disponible : <span className="text-yellow-400 font-bold">${balance.toFixed(2)}</span></p>
       </div>
 
       {user.kycStatus !== 'verified' && (
-        <div className="lux-card-gold p-6 flex flex-wrap items-center justify-between gap-4">
-          <div className="relative">
-            <h3 className="lux-serif text-2xl font-semibold text-[#fbbf24] mb-1">Vérification KYC requise</h3>
-            <p className="text-sm text-[#e7ebf2]/60">Complétez votre vérification d'identité pour pouvoir investir.</p>
+        <div className="mb-8 p-6 bg-yellow-900/10 border border-yellow-800/40 rounded">
+          <div className="flex items-start gap-4">
+            <span className="text-xl">⚠️</span>
+            <div>
+              <h3 className="font-bold text-yellow-400 mb-2">Vérification KYC requise</h3>
+              <p className="text-yellow-200/70 mb-4">Vous devez compléter votre vérification d'identité avant de pouvoir investir.</p>
+              <button
+                type="button"
+                onClick={() => onNavigate?.('kyc')}
+                className="inline-block px-6 py-2 bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition-colors rounded"
+              >
+                COMPLÉTER MON KYC →
+              </button>
+            </div>
           </div>
-          <button type="button" onClick={() => onNavigate?.('kyc')} className="relative lux-btn-gold">
-            Compléter mon KYC →
-          </button>
         </div>
       )}
 
       {success && (
-        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-400/20 text-emerald-200 text-sm font-medium">
-          ✓ {success}
+        <div className="mb-8 p-6 bg-green-950/40 border border-green-800/40 text-green-300 rounded">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">✓</span>
+            <span className="font-bold">{success}</span>
+          </div>
         </div>
       )}
 
       <Confetti active={celebrate} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {INVESTMENT_PACK_KEYS.map((key, i) => {
           const pack = packs[key];
           if (!pack) return null;
@@ -148,39 +154,39 @@ export default function Invest({ onNavigate }) {
           return (
             <div
               key={key}
-              style={{ animationDelay: `${i * 60}ms` }}
-              className="lux-card lux-card-hover animate-cardIn flex flex-col p-6 group"
+              style={{ animationDelay: `${i * 70}ms` }}
+              className="animate-cardIn flex flex-col bg-gradient-to-b from-[#121212] to-[#0a0a0a] border border-yellow-900/25 hover:border-yellow-600/60 transition-all hover:-translate-y-0.5 rounded-xl p-5 sm:p-6"
             >
-              <div className="flex items-start justify-between gap-3 mb-6">
+              <div className="flex items-start justify-between gap-3 mb-4">
                 <div className="min-w-0">
-                  <p title={pack.name} className="lux-serif text-xl sm:text-2xl font-semibold text-[#e7ebf2] leading-tight line-clamp-2 group-hover:text-[#fbbf24] transition-colors">{pack.name}</p>
-                  <p className="text-xs text-[#e7ebf2]/45 mt-1">À partir de <span className="lux-num text-[#e7ebf2]/70">${pack.minAmount}</span></p>
+                  <p className="font-bold text-white text-base leading-snug">{pack.name}</p>
+                  <p className="text-xs text-gray-500 mt-1">À partir de ${pack.minAmount}</p>
                 </div>
-                <span className="shrink-0 lux-pill bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25">
-                  {pack.termDays} jours
+                <span className="shrink-0 text-[10px] font-bold tracking-widest uppercase text-yellow-500 bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 rounded">
+                  {pack.termDays} j
                 </span>
               </div>
 
               {rateText && (
-                <div className="mb-5">
-                  <p className="lux-label !text-[10px] mb-2">Taux journalier</p>
-                  <p className="lux-num text-4xl font-light lux-gold-text leading-none">
-                    {rateText}<span className="text-lg ml-1">%</span>
+                <div className="mb-4">
+                  <p className="text-[11px] uppercase tracking-widest text-gray-500 mb-1">Taux journalier</p>
+                  <p className="text-3xl font-black text-yellow-400 leading-none">
+                    {rateText}<span className="text-base font-bold text-yellow-600 ml-1">%</span>
                   </p>
                 </div>
               )}
 
               {totalText && (
-                <div className="flex items-center justify-between py-3 border-t border-white/5 mb-5">
-                  <span className="text-xs text-[#e7ebf2]/50">Rendement total</span>
-                  <span className="lux-num text-sm font-medium text-emerald-300">{totalText}</span>
+                <div className="flex items-center justify-between py-3 border-t border-yellow-900/20 mb-4">
+                  <span className="text-sm text-gray-400">Rendement total</span>
+                  <span className="text-sm font-bold text-green-400">{totalText}</span>
                 </div>
               )}
 
               <button
                 onClick={() => openPurchaseModal(key)}
                 disabled={user.kycStatus !== 'verified'}
-                className="mt-auto lux-btn-gold w-full !py-3"
+                className="mt-auto w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-black text-sm tracking-wide rounded-lg hover:from-yellow-400 hover:to-yellow-500 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 Investir
               </button>
@@ -190,23 +196,22 @@ export default function Invest({ onNavigate }) {
       </div>
 
       {showModal && selectedPack && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="relative lux-card-gold max-w-md w-full p-7 animate-cardIn">
-            <div className="relative flex justify-between items-start mb-6">
-              <div>
-                <p className="lux-label mb-1">Nouvel investissement</p>
-                <h2 className="lux-serif text-3xl font-semibold text-[#e7ebf2] leading-none">{packs[selectedPack].name}</h2>
-              </div>
-              <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-full flex items-center justify-center text-[#e7ebf2]/50 hover:text-[#e7ebf2] hover:bg-white/5 transition-colors text-xl leading-none" aria-label="Fermer">×</button>
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="relative bg-[#0a0a0a] border border-yellow-900/30 max-w-md w-full p-6 rounded-lg">
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-xl font-black text-white">{packs[selectedPack].name}</h2>
+              <button onClick={() => setShowModal(false)} className="text-xl font-bold text-gray-500 hover:text-red-500 transition-colors leading-none">×</button>
             </div>
 
             {error && (
-              <div className="relative mb-5 p-3 rounded-xl bg-rose-500/10 border border-rose-400/20 text-rose-200 text-sm">{error}</div>
+              <div className="mb-6 p-4 bg-red-950/50 border border-red-800/50 text-red-300 text-sm rounded">{error}</div>
             )}
 
-            <form onSubmit={handlePurchase} className="relative space-y-6">
+            <form onSubmit={handlePurchase} className="space-y-6">
               <div>
-                <label className="block lux-label mb-2">Montant à investir ($)</label>
+                <label className="block text-xs font-bold text-yellow-600 tracking-widest uppercase mb-2">
+                  Montant à investir ($)
+                </label>
                 <input
                   type="number"
                   autoFocus
@@ -216,22 +221,30 @@ export default function Invest({ onNavigate }) {
                   max={packs[selectedPack].maxAmount || undefined}
                   step="1"
                   required
-                  className="lux-input lux-num !text-2xl !font-light !py-4"
+                  className="w-full px-4 py-3 bg-black/50 border border-yellow-900/30 text-white text-2xl font-bold focus:border-yellow-500/60 focus:outline-none rounded"
                   placeholder={packs[selectedPack].minAmount.toString()}
                 />
-                <p className="text-xs text-[#e7ebf2]/45 mt-2">
-                  Minimum ${packs[selectedPack].minAmount}
-                  {packs[selectedPack].maxAmount && ` · Maximum $${packs[selectedPack].maxAmount}`}
-                  {' · '}Disponible ${balance.toFixed(2)}
+                <p className="text-sm text-gray-600 mt-2">
+                  Minimum : ${packs[selectedPack].minAmount}
+                  {packs[selectedPack].maxAmount && ` • Maximum : $${packs[selectedPack].maxAmount}`}
+                  {' • '}Disponible : ${balance.toFixed(2)}
                 </p>
               </div>
 
-              <div className="flex gap-3">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 lux-btn-ghost !py-3">
-                  Annuler
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 py-4 border border-yellow-900/30 text-gray-400 font-bold hover:border-yellow-700 hover:text-yellow-500 transition-colors rounded"
+                >
+                  ANNULER
                 </button>
-                <button type="submit" disabled={loading} className="flex-1 lux-btn-gold !py-3">
-                  {loading ? 'Traitement…' : 'Confirmer'}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 py-4 font-black text-black transition-all active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed rounded bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400"
+                >
+                  {loading ? 'TRAITEMENT...' : 'CONFIRMER'}
                 </button>
               </div>
             </form>

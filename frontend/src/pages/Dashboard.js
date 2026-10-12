@@ -146,27 +146,6 @@ const IC = {
       <path d="M4 4l8 8M12 4l-8 8" stroke={color} strokeWidth="2" strokeLinecap="round"/>
     </svg>
   ),
-  ArrowDownLeft: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 7L7 17M7 17h8M7 17V9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-  ),
-  ArrowUpRight: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-  ),
-  Chart: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M7 15l4-4 3 3 5-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-  ),
-  Layers: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l10 5-10 5L2 7l10-5z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/><path d="M2 12l10 5 10-5M2 17l10 5 10-5" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/></svg>
-  ),
-  Percent: () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 5L5 19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><circle cx="7" cy="7" r="2.5" stroke="currentColor" strokeWidth="1.8"/><circle cx="17" cy="17" r="2.5" stroke="currentColor" strokeWidth="1.8"/></svg>
-  ),
-  More: () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
-  ),
-  Verified: () => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 1.8 3-.2.9 2.9 2.5 1.7-1 2.8 1 2.8-2.5 1.7-.9 2.9-3-.2L12 22l-2.4-1.8-3 .2-.9-2.9-2.5-1.7 1-2.8-1-2.8 2.5-1.7.9-2.9 3 .2L12 2z" fill="#f59e0b" fillOpacity="0.18" stroke="#f59e0b" strokeWidth="1.4" strokeLinejoin="round"/><path d="M8.5 12.2l2.3 2.3 4.7-4.8" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-  ),
   Clock: () => (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
       <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
@@ -277,110 +256,127 @@ export default function Dashboard() {
     ...(user.role === 'ambassador' ? [{ id: 'ambassador-space', Icon: IC.Ambassador, label: 'Espace Ambassadeur', external: '/ambassador' }] : []),
   ];
 
-  const currentLabel = navItems.find(n => n.id === activeTab)?.label || "Vue d'ensemble";
-  const bottomNav = [
-    { id: 'overview', Icon: IC.Overview, label: 'Aperçu' },
-    { id: 'invest', Icon: IC.Invest, label: 'Investir' },
-    { id: 'wallet', Icon: IC.Wallet, label: 'Fonds' },
-    { id: 'transactions', Icon: IC.Transactions, label: 'Historique' },
-  ];
-
   return (
-    <div className="dash-scope lux-page min-h-screen relative">
-      <header className="lux-header sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-8 w-auto object-contain shrink-0" />
-            <div className="pl-3 border-l border-white/10 min-w-0 leading-tight">
-              <p className="text-sm font-semibold text-[#e7ebf2]">IMC Corp</p>
-              <p className="text-xs text-[#9aa6b8] truncate">{currentLabel}</p>
-            </div>
+    <div className="dash-scope min-h-screen bg-black relative">
+      <div className="relative z-10">
+
+      {}
+      <header className="imc-glass-nav sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 h-12 sm:h-16 flex items-center justify-between">
+
+          {}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden p-1.5 sm:p-2 text-yellow-400 hover:bg-yellow-500/10 transition-colors bg-transparent border-none cursor-pointer"
+              aria-label="Menu"
+            >
+              {sidebarOpen ? <IC.Close /> : <IC.Menu />}
+            </button>
+            <img src="/logo-on-dark.png" alt="IMC Corporation" className="h-8 w-auto object-contain hidden sm:block" />
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          {}
+          <div className="flex items-center gap-2 sm:gap-4">
             <NotificationBell onNavigate={handleNotificationNavigate} />
+            <div className="text-right hidden sm:block">
+              <p className="font-semibold text-sm text-white leading-tight">
+                {user?.firstName} {user?.lastName}
+              </p>
+              <p className="text-xs text-gray-500">{user?.email}</p>
+            </div>
             <button
-              onClick={() => setActiveTab('profile')}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-white bg-[#2563eb] overflow-hidden shrink-0 border-2 border-[#253043] cursor-pointer"
-              aria-label="Profil"
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 border border-yellow-600/50 rounded text-yellow-400 hover:bg-yellow-600 hover:text-white text-xs sm:text-sm bg-transparent cursor-pointer"
             >
-              {user?.avatarUrl
-                ? <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
-                : `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase()}
+              <IC.Logout />
+              <span className="hidden sm:inline">Déconnexion</span>
             </button>
-            <span className="hidden lg:block">
-              <button onClick={handleLogout} className="lux-btn-ghost !px-3 !py-2" aria-label="Déconnexion">
-                <IC.Logout />
-                <span className="hidden xl:inline">Déconnexion</span>
-              </button>
-            </span>
           </div>
         </div>
-        <TickerStrip />
       </header>
 
+      {}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/60 z-[60] lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black/70 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-28 lg:pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-6 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
 
+          {}
           <aside className={`
-            fixed lg:static bottom-0 lg:bottom-auto left-0 right-0 lg:right-auto z-[70] lg:z-auto
-            max-h-[80vh] lg:max-h-none overflow-y-auto lg:overflow-visible
-            transform ${sidebarOpen ? 'translate-y-0' : 'translate-y-full'} lg:translate-y-0
-            transition-transform duration-300 ease-out
+            lg:col-span-1
+            fixed lg:static top-0 left-0 h-full lg:h-auto w-72 lg:w-auto
+            z-50 lg:z-auto
+            transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
+            transition-transform duration-300 ease-in-out
+            pt-12 sm:pt-16 lg:pt-0
+            overflow-y-auto lg:overflow-visible
           `}>
-            <div className="bg-[#141b26] lg:bg-transparent rounded-t-2xl lg:rounded-none border-t border-white/10 lg:border-0 p-4 lg:p-0 lg:sticky lg:top-[120px]">
-              <div className="lg:hidden w-10 h-1 rounded-full bg-white/20 mx-auto mb-4" />
-              <nav className="lux-card p-2 space-y-0.5">
+            <div className="bg-black lg:bg-transparent h-full lg:h-auto">
+
+              {}
+              <nav className="bg-gray-900 border border-white/10 rounded-lg p-2">
                 {navItems.map(({ id, Icon, label, external }) => (
                   <button
                     key={id}
                     onClick={() => { if (external) navigate(external); else setActiveTab(id); setSidebarOpen(false); }}
-                    className={`lux-nav-item ${activeTab === id ? 'is-active' : ''}`}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm font-medium bg-transparent border-none cursor-pointer text-left ${
+                      activeTab === id
+                        ? 'bg-yellow-600 text-white'
+                        : 'text-gray-400 hover:text-yellow-400 hover:bg-white/5'
+                    }`}
                   >
-                    <span className="opacity-80"><Icon /></span>
+                    <span className={activeTab === id ? 'text-white' : 'text-current'}>
+                      <Icon />
+                    </span>
                     {label}
                   </button>
                 ))}
-                <button onClick={handleLogout} className="lux-nav-item lg:hidden !text-rose-300">
-                  <span><IC.Logout /></span>
-                  Déconnexion
-                </button>
               </nav>
 
-              <div className="mt-4 lux-card p-4 hidden lg:block">
-                <p className="text-xs font-semibold text-[#9aa6b8] mb-3">Statut du compte</p>
+              {}
+              <div className="mt-3 bg-gray-900 border border-white/10 rounded-lg p-4">
+                <h3 className="font-semibold text-xs text-yellow-500 mb-3">
+                  Statut du compte
+                </h3>
                 <div className="space-y-2.5 text-xs">
                   <div className="flex justify-between items-center">
-                    <span className="text-[#6f7c90]">Type</span>
-                    <span className="font-semibold text-[#e7ebf2]">{ROLE_LABEL[user?.role] || user?.role}</span>
+                    <span className="text-gray-500">Type</span>
+                    <span className="font-semibold uppercase text-white">{ROLE_LABEL[user?.role] || user?.role}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#6f7c90]">KYC</span>
+                    <span className="text-gray-500">KYC</span>
                     <span className={`flex items-center gap-1 font-semibold ${
-                      user?.kycStatus === 'verified' ? 'text-emerald-400' :
-                      user?.kycStatus === 'rejected' ? 'text-rose-400' : 'text-amber-400'
+                      user?.kycStatus === 'verified' ? 'text-green-400' :
+                      user?.kycStatus === 'rejected' ? 'text-red-400' : 'text-yellow-400'
                     }`}>
-                      {user?.kycStatus === 'verified'  && <><IC.Check /> Vérifié</>}
-                      {user?.kycStatus === 'rejected'  && <><IC.X /> Rejeté</>}
+                      {user?.kycStatus === 'verified'  && <><IC.Check color="#4ade80" /> Vérifié</>}
+                      {user?.kycStatus === 'rejected'  && <><IC.X color="#f87171" /> Rejeté</>}
                       {user?.kycStatus !== 'verified' && user?.kycStatus !== 'rejected' && <><IC.Clock /> En attente</>}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[#6f7c90]">2FA</span>
-                    <span className={`flex items-center gap-1 font-semibold ${user?.twoFactorEnabled ? 'text-emerald-400' : 'text-[#6f7c90]'}`}>
-                      {user?.twoFactorEnabled ? <><IC.Check /> Activé</> : <><IC.X /> Désactivé</>}
+                    <span className="text-gray-500">2FA</span>
+                    <span className={`flex items-center gap-1 font-semibold ${user?.twoFactorEnabled ? 'text-green-400' : 'text-gray-500'}`}>
+                      {user?.twoFactorEnabled
+                        ? <><IC.Check color="#4ade80" /> Activé</>
+                        : <><IC.X color="#6b7280" /> Désactivé</>
+                      }
                     </span>
                   </div>
                 </div>
               </div>
+
             </div>
           </aside>
 
-          <main className="min-w-0">
+          {}
+          <main className="lg:col-span-3 min-w-0">
             {activeTab === 'overview'     && <OverviewTab user={user} balance={balance} summary={summary} investments={investments} transactions={transactions} stats={stats} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
             {activeTab === 'invest'       && <Invest onNavigate={setActiveTab} />}
             {activeTab === 'investments'  && <InvestmentsTab investments={investments} loading={loading} onRefresh={fetchDashboardData} onNavigate={setActiveTab} />}
@@ -396,54 +392,6 @@ export default function Dashboard() {
           </main>
         </div>
       </div>
-
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0f151f]/95 backdrop-blur border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
-        <div className="grid grid-cols-5">
-          {bottomNav.map(({ id, Icon, label }) => (
-            <button
-              key={id}
-              onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
-              className={`flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium bg-transparent border-none cursor-pointer ${activeTab === id ? 'text-[#5b8cff]' : 'text-[#9aa6b8]'}`}
-            >
-              <span className="scale-125"><Icon /></span>
-              {label}
-            </button>
-          ))}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className={`flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium bg-transparent border-none cursor-pointer ${sidebarOpen || !['overview','invest','wallet','transactions'].includes(activeTab) ? 'text-[#5b8cff]' : 'text-[#9aa6b8]'}`}
-          >
-            <IC.More />
-            Plus
-          </button>
-        </div>
-      </nav>
-    </div>
-  );
-}
-
-// Live prices of the platform's tradable assets, scrolling under the header
-// — the same /trading/assets feed the Trading tab uses, not decorative data.
-function TickerStrip() {
-  const { api } = useAuth();
-  const [assets, setAssets] = useState([]);
-  useEffect(() => {
-    api.get('/trading/assets').then(res => {
-      if (res.data.success) setAssets(res.data.data.assets || []);
-    }).catch(() => {});
-  }, [api]);
-  if (assets.length === 0) return null;
-  const items = [...assets, ...assets];
-  return (
-    <div className="border-t border-white/5 overflow-hidden">
-      <div className="lux-marquee flex w-max">
-        {items.map((a, i) => (
-          <span key={i} className="flex items-center gap-2 px-5 py-2 text-xs whitespace-nowrap">
-            <span className={`w-1.5 h-1.5 rounded-full ${a.source === 'live' ? 'bg-emerald-400' : 'bg-[#6f7c90]'}`} />
-            <span className="font-semibold text-[#e7ebf2]">{a.name}</span>
-            <span className="lux-num text-[#9aa6b8]">${Number(a.price).toLocaleString('fr-FR', { maximumFractionDigits: 2 })}</span>
-          </span>
-        ))}
       </div>
     </div>
   );
@@ -451,25 +399,19 @@ function TickerStrip() {
 
 function Spinner() {
   return (
-    <div className="flex items-center justify-center py-20">
+    <div className="flex items-center justify-center py-16">
       <div className="flex flex-col items-center gap-4">
-        <div className="relative w-11 h-11">
-          <div className="absolute inset-0 rounded-full border border-white/10" />
-          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#f59e0b] animate-spin" />
-        </div>
-        <p className="lux-label">Chargement</p>
+        <div className="w-10 h-10 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-gray-500 text-sm tracking-wide">Chargement…</p>
       </div>
     </div>
   );
 }
 
-function PageHeader({ title, subtitle, children }) {
+function PageHeader({ title, children }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
-      <div>
-        <h2 className="lux-serif text-3xl sm:text-4xl font-semibold text-[#e7ebf2] leading-none">{title}</h2>
-        {subtitle && <p className="mt-2 text-sm text-[#e7ebf2]/50">{subtitle}</p>}
-      </div>
+    <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <h2 className="text-base sm:text-xl font-bold text-white tracking-tight">{title}</h2>
       {children}
     </div>
   );
@@ -477,253 +419,209 @@ function PageHeader({ title, subtitle, children }) {
 
 function Card({ children, className = '' }) {
   return (
-    <div className={`lux-card ${className}`}>
+    <div className={`bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg ${className}`}>
       {children}
     </div>
   );
 }
 
-const TONE = {
-  green:  'bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20',
-  red:    'bg-rose-400/10 text-rose-300 ring-1 ring-inset ring-rose-400/20',
-  gold:   'bg-yellow-400/10 text-[#fbbf24] ring-1 ring-inset ring-yellow-400/25',
-  blue:   'bg-sky-400/10 text-sky-300 ring-1 ring-inset ring-sky-400/20',
-  violet: 'bg-violet-400/10 text-violet-300 ring-1 ring-inset ring-violet-400/20',
-  gray:   'bg-white/5 text-[#e7ebf2]/60 ring-1 ring-inset ring-white/10',
-};
-
 function Badge({ status }) {
   const map = {
-    active:       { label: 'Actif',            tone: 'green'  },
-    completed:    { label: 'Terminé',          tone: 'blue'   },
-    pending:      { label: 'En attente',       tone: 'gold'   },
-    failed:       { label: 'Échoué',           tone: 'red'    },
-    deposit:      { label: 'Dépôt',            tone: 'green'  },
-    withdrawal:   { label: 'Retrait',          tone: 'red'    },
-    investment:   { label: 'Investissement',   tone: 'blue'   },
-    earning:      { label: 'Gain',             tone: 'green'  },
-    reinvestment: { label: 'Réinvestissement', tone: 'blue'   },
-    commission:   { label: 'Commission',       tone: 'violet' },
-    refund:       { label: 'Remboursement',    tone: 'gray'   },
-    trading:      { label: 'Trading',          tone: 'violet' },
-    rejected:     { label: 'Rejeté',           tone: 'red'    },
-    approved:     { label: 'Approuvé',         tone: 'blue'   },
-    processing:   { label: 'En traitement',    tone: 'violet' },
-    cancelled:    { label: 'Annulé',           tone: 'gray'   },
+    active:      { label: 'Actif',      cls: 'bg-green-900/50 text-green-400' },
+    completed:   { label: 'Terminé',    cls: 'bg-blue-900/50 text-blue-400'   },
+    pending:     { label: 'En attente', cls: 'bg-yellow-900/50 text-yellow-400' },
+    failed:      { label: 'Échoué',     cls: 'bg-red-900/50 text-red-400'     },
+    deposit:      { label: 'Dépôt',           cls: 'bg-green-900/50 text-green-400'  },
+    withdrawal:   { label: 'Retrait',         cls: 'bg-red-900/50 text-red-400'      },
+    investment:   { label: 'Investissement',  cls: 'bg-blue-900/50 text-blue-400'    },
+    earning:      { label: 'Gain',            cls: 'bg-green-900/50 text-green-400'  },
+    reinvestment: { label: 'Réinvestissement',cls: 'bg-blue-900/50 text-blue-400'    },
+    commission:   { label: 'Commission',      cls: 'bg-purple-900/50 text-purple-400'},
+    refund:       { label: 'Remboursement',   cls: 'bg-gray-800 text-gray-300'       },
+    trading:      { label: 'Trading',         cls: 'bg-purple-900/50 text-purple-400'},
+    rejected:     { label: 'Rejeté',          cls: 'bg-red-900/50 text-red-400'      },
+    approved:     { label: 'Approuvé',        cls: 'bg-blue-900/50 text-blue-400'    },
+    processing:   { label: 'En traitement',   cls: 'bg-purple-900/50 text-purple-400'},
+    cancelled:    { label: 'Annulé',          cls: 'bg-gray-800 text-gray-400'       },
   };
-  const { label, tone } = map[status] || { label: status, tone: 'gray' };
-  return <span className={`lux-pill ${TONE[tone]}`}>{label}</span>;
-}
-
-const fmtUsd = (n, d = 2) => Number(n || 0).toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
-
-const OP_META = {
-  deposit:      { label: 'Dépôt USDT',        cls: 'bg-emerald-500/15 text-emerald-300', Icon: IC.ArrowDownLeft },
-  withdrawal:   { label: 'Retrait USDT',      cls: 'bg-slate-500/20 text-slate-300',     Icon: IC.ArrowUpRight },
-  investment:   { label: 'Investissement',    cls: 'bg-amber-500/15 text-amber-300',     Icon: IC.Layers },
-  earning:      { label: 'Gain crédité',      cls: 'bg-blue-500/15 text-blue-300',       Icon: IC.Coin },
-  reinvestment: { label: 'Réinvestissement',  cls: 'bg-amber-500/15 text-amber-300',     Icon: IC.Layers },
-  commission:   { label: 'Commission',        cls: 'bg-violet-500/15 text-violet-300',   Icon: IC.Referral },
-  refund:       { label: 'Remboursement',     cls: 'bg-slate-500/20 text-slate-300',     Icon: IC.Refresh },
-  trading:      { label: 'Trading',           cls: 'bg-blue-500/15 text-blue-300',       Icon: IC.Chart },
-};
-const OP_STATUS = { pending: ['En attente', 'text-amber-400'], approved: ['Approuvé', 'text-blue-300'], processing: ['En traitement', 'text-blue-300'], completed: ['Réussi', 'text-emerald-400'], rejected: ['Refusé', 'text-rose-400'], cancelled: ['Annulé', 'text-[#6f7c90]'], failed: ['Échoué', 'text-rose-400'] };
-
-function SectionTitle({ title, action, onAction }) {
+  const { label, cls } = map[status] || { label: status, cls: 'bg-gray-800 text-gray-400' };
   return (
-    <div className="flex items-center justify-between gap-3 mb-3">
-      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-[#e7ebf2]">{title}</h2>
-      {action && (
-        <button onClick={onAction} className="text-sm font-medium text-[#7aa2ff] hover:text-[#a5c0ff] bg-transparent border-none cursor-pointer flex items-center gap-1">
-          {action} <span aria-hidden="true">›</span>
-        </button>
-      )}
-    </div>
+    <span className={`px-2.5 py-1 text-xs font-bold tracking-wide rounded-full ${cls}`}>{label.toUpperCase()}</span>
   );
 }
 
-function OverviewTab({ user, balance, summary, investments, transactions, stats, loading, onNavigate }) {
+function OverviewTab({ user, balance, summary, investments, transactions, stats, loading, onRefresh, onNavigate }) {
   if (loading) return <Spinner />;
 
-  const kycOk = user?.kycStatus === 'verified';
-  const activeInvs = (investments || []).filter(i => i.status === 'active');
-  const recent = [...(transactions || [])].sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt)).slice(0, 5);
-  const earned = stats?.totalEarnings ?? 0;
-
-  const actions = [
-    { id: 'wallet', label: 'Déposer', Icon: IC.ArrowDownLeft, cls: 'bg-[#2563eb] hover:bg-[#1d4ed8] text-white', chip: 'bg-white/15' },
-    { id: 'wallet', label: 'Retirer', Icon: IC.ArrowUpRight, cls: 'bg-[#2a3446] hover:bg-[#334058] text-[#e7ebf2]', chip: 'bg-white/10' },
-    { id: 'invest', label: 'Investir', Icon: IC.Chart, cls: 'bg-[#f59e0b] hover:bg-[#fbb024] text-[#1a1204]', chip: 'bg-black/10' },
+  const quickLinks = [
+    { id: 'academy',  Icon: IC.Academy,  title: 'Académie',   desc: 'Formez-vous à l\'investissement' },
+    { id: 'trading',  Icon: IC.TrendUp,  title: 'Trading',    desc: 'Suivez les marchés en direct' },
+    { id: 'referral', Icon: IC.Referral, title: 'Parrainage', desc: 'Invitez vos contacts' },
   ];
 
+  const recentActivity = [...(transactions || [])]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 5);
+
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#e7ebf2] flex items-center gap-2">
-            Bonjour, {user?.firstName} {kycOk && <IC.Verified />}
-          </h1>
-          <p className="text-sm text-[#9aa6b8] mt-1">Voici l'état de votre portefeuille aujourd'hui.</p>
-        </div>
-        <button
-          onClick={() => !kycOk && onNavigate('kyc')}
-          className={`lux-pill !py-1.5 !px-3 border-none ${kycOk ? 'bg-emerald-500/10 text-emerald-300 cursor-default' : 'bg-amber-500/10 text-amber-300 cursor-pointer'}`}
-        >
-          {kycOk ? 'KYC vérifié' : 'KYC à compléter'}
-        </button>
+    <div className="space-y-6">
+
+      {}
+      <div>
+        <h2 className="text-base sm:text-lg font-bold text-white tracking-tight mb-1">
+          Bonjour, {user?.firstName}
+        </h2>
+        <p className="text-gray-500 text-sm">Voici un aperçu de votre compte IMC</p>
       </div>
 
-      <div className="lux-card-gold p-5 sm:p-7">
-        <div className="flex items-center justify-between gap-3">
-          <p className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-[#9aa6b8]">
-            <span className="text-amber-400"><IC.Wallet /></span> Solde disponible
-          </p>
-          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[#2563eb] text-white">USDT</span>
-        </div>
-        <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
-          <span className="lux-num text-4xl sm:text-5xl font-bold text-white"><AnimatedNumber value={balance} /></span>
-          <span className="text-lg font-semibold text-[#7aa2ff]">USDT</span>
-        </p>
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 font-semibold lux-num">
-            <IC.ArrowUpRight /> +{fmtUsd(earned)} USDT
-          </span>
-          <span className="text-[#9aa6b8]">de gains cumulés</span>
-        </div>
-
-        <div className="mt-6 grid grid-cols-3 gap-2.5 sm:gap-3">
-          {actions.map(({ id, label, Icon, cls, chip }) => (
+      {}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-1 bg-gradient-to-br from-yellow-600 to-yellow-700 p-6 shadow-2xl shadow-yellow-500/20 relative overflow-hidden rounded-lg">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-black/10 rounded-bl-full pointer-events-none" />
+          <p className="text-xs font-bold tracking-widest uppercase text-black/50 mb-2">Solde disponible</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-black mb-5 tracking-tight">
+            $ <AnimatedNumber value={balance} />
+          </h3>
+          <div className="flex flex-wrap gap-2">
             <button
-              key={label}
-              onClick={() => onNavigate(id)}
-              className={`flex flex-col items-center justify-center gap-2 py-4 sm:py-5 rounded-2xl font-semibold text-sm transition-colors border-none cursor-pointer active:scale-[0.98] ${cls}`}
+              onClick={() => onNavigate('wallet')}
+              className="flex items-center gap-1.5 px-4 py-2 rounded bg-black text-yellow-500 font-bold text-xs hover:bg-gray-900 transition-colors tracking-wide cursor-pointer border-none"
             >
-              <span className={`w-9 h-9 rounded-full flex items-center justify-center ${chip}`}><Icon /></span>
-              {label}
+              Déposer <IC.ArrowRight />
             </button>
-          ))}
+            <button
+              onClick={() => onNavigate('invest')}
+              className="flex items-center gap-1.5 px-4 py-2 border-2 border-black/40 rounded font-bold text-xs hover:bg-black/10 transition-colors tracking-wide text-black cursor-pointer bg-transparent"
+            >
+              Investir
+            </button>
+            <button
+              onClick={() => onNavigate('wallet')}
+              className="flex items-center gap-1.5 px-4 py-2 border-2 border-black/40 rounded font-bold text-xs hover:bg-black/10 transition-colors tracking-wide text-black cursor-pointer bg-transparent"
+            >
+              Retirer
+            </button>
+          </div>
+        </div>
+
+        <button
+          onClick={() => onNavigate('investments')}
+          className="text-left bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg p-6 hover:border-yellow-700/50 transition-colors cursor-pointer"
+        >
+          <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">Investi</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 tracking-tight">
+            $ <AnimatedNumber value={summary?.invested ?? 0} />
+          </h3>
+          <span className="text-xs text-yellow-500 font-bold flex items-center gap-1">
+            Voir mes investissements <IC.ArrowRight />
+          </span>
+        </button>
+
+        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/25 rounded-lg p-6">
+          <p className="text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">Valeur du portefeuille</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 tracking-tight">
+            $ <AnimatedNumber value={summary?.currentValue ?? 0} />
+          </h3>
+          <span className="text-xs text-gray-500">Capital investi + gains accumulés</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard Icon={IC.Layers}    tone="blue"   title="Capital engagé"   value={fmtUsd(summary?.invested, 0)} unit="USDT" sub={`Valeur : ${fmtUsd(summary?.currentValue, 0)} USDT`} />
-        <StatCard Icon={IC.Coin}      tone="green"  title="Gains réalisés"   value={`+${fmtUsd(earned)}`} unit="USDT" sub="Cumulés depuis l'ouverture" valueCls="text-emerald-400" />
-        <StatCard Icon={IC.Briefcase} tone="violet" title="Investissements"  value={stats?.activeInvestments ?? 0} unit={(stats?.activeInvestments ?? 0) > 1 ? 'packs' : 'pack'} sub="Actifs en ce moment" />
-        <StatCard Icon={IC.Percent}   tone="amber"  title="Rendement moyen"  value={fmtUsd(stats?.totalROI)} unit="%" sub="Sur le capital investi" />
+      {}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {quickLinks.map(({ id, Icon, title, desc }, i) => (
+          <button
+            key={id}
+            onClick={() => onNavigate(id)}
+            style={{ animationDelay: `${i * 80}ms` }}
+            className="animate-cardIn w-full text-left p-5 bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/20 rounded-lg hover:border-yellow-500/40 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] group cursor-pointer"
+          >
+            <div className="text-yellow-500/70 group-hover:text-yellow-500 transition-colors mb-3">
+              <Icon />
+            </div>
+            <p className="font-bold text-white text-sm group-hover:text-yellow-400 transition-colors mb-1">{title}</p>
+            <p className="text-xs text-gray-500">{desc}</p>
+          </button>
+        ))}
       </div>
 
-      <Card className="p-5 sm:p-6">
-        <div className="flex items-center justify-between mb-5">
-          <div>
-            <h2 className="text-lg font-bold tracking-tight text-[#e7ebf2]">Flux de trésorerie</h2>
-            <p className="text-xs text-[#6f7c90] mt-0.5">Dépôts moins retraits, 6 derniers mois</p>
+      {}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <Card className="lg:col-span-2 p-6">
+          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase mb-4">Mon portefeuille</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <StatCard Icon={IC.Wallet}    title="Déposé total"          value={<>$ <AnimatedNumber value={summary?.deposited ?? 0} /></>} accent="yellow" />
+            <StatCard Icon={IC.Coin}      title="Gains totaux"          value={<>$ <AnimatedNumber value={stats?.totalEarnings ?? 0} /></>} accent="blue" />
+            <StatCard Icon={IC.Briefcase} title="Investissements actifs" value={<AnimatedNumber value={stats?.activeInvestments ?? 0} decimals={0} />} accent="green" />
+            <StatCard Icon={IC.TrendUp}   title="ROI total"              value={<><AnimatedNumber value={stats?.totalROI ?? 0} /> %</>}  accent="purple" />
           </div>
-        </div>
-        <CashFlowChart transactions={transactions || []} />
-      </Card>
+        </Card>
 
-      <div>
-        <SectionTitle title="Investissements actifs" action="Tout voir" onAction={() => onNavigate('investments')} />
-        {activeInvs.length === 0 ? (
-          <Card className="p-6 flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="font-semibold text-[#e7ebf2]">Aucun investissement en cours</p>
-              <p className="text-sm text-[#9aa6b8] mt-0.5">Choisissez un pack pour faire travailler votre solde.</p>
-            </div>
-            <button onClick={() => onNavigate('invest')} className="lux-btn-amber">Voir les packs</button>
-          </Card>
-        ) : (
-          <div className="grid lg:grid-cols-2 gap-3 sm:gap-4">
-            {activeInvs.slice(0, 4).map(inv => {
-              const start = new Date(inv.startDate || inv.createdAt).getTime();
-              const end = inv.endDate ? new Date(inv.endDate).getTime() : start;
-              const pct = end > start ? Math.min(100, Math.max(0, ((Date.now() - start) / (end - start)) * 100)) : 100;
-              const daysLeft = Math.max(0, Math.ceil((end - Date.now()) / 86400000));
-              return (
-                <Card key={inv._id} className="p-5">
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className="w-11 h-11 rounded-xl flex items-center justify-center bg-blue-500/15 text-blue-300 shrink-0"><IC.TrendUp /></span>
-                      <div className="min-w-0">
-                        <p className="font-semibold text-[#e7ebf2] truncate">{packDisplayName(inv.pack)}</p>
-                        <p className="text-xs text-[#6f7c90]">Démarré le {new Date(inv.startDate || inv.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</p>
-                      </div>
-                    </div>
-                    <span className="lux-pill bg-emerald-500/10 text-emerald-300 shrink-0">Actif</span>
-                  </div>
-                  <div className="flex justify-between gap-4 mb-4">
-                    <div>
-                      <p className="text-xs text-[#6f7c90]">Montant alloué</p>
-                      <p className="lux-num font-semibold text-[#e7ebf2]">{fmtUsd(inv.amount)} USDT</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-[#6f7c90]">Échéance</p>
-                      <p className="font-semibold text-[#e7ebf2]">{daysLeft === 0 ? "Aujourd'hui" : `Dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''}`}</p>
-                    </div>
-                  </div>
-                  <div className="flex justify-between text-xs mb-1.5">
-                    <span className="text-[#9aa6b8]">Maturité</span>
-                    <span className="text-emerald-400 font-medium">{Math.round(pct)} %</span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                    <div className="h-full rounded-full bg-gradient-to-r from-[#2563eb] to-[#34d399]" style={{ width: `${pct}%` }} />
-                  </div>
-                  <p className="mt-3 text-xs text-[#9aa6b8]">Gains à date : <span className="lux-num text-emerald-400 font-medium">+{fmtUsd(inv.earnings)} USDT</span></p>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      <div>
-        <SectionTitle title="Opérations récentes" action="Historique" onAction={() => onNavigate('transactions')} />
-        <Card className="divide-y divide-white/5">
-          {recent.length === 0 ? (
-            <div className="p-8 text-center">
-              <p className="text-sm text-[#9aa6b8] mb-4">Aucune opération pour l'instant</p>
-              <button onClick={() => onNavigate('wallet')} className="lux-btn-gold">Faire un premier dépôt</button>
-            </div>
-          ) : recent.map(tx => {
-            const meta = OP_META[tx.type] || { label: tx.type, cls: 'bg-slate-500/20 text-slate-300', Icon: IC.Transactions };
-            const [statusLabel, statusCls] = OP_STATUS[tx.status] || [tx.status, 'text-[#6f7c90]'];
-            const network = tx.method?.startsWith('usdt-') ? ` (${tx.method.slice(5).toUpperCase()})` : '';
-            const isOut = tx.amount < 0 || tx.type === 'investment' || tx.type === 'withdrawal';
-            return (
-              <div key={tx._id} className="flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5">
-                <span className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${meta.cls}`}><meta.Icon /></span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm text-[#e7ebf2] truncate">{meta.label}{network}</p>
-                  <p className="text-xs text-[#6f7c90]">{new Date(tx.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} · {new Date(tx.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className={`lux-num font-semibold text-sm ${isOut ? 'text-[#e7ebf2]' : 'text-emerald-400'}`}>
-                    {isOut ? '−' : '+'}{fmtUsd(Math.abs(tx.amount))} USDT
-                  </p>
-                  <p className={`text-xs font-medium ${statusCls}`}>{statusLabel}</p>
-                </div>
-              </div>
-            );
-          })}
+        <Card className="lg:col-span-3 p-6">
+          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase mb-4">Flux de trésorerie</h3>
+          <CashFlowChart transactions={transactions || []} />
         </Card>
       </div>
+
+      {}
+      <Card className="overflow-hidden">
+        <div className="flex items-center justify-between flex-wrap gap-3 p-6 pb-0">
+          <h3 className="font-black text-base text-yellow-500 tracking-wide uppercase">Activités récentes</h3>
+          <button
+            onClick={() => onNavigate('transactions')}
+            className="text-xs text-gray-500 hover:text-yellow-500 transition-colors flex items-center gap-1 bg-transparent border-none cursor-pointer"
+          >
+            Voir tout <IC.ArrowRight />
+          </button>
+        </div>
+        {recentActivity.length > 0 ? (
+          <div className="overflow-x-auto mt-4">
+            <table className="w-full">
+              <thead className="bg-black/60">
+                <tr>
+                  {['Activité', 'Référence', 'Date', 'Montant', 'Statut'].map(col => (
+                    <th key={col} className="px-5 py-3 text-left text-xs font-bold text-yellow-500 tracking-widest uppercase">
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-yellow-900/15">
+                {recentActivity.map((tx, i) => (
+                  <tr key={i} className="hover:bg-yellow-900/8 transition-colors">
+                    <td className="px-5 py-4"><Badge status={tx.type} /></td>
+                    <td className="px-5 py-4 text-xs text-gray-500 font-mono">#{String(tx._id).slice(-6).toUpperCase()}</td>
+                    <td className="px-5 py-4 text-sm text-gray-400">{new Date(tx.createdAt).toLocaleDateString('fr-FR')}</td>
+                    <td className="px-5 py-4 text-sm font-bold text-white">$ {tx.amount}</td>
+                    <td className="px-5 py-4"><Badge status={tx.status} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-gray-600 text-sm mb-4">Aucune activité pour l'instant</p>
+            <button
+              onClick={() => onNavigate('invest')}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors tracking-wide cursor-pointer border-none"
+            >
+              Commencer à investir <IC.ArrowRight />
+            </button>
+          </div>
+        )}
+      </Card>
     </div>
   );
 }
 
-function StatCard({ Icon, title, value, unit, sub, tone = 'blue', valueCls = 'text-[#e7ebf2]' }) {
-  const chip = { blue: 'bg-blue-500/15 text-blue-300', green: 'bg-emerald-500/15 text-emerald-300', violet: 'bg-violet-500/15 text-violet-300', amber: 'bg-amber-500/15 text-amber-300' };
+function StatCard({ Icon, title, value, accent }) {
+  const border = { yellow: 'border-yellow-500/30', green: 'border-green-500/30', blue: 'border-blue-500/30', purple: 'border-purple-500/30' };
+  const text   = { yellow: 'text-yellow-500',       green: 'text-green-400',      blue: 'text-blue-400',     purple: 'text-purple-400'      };
   return (
-    <div className="lux-card p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-2 mb-3">
-        <p className="text-xs sm:text-sm font-medium text-[#9aa6b8]">{title}</p>
-        <span className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${chip[tone]}`}><Icon /></span>
-      </div>
-      <p className="flex items-baseline gap-1.5 flex-wrap">
-        <span className={`lux-num text-xl sm:text-2xl font-bold ${valueCls}`}>{value}</span>
-        <span className="text-xs font-semibold text-[#9aa6b8]">{unit}</span>
-      </p>
-      {sub && <p className="text-xs text-[#6f7c90] mt-1.5">{sub}</p>}
+    <div className={`bg-black/40 border-2 ${border[accent]} rounded-lg p-4`}>
+      <div className={`${text[accent]} mb-2`}><Icon /></div>
+      <p className="text-gray-500 text-[11px] mb-1 font-medium">{title}</p>
+      <p className="text-base sm:text-lg font-bold text-white tracking-tight">{value}</p>
     </div>
   );
 }
@@ -750,38 +648,31 @@ function CashFlowChart({ transactions }) {
   const hasData = months.some(m => m.net !== 0);
 
   if (!hasData) {
-    return (
-      <div className="h-[180px] flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/10">
-        <p className="text-[#e7ebf2]/45 text-sm">Pas encore de mouvements à afficher</p>
-        <p className="text-[#e7ebf2]/25 text-xs">Vos dépôts et retraits apparaîtront ici</p>
-      </div>
-    );
+    return <div className="h-[160px] flex items-center justify-center text-gray-600 text-sm">Pas encore de mouvements à afficher</div>;
   }
 
   return (
     <div>
-      <div className="relative flex items-end justify-between gap-3 h-[170px] mb-3">
-        <div className="absolute inset-x-0 top-[20%] border-t border-dashed border-white/5 pointer-events-none" />
-        <div className="absolute inset-x-0 top-[55%] border-t border-dashed border-white/5 pointer-events-none" />
-        {months.map((m, i) => {
-          const h = m.net === 0 ? 3 : Math.max(8, (Math.abs(m.net) / maxAbs) * 140);
+      <div className="flex items-end justify-between gap-2 h-[140px] mb-2">
+        {months.map(m => {
+          const h = m.net === 0 ? 2 : Math.max(6, (Math.abs(m.net) / maxAbs) * 120);
           const isUp = m.net >= 0;
           return (
-            <div key={m.key} className="relative flex-1 flex flex-col items-center justify-end h-full">
-              <span className={`lux-num text-[10px] font-semibold mb-1.5 whitespace-nowrap ${m.net === 0 ? 'text-transparent' : isUp ? 'text-[#7aa2ff]' : 'text-rose-300'}`}>
-                {m.net !== 0 ? `${isUp ? '+' : '−'}$${Math.abs(m.net) >= 1000 ? (Math.abs(m.net) / 1000).toFixed(1) + 'k' : Math.abs(m.net).toFixed(0)}` : '·'}
+            <div key={m.key} className="flex-1 flex flex-col items-center justify-end h-full">
+              <span className={`text-[10px] font-bold mb-1 whitespace-nowrap ${m.net === 0 ? 'text-gray-700' : isUp ? 'text-green-400' : 'text-red-400'}`}>
+                {m.net !== 0 ? `${isUp ? '+' : '-'}$${Math.abs(m.net) >= 1000 ? (Math.abs(m.net) / 1000).toFixed(1) + 'k' : Math.abs(m.net).toFixed(0)}` : ''}
               </span>
               <div
-                className={`animate-drawCandle w-full max-w-[42px] rounded-t-lg ${m.net === 0 ? 'bg-white/5' : isUp ? 'bg-gradient-to-t from-[#1d4ed8] to-[#60a5fa]' : 'bg-gradient-to-t from-rose-900/60 to-rose-400'}`}
-                style={{ height: `${h}px`, animationDelay: `${i * 70}ms` }}
+                className={`w-full rounded-t ${m.net === 0 ? 'bg-gray-800' : isUp ? 'bg-gradient-to-t from-yellow-700 to-yellow-400' : 'bg-gradient-to-t from-red-900 to-red-500'}`}
+                style={{ height: `${h}px` }}
               />
             </div>
           );
         })}
       </div>
-      <div className="flex justify-between gap-3 border-t border-white/5 pt-3">
+      <div className="flex justify-between gap-2">
         {months.map(m => (
-          <span key={m.key} className="flex-1 text-center text-[11px] text-[#e7ebf2]/40 capitalize">{m.label.replace('.', '')}</span>
+          <span key={m.key} className="flex-1 text-center text-[10px] text-gray-500 capitalize">{m.label}</span>
         ))}
       </div>
     </div>
@@ -834,7 +725,7 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
             <button
               key={value}
               onClick={() => setPeriodFilter(value)}
-              className={`lux-chip ${periodFilter === value ? 'is-active' : ''}`}
+              className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
             >
               {label}
             </button>
@@ -848,8 +739,8 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
             <Card key={i} className="p-5 sm:p-6">
               <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
                 <div>
-                  <h3 className="lux-serif text-2xl font-semibold lux-gold-text">{packDisplayName(inv.pack)}</h3>
-                  <p className="text-xs text-[#e7ebf2]/50 mt-0.5">
+                  <h3 className="text-lg font-bold text-yellow-500 tracking-wide">{packDisplayName(inv.pack)}</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">
                     Créé le {new Date(inv.createdAt).toLocaleDateString('fr-FR')}
                   </p>
                 </div>
@@ -857,27 +748,27 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { label: 'Montant',    value: `$ ${inv.amount}`,     cls: 'text-[#e7ebf2]' },
-                  { label: 'ROI actuel', value: `+${inv.roi} %`, cls: 'text-emerald-300' },
-                  { label: 'Gains',      value: `$ ${inv.earnings}`,   cls: 'text-[#fbbf24]' },
-                  { label: 'Échéance',   value: inv.endDate ? new Date(inv.endDate).toLocaleDateString('fr-FR') : '—', cls: 'text-[#e7ebf2]' },
+                  { label: 'Montant',    value: `$ ${inv.amount}`,     cls: 'text-white' },
+                  { label: 'ROI actuel', value: `+${inv.roi} %`, cls: 'text-green-400' },
+                  { label: 'Gains',      value: `$ ${inv.earnings}`,   cls: 'text-yellow-500' },
+                  { label: 'Échéance',   value: inv.endDate ? new Date(inv.endDate).toLocaleDateString('fr-FR') : '—', cls: 'text-white' },
                 ].map(({ label, value, cls }) => (
-                  <div key={label} className="rounded-xl bg-white/[0.02] border border-white/5 px-3.5 py-3">
-                    <p className="lux-label !text-[10px] mb-1.5">{label}</p>
-                    <p className={`lux-num font-medium text-base ${cls}`}>{value}</p>
+                  <div key={label}>
+                    <p className="text-xs text-gray-500 mb-1">{label}</p>
+                    <p className={`font-bold text-sm ${cls}`}>{value}</p>
                   </div>
                 ))}
               </div>
 
               {inv.status === 'active' && (
-                <div className="mt-5 pt-5 border-t border-white/10">
+                <div className="mt-5 pt-5 border-t border-yellow-900/20">
                   {confirmingId === inv._id ? (
                     <div className="bg-yellow-900/10 border border-yellow-700/30 rounded p-4">
-                      <p className="text-sm text-[#e7ebf2]/80 mb-1">
+                      <p className="text-sm text-gray-300 mb-1">
                         Clôturer maintenant vous rendra <span className="text-yellow-500 font-bold">$ {(Number(inv.amount) + Number(inv.earnings)).toFixed(2)}</span> sur
                         votre solde (capital $ {inv.amount} + gains accumulés à ce jour $ {inv.earnings}).
                       </p>
-                      <p className="text-xs text-[#e7ebf2]/50 mb-4">
+                      <p className="text-xs text-gray-500 mb-4">
                         Vous ne recevrez pas le reste du rendement prévu jusqu'à l'échéance. Cette action est définitive.
                       </p>
                       {closeError && <p className="text-xs text-red-400 mb-3">{closeError}</p>}
@@ -885,14 +776,14 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
                         <button
                           onClick={() => handleClose(inv._id)}
                           disabled={closingId === inv._id}
-                          className="lux-btn-gold !px-4 !py-2 !text-xs"
+                          className="px-4 py-2 rounded bg-yellow-500 text-black font-bold text-xs hover:bg-yellow-400 transition-colors disabled:opacity-50 cursor-pointer border-none"
                         >
                           {closingId === inv._id ? 'Traitement...' : 'Confirmer la clôture'}
                         </button>
                         <button
                           onClick={() => { setConfirmingId(null); setCloseError(''); }}
                           disabled={closingId === inv._id}
-                          className="lux-btn-ghost !px-4 !py-2 !text-xs"
+                          className="px-4 py-2 rounded border border-gray-700 text-gray-400 font-bold text-xs hover:border-gray-500 transition-colors cursor-pointer bg-transparent"
                         >
                           Annuler
                         </button>
@@ -901,7 +792,7 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
                   ) : (
                     <button
                       onClick={() => { setConfirmingId(inv._id); setCloseError(''); }}
-                      className="text-xs text-[#e7ebf2]/50 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer underline"
+                      className="text-xs text-gray-500 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer underline"
                     >
                       Couper cet investissement et récupérer mon capital + gains
                     </button>
@@ -913,14 +804,14 @@ function InvestmentsTab({ investments, loading, onRefresh, onNavigate }) {
         </div>
       ) : investments.length > 0 ? (
         <Card className="p-6 text-center">
-          <p className="text-[#e7ebf2]/50">Aucun investissement sur cette période</p>
+          <p className="text-gray-500">Aucun investissement sur cette période</p>
         </Card>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-[#e7ebf2]/50 mb-5">Aucun investissement pour le moment</p>
+          <p className="text-gray-500 mb-5">Aucun investissement pour le moment</p>
           <button
             onClick={() => onNavigate('invest')}
-            className="lux-btn-gold !px-6 !py-3"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors tracking-wide cursor-pointer border-none"
           >
             Commencer à investir <IC.ArrowRight />
           </button>
@@ -979,7 +870,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
   return (
     <div className="space-y-6">
       <PageHeader title="Historique des transactions">
-        <label className="flex items-center gap-2 text-xs text-[#e7ebf2]/60 cursor-pointer select-none">
+        <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer select-none">
           <input type="checkbox" checked={showHidden} onChange={e => setShowHidden(e.target.checked)} className="accent-yellow-500" />
           Afficher les transactions masquées
         </label>
@@ -990,7 +881,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
           <button
             key={t}
             onClick={() => setTypeFilter(t)}
-            className={`lux-chip ${typeFilter === t ? 'is-active' : ''}`}
+            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${typeFilter === t ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
           >
             {typeLabelMap[t] || t}
           </button>
@@ -1002,7 +893,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
           <button
             key={value}
             onClick={() => setPeriodFilter(value)}
-            className={`lux-chip ${periodFilter === value ? 'is-active' : ''}`}
+            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
           >
             {label}
           </button>
@@ -1012,28 +903,30 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
       {filtered.length > 0 ? (
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full lux-table">
-              <thead>
+            <table className="w-full">
+              <thead className="bg-black/60">
                 <tr>
-                  {['Date', 'Type', 'Montant', 'Statut', ''].map(col => <th key={col}>{col}</th>)}
+                  {['Date', 'Type', 'Montant', 'Statut', ''].map(col => (
+                    <th key={col} className="px-5 py-3 text-left text-xs font-bold text-yellow-500 tracking-widest uppercase">
+                      {col}
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-yellow-900/15">
                 {filtered.map((tx, i) => (
-                  <tr key={i} className={tx.hiddenForUser ? 'opacity-50' : ''}>
-                    <td className="text-sm text-[#e7ebf2]/60">
-                      {new Date(tx.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  <tr key={i} className={`hover:bg-yellow-900/8 transition-colors ${tx.hiddenForUser ? 'opacity-50' : ''}`}>
+                    <td className="px-5 py-4 text-sm text-gray-400">
+                      {new Date(tx.createdAt).toLocaleDateString('fr-FR')}
                     </td>
-                    <td><Badge status={tx.type} /></td>
-                    <td className={`text-sm font-medium lux-num ${tx.amount < 0 ? 'text-rose-300' : 'text-[#e7ebf2]'}`}>
-                      {tx.amount < 0 ? '−' : ''}$ {Math.abs(tx.amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </td>
-                    <td><Badge status={tx.status} /></td>
-                    <td className="text-right">
+                    <td className="px-5 py-4"><Badge status={tx.type} /></td>
+                    <td className="px-5 py-4 text-sm font-bold text-white">$ {tx.amount}</td>
+                    <td className="px-5 py-4"><Badge status={tx.status} /></td>
+                    <td className="px-5 py-4 text-right">
                       <button
                         onClick={() => toggleHide(tx)}
                         disabled={busyId === tx._id}
-                        className="text-xs text-[#e7ebf2]/50 hover:text-yellow-500 bg-transparent border-none cursor-pointer disabled:opacity-40"
+                        className="text-xs text-gray-500 hover:text-yellow-500 bg-transparent border-none cursor-pointer disabled:opacity-40"
                       >
                         {tx.hiddenForUser ? 'Réafficher' : 'Masquer'}
                       </button>
@@ -1046,7 +939,7 @@ function TransactionsTab({ transactions, loading, onRefresh }) {
         </Card>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-[#e7ebf2]/50 text-sm">
+          <p className="text-gray-500 text-sm">
             {transactions.length === 0 ? 'Aucune transaction pour le moment' : 'Aucune transaction ne correspond à ces filtres'}
           </p>
         </Card>
@@ -1091,7 +984,7 @@ function FAQTab() {
         value={search}
         onChange={e => setSearch(e.target.value)}
         placeholder="Rechercher une question…"
-        className="lux-input"
+        className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
       />
 
       <div className="flex flex-wrap gap-2">
@@ -1099,7 +992,7 @@ function FAQTab() {
           <button
             key={c}
             onClick={() => setCategory(c)}
-            className={`lux-chip ${category === c ? 'is-active' : ''}`}
+            className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${category === c ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
           >
             {c === 'all' ? 'Toutes' : (FAQ_CATEGORY_LABELS[c] || c)}
           </button>
@@ -1112,20 +1005,20 @@ function FAQTab() {
             <Card key={f._id} className="overflow-hidden">
               <button
                 onClick={() => setOpenId(openId === f._id ? null : f._id)}
-                className="w-full flex items-center justify-between gap-3 p-5 text-left bg-transparent border-none cursor-pointer group"
+                className="w-full flex items-center justify-between gap-3 p-4 text-left bg-transparent border-none cursor-pointer"
               >
-                <span className="font-medium text-[#e7ebf2] text-sm group-hover:text-[#fbbf24] transition-colors">{f.question}</span>
-                <span className={`lux-icon-chip !w-7 !h-7 shrink-0 transition-transform duration-300 ${openId === f._id ? 'rotate-45' : ''}`}>+</span>
+                <span className="font-semibold text-white text-sm">{f.question}</span>
+                <span className="text-yellow-500 text-sm shrink-0">{openId === f._id ? '−' : '+'}</span>
               </button>
               {openId === f._id && (
-                <div className="px-5 pb-5 text-sm leading-relaxed text-[#e7ebf2]/60 whitespace-pre-wrap border-t border-white/5 pt-4">{f.answer}</div>
+                <div className="px-4 pb-4 text-sm text-gray-400 whitespace-pre-wrap">{f.answer}</div>
               )}
             </Card>
           ))}
         </div>
       ) : (
         <Card className="p-6 text-center">
-          <p className="text-[#e7ebf2]/50 text-sm">
+          <p className="text-gray-500 text-sm">
             {faqs.length === 0 ? "Aucune question pour l'instant" : 'Aucun résultat pour cette recherche'}
           </p>
         </Card>
@@ -1141,13 +1034,15 @@ function SecurityTab() {
       <TwoFactorAuth />
       <PasswordChange />
       <Card className="p-6">
-        <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-4">Sessions actives</h3>
-        <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl">
+        <h3 className="font-bold text-sm tracking-widest uppercase text-yellow-500 mb-4">Sessions actives</h3>
+        <div className="flex items-center justify-between p-4 bg-black/50 border border-yellow-900/15 rounded">
           <div>
             <p className="font-semibold text-white text-sm">Session actuelle</p>
-            <p className="text-xs text-[#e7ebf2]/50 mt-0.5">Dernière activité : maintenant</p>
+            <p className="text-xs text-gray-500 mt-0.5">Dernière activité : maintenant</p>
           </div>
-          <span className="lux-pill bg-emerald-400/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">Active</span>
+          <span className="px-2.5 py-1 bg-green-900/50 text-green-400 text-xs font-bold tracking-wide rounded-full">
+            ACTIVE
+          </span>
         </div>
       </Card>
       <DeleteAccountSection />
@@ -1212,27 +1107,27 @@ function DeleteAccountSection() {
 
   return (
     <Card className="p-6">
-      <h3 className="lux-serif text-2xl font-semibold text-rose-300 mb-2">Supprimer mon compte</h3>
+      <h3 className="font-bold text-sm tracking-widest uppercase text-red-500 mb-2">Supprimer mon compte</h3>
 
       {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
       {error && <div className="mb-4 p-3 bg-red-900/40 border border-red-500/50 rounded text-red-300 text-sm">{error}</div>}
 
       {pendingRequest ? (
         <div className="space-y-3">
-          <p className="text-sm text-[#e7ebf2]/60">
+          <p className="text-sm text-gray-400">
             Votre demande de suppression a été envoyée le {new Date(pendingRequest.requestedAt).toLocaleDateString('fr-FR')} et attend la validation d'un administrateur.
           </p>
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="px-4 py-2 border border-white/10 text-[#e7ebf2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
+            className="px-4 py-2 border border-yellow-900/30 text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer disabled:opacity-50"
           >
             Annuler ma demande
           </button>
         </div>
       ) : !confirming ? (
         <div>
-          <p className="text-sm text-[#e7ebf2]/50 mb-4">
+          <p className="text-sm text-gray-500 mb-4">
             Cette action est irréversible une fois validée par un administrateur : votre profil, vos données personnelles et votre accès au compte seront définitivement supprimés.
           </p>
           <button
@@ -1248,29 +1143,29 @@ function DeleteAccountSection() {
             Confirmez votre mot de passe pour envoyer la demande de suppression. Un administrateur devra la valider avant que le compte ne soit effectivement supprimé.
           </p>
           <div>
-            <label className="block lux-label mb-2">Mot de passe</label>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Mot de passe</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="lux-input"
+              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
               required
             />
           </div>
           <div>
-            <label className="block lux-label mb-2">Motif <span className="text-[#e7ebf2]/35 font-normal normal-case">(optionnel)</span></label>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Motif <span className="text-gray-600 font-normal normal-case">(optionnel)</span></label>
             <textarea
               value={reason}
               onChange={e => setReason(e.target.value)}
               rows={2}
-              className="lux-input"
+              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
             />
           </div>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={() => { setConfirming(false); setPassword(''); setError(''); }}
-              className="px-4 py-2 border border-white/10 text-[#e7ebf2]/60 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
+              className="px-4 py-2 border border-yellow-900/30 text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-sm rounded bg-transparent cursor-pointer"
             >
               Annuler
             </button>
@@ -1319,7 +1214,7 @@ function PasswordChange() {
 
   return (
     <Card className="p-6">
-      <h3 className="lux-serif text-2xl font-semibold text-[#e7ebf2] mb-5">
+      <h3 className="font-bold text-sm tracking-widest uppercase text-yellow-500 mb-5">
         Changer le mot de passe
       </h3>
       {success && <div className="mb-4 p-3 bg-green-900/40 border border-green-500/50 rounded text-green-300 text-sm">{success}</div>}
@@ -1327,12 +1222,12 @@ function PasswordChange() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {fields.map(({ label, key }) => (
           <div key={key}>
-            <label className="block lux-label mb-2">{label}</label>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">{label}</label>
             <input
               type="password"
               value={form[key]}
               onChange={e => setForm({ ...form, [key]: e.target.value })}
-              className="lux-input"
+              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
               required
             />
           </div>
@@ -1340,7 +1235,7 @@ function PasswordChange() {
         <button
           type="submit"
           disabled={loading}
-          className="lux-btn-gold !px-6 !py-3"
+          className="px-6 py-3 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors disabled:opacity-50 tracking-wide cursor-pointer border-none"
         >
           {loading ? 'Modification…' : 'Modifier le mot de passe'}
         </button>
@@ -1398,14 +1293,14 @@ function ProfileTab({ user }) {
       <Card className="p-6">
         <div className="flex flex-wrap items-center gap-6">
           <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-full p-[2px] bg-white"><div className="w-full h-full rounded-full bg-[#141b26] overflow-hidden flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-black border-2 border-yellow-900/30 overflow-hidden flex items-center justify-center">
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
-                <span className="lux-serif text-3xl font-semibold lux-gold-text">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
+                <span className="text-2xl font-black text-yellow-600">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
               )}
-            </div></div>
-            <label className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer bg-[#fbbf24] hover:brightness-110 ring-2 ring-[#0b1018] transition">
+            </div>
+            <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-yellow-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-400 transition-colors">
               <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleAvatarChange} className="hidden" disabled={avatarUploading} />
               <span className="text-black text-xs font-black">{avatarUploading ? '…' : '✎'}</span>
             </label>
@@ -1413,7 +1308,7 @@ function ProfileTab({ user }) {
 
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="lux-label">ID utilisateur</span>
+              <span className="text-xs text-gray-500 uppercase tracking-widest font-bold">ID utilisateur</span>
               <span className={`inline-flex items-center gap-1 text-xs font-bold ${
                 user?.kycStatus === 'verified' ? 'text-green-400' : user?.kycStatus === 'rejected' ? 'text-red-400' : 'text-yellow-400'
               }`}>
@@ -1425,12 +1320,12 @@ function ProfileTab({ user }) {
             <div className="flex items-center gap-2 mt-1">
               <code className="text-yellow-400 font-bold text-sm">{user?.userId || '—'}</code>
               {user?.userId && (
-                <button type="button" onClick={copyUserId} className="text-xs text-[#e7ebf2]/50 hover:text-yellow-500 bg-transparent border-none cursor-pointer">
+                <button type="button" onClick={copyUserId} className="text-xs text-gray-500 hover:text-yellow-500 bg-transparent border-none cursor-pointer">
                   {copied ? '✓ Copié' : 'Copier'}
                 </button>
               )}
             </div>
-            <p className="text-xs text-[#e7ebf2]/35 mt-1">
+            <p className="text-xs text-gray-600 mt-1">
               Membre depuis {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '—'}
             </p>
           </div>
@@ -1444,44 +1339,44 @@ function ProfileTab({ user }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[{ label: 'Prénom', key: 'firstName' }, { label: 'Nom', key: 'lastName' }].map(({ label, key }) => (
               <div key={key}>
-                <label className="block lux-label mb-2">{label}</label>
+                <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">{label}</label>
                 <input
                   type="text"
                   value={form[key]}
                   onChange={e => setForm({ ...form, [key]: e.target.value })}
-                  className="lux-input"
+                  className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
                 />
               </div>
             ))}
           </div>
           <div>
-            <label className="block lux-label mb-2">Email</label>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Email</label>
             <input
               type="email"
               value={user?.email}
               disabled
-              className="lux-input opacity-60 cursor-not-allowed"
+              className="w-full px-4 py-3 bg-gray-900/50 border-2 border-yellow-900/15 rounded text-gray-500 text-sm cursor-not-allowed"
             />
-            <p className="mt-1.5 text-xs text-[#e7ebf2]/35">L'adresse email ne peut pas être modifiée</p>
+            <p className="mt-1.5 text-xs text-gray-600">L'adresse email ne peut pas être modifiée</p>
           </div>
           <div>
-            <label className="block lux-label mb-2">Téléphone</label>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Téléphone</label>
             <PhoneInput value={form.phone} onChange={v => setForm({ ...form, phone: v })} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block lux-label mb-2">Pays</label>
+              <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Pays</label>
               <select
                 value={form.country}
                 onChange={e => setForm({ ...form, country: e.target.value, city: '' })}
-                className="lux-input"
+                className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
               >
                 <option value="">Sélectionner…</option>
                 {COUNTRIES.map(c => <option key={c.iso2} value={c.name}>{c.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block lux-label mb-2">Ville</label>
+              <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Ville</label>
               <CityAutocomplete
                 value={form.city}
                 onChange={v => setForm({ ...form, city: v })}
@@ -1490,18 +1385,18 @@ function ProfileTab({ user }) {
             </div>
           </div>
           <div>
-            <label className="block lux-label mb-2">Adresse</label>
+            <label className="block text-xs font-bold text-yellow-500 tracking-widest uppercase mb-2">Adresse</label>
             <input
               type="text"
               value={form.address}
               onChange={e => setForm({ ...form, address: e.target.value })}
-              className="lux-input"
+              className="w-full px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none transition-colors"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="lux-btn-gold !px-6 !py-3"
+            className="px-6 py-3 rounded bg-yellow-500 text-black font-bold text-sm hover:bg-yellow-400 transition-colors disabled:opacity-50 tracking-wide cursor-pointer border-none"
           >
             {loading ? 'Mise à jour…' : 'Mettre à jour le profil'}
           </button>

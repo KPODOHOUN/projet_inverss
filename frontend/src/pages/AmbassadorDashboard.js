@@ -71,7 +71,7 @@ export default function AmbassadorDashboard() {
             </div>
             <button
               onClick={() => navigate('/dashboard')}
-              className="px-3 sm:px-4 py-1.5 sm:py-2 border border-white/10 rounded text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-xs sm:text-sm bg-transparent cursor-pointer"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 border border-yellow-900/30 rounded text-gray-400 hover:border-yellow-600/50 hover:text-yellow-400 text-xs sm:text-sm bg-transparent cursor-pointer"
             >
               ← Mon compte
             </button>
@@ -99,7 +99,7 @@ export default function AmbassadorDashboard() {
             <h3 className="text-2xl font-black mb-2">{data?.totalReferred || 0}</h3>
             <p className="text-sm opacity-80">Utilisateurs parrainés</p>
           </div>
-          <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-white/10 rounded-lg p-6 text-white">
+          <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 text-white">
             <p className="text-sm font-semibold mb-2 text-yellow-500">COMMISSIONS TOTALES</p>
             <h3 className="text-2xl font-black mb-2">${data?.totalCommissions?.toFixed(2) || '0.00'}</h3>
             <p className="text-sm text-gray-400">Depuis le début</p>
@@ -116,7 +116,7 @@ export default function AmbassadorDashboard() {
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               type="text" value={referralLink} readOnly
-              className="flex-1 px-4 py-3 bg-black border-2 border-white/10 rounded text-white font-mono text-sm"
+              className="flex-1 px-4 py-3 bg-black border-2 border-yellow-900/30 rounded text-white font-mono text-sm"
             />
             <button
               onClick={copyToClipboard}
@@ -127,7 +127,7 @@ export default function AmbassadorDashboard() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-white/10 rounded-lg p-6 mb-12">
+        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 mb-12">
           <h3 className="text-2xl font-black text-yellow-500 mb-6">COMMENT SONT CALCULÉES VOS COMMISSIONS</h3>
           <div className="p-4 bg-yellow-900/20 border border-yellow-500 rounded">
             <p className="text-sm text-gray-400">
@@ -137,7 +137,7 @@ export default function AmbassadorDashboard() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-white/10 rounded-lg p-6 mb-12">
+        <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6 mb-12">
           <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
             <h3 className="text-2xl font-black text-yellow-500">VOS FILLEULS</h3>
             {data?.referrals?.length > 0 && (
@@ -146,7 +146,7 @@ export default function AmbassadorDashboard() {
                   <button
                     key={value}
                     onClick={() => setPeriodFilter(value)}
-                    className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-white/10 hover:border-yellow-700'}`}
+                    className={`px-3 py-1.5 text-xs font-bold rounded transition-colors ${periodFilter === value ? 'bg-yellow-500 text-black' : 'bg-black/40 text-gray-400 border border-yellow-900/20 hover:border-yellow-700'}`}
                   >
                     {label}
                   </button>
@@ -174,7 +174,7 @@ export default function AmbassadorDashboard() {
                     <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Commissions générées</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-yellow-900/20">
                   {filteredReferrals.map((referral, index) => (
                     <tr key={index} className="hover:bg-yellow-900/10">
                       <td className="px-6 py-4 text-white">{referral.name}</td>
@@ -189,7 +189,7 @@ export default function AmbassadorDashboard() {
         </div>
 
         {data?.commissionHistory?.length > 0 && (
-          <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-white/10 rounded-lg p-6">
+          <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-900/30 rounded-lg p-6">
             <h3 className="text-2xl font-black text-yellow-500 mb-6">HISTORIQUE DES COMMISSIONS</h3>
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -201,7 +201,7 @@ export default function AmbassadorDashboard() {
                     <th className="px-6 py-3 text-left text-xs font-bold text-yellow-500 uppercase">Commission</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-yellow-900/20">
                   {data.commissionHistory.map((c) => (
                     <tr key={c._id} className="hover:bg-yellow-900/10">
                       <td className="px-6 py-4 text-gray-400">{new Date(c.createdAt).toLocaleDateString('fr-FR')}</td>

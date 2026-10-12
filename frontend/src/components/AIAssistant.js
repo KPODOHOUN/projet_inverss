@@ -55,7 +55,7 @@ export default function AIAssistant() {
       <button
         onClick={() => setOpen(o => !o)}
         aria-label="Assistant"
-        className="fixed bottom-24 lg:bottom-5 right-4 lg:right-5 z-[90] w-14 h-14 rounded-full bg-[#2563eb] text-white shadow-lg flex items-center justify-center hover:scale-105 transition-transform border-none cursor-pointer"
+        className="fixed bottom-5 right-5 z-[90] w-14 h-14 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 text-black shadow-2xl shadow-yellow-500/30 flex items-center justify-center hover:scale-105 transition-transform border-none cursor-pointer"
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -65,7 +65,7 @@ export default function AIAssistant() {
       </button>
 
       {open && (
-        <div className="fixed bottom-44 lg:bottom-24 right-4 lg:right-5 z-[90] w-[92vw] max-w-sm h-[70vh] max-h-[520px] bg-[#141b26]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-24 right-5 z-[90] w-[92vw] max-w-sm h-[70vh] max-h-[520px] bg-[#0a0a0a] border-2 border-yellow-900/30 rounded-xl shadow-2xl flex flex-col overflow-hidden">
           <div className="px-4 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 flex items-center justify-between">
             <p className="font-black text-black text-sm">Assistant IMC</p>
           </div>
@@ -74,7 +74,7 @@ export default function AIAssistant() {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] px-3 py-2 rounded-lg text-sm whitespace-pre-wrap ${
-                  m.role === 'user' ? 'bg-white text-[#1a1204] font-medium' : 'bg-white/[0.04] text-[#e7ebf2]/85 border border-white/5'
+                  m.role === 'user' ? 'bg-yellow-500 text-black font-medium' : 'bg-gray-900 text-gray-200 border border-yellow-900/20'
                 }`}>
                   {m.content}
                 </div>
@@ -82,7 +82,7 @@ export default function AIAssistant() {
             ))}
             {sending && (
               <div className="flex justify-start">
-                <div className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/5 text-[#e7ebf2]/50 text-sm">…</div>
+                <div className="px-3 py-2 rounded-lg bg-gray-900 border border-yellow-900/20 text-gray-500 text-sm">…</div>
               </div>
             )}
             {escalation && (
@@ -91,7 +91,7 @@ export default function AIAssistant() {
                   href={escalation}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="lux-btn-gold !py-2 !px-4 !text-xs"
+                  className="inline-block px-4 py-2 bg-yellow-500 text-black font-bold text-xs rounded hover:bg-yellow-400 transition-colors"
                 >
                   Contacter le support →
                 </a>
@@ -100,19 +100,19 @@ export default function AIAssistant() {
             <div ref={bottomRef} />
           </div>
 
-          <form onSubmit={send} className="p-3 border-t border-white/10 flex gap-2">
+          <form onSubmit={send} className="p-3 border-t border-yellow-900/20 flex gap-2">
             <input
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Votre question…"
               disabled={sending}
-              className="lux-input flex-1 !py-2"
+              className="flex-1 px-3 py-2 bg-black border border-yellow-900/30 rounded text-white text-sm focus:border-yellow-500 focus:outline-none"
             />
             <button
               type="submit"
               disabled={sending || !input.trim()}
-              className="lux-btn-gold !py-2 !px-4"
+              className="px-4 py-2 bg-yellow-500 text-black font-bold text-sm rounded hover:bg-yellow-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-none cursor-pointer"
             >
               →
             </button>
