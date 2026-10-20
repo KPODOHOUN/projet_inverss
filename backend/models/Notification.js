@@ -16,4 +16,10 @@ const notificationSchema = new mongoose.Schema({
 
 notificationSchema.index({ userId: 1, createdAt: -1 });
 
+// Notifications are short-lived: MongoDB's TTL monitor deletes each one 5
+// days after it was created.
+const NOTIFICATION_TTL_SECONDS = 5 * 24 * 60 * 60;
+notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: NOTIFICATION_TTL_SECONDS });
+notificationSchema.statics.TTL_SECONDS = NOTIFICATION_TTL_SECONDS;
+
 module.exports = mongoose.model('Notification', notificationSchema);

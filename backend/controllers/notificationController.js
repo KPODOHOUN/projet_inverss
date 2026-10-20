@@ -3,8 +3,11 @@ const { success, error } = require('../utils/response');
 
 exports.list = async (req, res) => {
   try {
-    const notifications = await Notification.find({ userId: req.user._id }).sort({ createdAt: -1 }).limit(50);
-    const unreadCount = await Notification.countDocuments({ userId: req.user._id, read: false });
+    // The TTL monitor only sweeps about once a minute, so also filter here so
+    // a notification never shows past its 5 days.
+    const since = new Date(Date.now() - Notification.TTL_SECONDS * 1000);
+    const notifications = await Notification.find({ userId: req.user._id, createdAt: { $gte: since } }).sort({ createdAt: -1 }).limit(50);
+    const unreadCount = await Notification.countDocuments({ userId: req.user._id, read: false, createdAt: { $gte: since } });
     success(res, { notifications, unreadCount });
   } catch (err) { error(res, err.message); }
 };
