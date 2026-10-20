@@ -6,7 +6,6 @@ import ScrollReveal from './components/effects/ScrollReveal';
 import BrandLogo from './components/BrandLogo';
 import ThemeToggle from './components/ThemeToggle';
 
-const MARKETS = ['S&P 500', 'Nasdaq 100', 'Dow Jones 30', 'CAC 40', 'Euro Stoxx 50', 'FTSE 100', 'Nikkei 225', 'Russell 2000', 'Bund', 'T-Bonds', 'Bitcoin', 'Or', 'EUR/USDT'];
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,7 +46,6 @@ export default function LandingPage() {
         setMobileMenuOpen={setMobileMenuOpen}
       />
       <HeroSection scrollToSection={scrollToSection} />
-      <MarketStrip />
       <HowItWorks />
       <SecuritySection />
       <FinalCTA />
@@ -270,23 +268,6 @@ function HeroSection({ scrollToSection }) {
   );
 }
 
-function MarketStrip() {
-  const items = [...MARKETS, ...MARKETS];
-  return (
-    <div className="relative z-10 border-y border-white/10 bg-white/[0.015] py-5 overflow-hidden">
-      <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0b1018] to-transparent z-10 pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0b1018] to-transparent z-10 pointer-events-none" />
-      <div className="lux-marquee flex gap-12 w-max">
-        {items.map((m, i) => (
-          <span key={i} className="flex items-center gap-12 whitespace-nowrap text-base font-medium text-[#e7ebf2]/45">
-            {m}<span className="w-1 h-1 rounded-full bg-[#f59e0b]/60" />
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function SectionTitle({ eyebrow, title, accent, subtitle }) {
   return (
     <ScrollReveal className="max-w-2xl mb-14">
@@ -390,7 +371,7 @@ function Footer({ scrollToSection }) {
   const currentYear = new Date().getFullYear();
   const contactItems = [
     { Icon: IconMail, text: 'support@imccorporation.site' },
-    { Icon: IconPhone, text: 'Assistance 24/7' },
+    { Icon: IconPhone, text: '+33 7 53 90 21 39', href: 'tel:+33753902139' },
     { Icon: IconPin, text: "Afrique de l'Ouest" },
     { Icon: IconClock, text: 'Lun–Dim : 24/7' },
   ];
@@ -433,9 +414,10 @@ function Footer({ scrollToSection }) {
           <div>
             <p className="lux-label !text-[#f59e0b]/80 mb-5">Contact</p>
             <ul className="space-y-3">
-              {contactItems.map(({ Icon, text }) => (
+              {contactItems.map(({ Icon, text, href }) => (
                 <li key={text} className="flex items-center gap-3 text-sm text-[#e7ebf2]/50">
-                  <span className="text-[#f59e0b]/70"><Icon size={14} /></span>{text}
+                  <span className="text-[#f59e0b]/70"><Icon size={14} /></span>
+                  {href ? <a href={href} className="hover:text-[#fbbf24] transition-colors">{text}</a> : text}
                 </li>
               ))}
             </ul>
